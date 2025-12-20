@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retro Web Builder</title>
+    <style>
+        :root {
+            /* Retro Dark Theme (Default) */
+            --bg-color: #1a1a1a;
+            --text-color: #e0e0e0;
+            --accent-color: #00ff41; /* Matrix Green */
+            --border-color: #404040;
+            --panel-bg: #2d2d2d;
+            --toolbar-bg: #333;
+            --button-bg: #444;
+            --button-hover: #555;
+            --font-ui: "Courier New", Courier, monospace;
+            --font-editor: "Times New Roman", Times, serif;
+            --modal-bg: rgba(0, 0, 0, 0.9);
+        }
+
+        body.light-theme {
+            /* Craigslist/Wiki Minimal Theme */
+            --bg-color: #ffffff;
+            --text-color: #000000;
+            --accent-color: #0000cc; /* Link Blue */
+            --border-color: #cccccc;
+            --panel-bg: #f0f0f0;
+            --toolbar-bg: #e0e0e0;
+            --button-bg: #d0d0d0;
+            --button-hover: #c0c0c0;
+            --modal-bg: rgba(255, 255, 255, 0.95);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-ui);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        /* --- Header & Controls --- */
+        header {
+            padding: 10px 15px;
+            border-bottom: 2px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--panel-bg);
+            user-select: none;
+        }
+
+        h1 { margin: 0; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-color); }
+
+        .control-group { display: flex; gap: 10px; }
+
+        button {
+            background: var(--button-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 5px 10px;
+            cursor: pointer;
+            font-family: var(--font-ui);
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        button:hover { background: var(--button-hover); border-color: var(--accent-color); }
+        button.active { background: var(--accent-color); color: var(--bg-color); border-color: var(--accent-color); font-weight: bold; }
+
+        /* --- Toolbar --- */
+        #toolbar {
+            padding: 8px;
+            background: var(--toolbar-bg);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            align-items: center;
+        }
+
+        .tool-separator { width: 1px; height: 20px; background: var(--border-color); margin: 0 5px; }
+
+        select {
+            background: var(--button-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            padding: 4px;
+            font-family: var(--font-ui);
+        }
+
+        /* --- Main Workspace --- */
+        #workspace {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .editor-pane {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0; /* Prevent flex overflow */
+            position: relative;
+        }
+
+        .pane-label {
+            background: var(--border-color);
+            color: var(--text-color);
+            padding: 2px 10px;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            position: absolute;
+            top: 0;
+            right: 0;
+            z-index: 10;
+            opacity: 0.7;
+        }
+
+        /* Source Code Editor */
+        #source-editor {
+            width: 100%;
+            height: 100%;
+            background: #121212;
+            color: #00ff41;
+            border: none;
+            resize: none;
+            padding: 20px;
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            outline: none;
+        }
+        body.light-theme #source-editor { background: #fff; color: #333; }
+
+        /* Visual Editor */
+        #visual-editor {
+            width: 100%;
+            height: 100%;
+            background: #fff; /* Always white-ish for realistic preview unless overridden */
+            color: #000;
+            padding: 20px;
+            overflow-y: auto;
+            outline: none;
+            font-family: var(--font-editor);
+        }
+        
+        /* Dark mode visual editor simulation */
+        body:not(.light-theme) #visual-editor {
+            background: #222;
+            color: #ddd;
+        }
+
+        /* Split View Helpers */
+        .hidden { display: none !important; }
+        .split-view .editor-pane { border-right: 1px solid var(--border-color); }
+
+        /* --- Elements Styling within Editor --- */
+        #visual-editor img, #visual-editor video {
+            max-width: 100%;
+            cursor: pointer;
+            transition: outline 0.2s;
+        }
+        
+        #visual-editor img:hover, #visual-editor video:hover, 
+        #visual-editor img.selected, #visual-editor video.selected {
+            outline: 3px solid var(--accent-color);
+        }
+
+        #visual-editor table { border-collapse: collapse; width: 100%; margin-bottom: 1em; }
+        #visual-editor td, #visual-editor th { border: 1px solid #888; padding: 5px; }
+
+        /* --- Floating Context Menu --- */
+        #context-menu {
+            position: absolute;
+            background: var(--panel-bg);
+            border: 1px solid var(--accent-color);
+            padding: 5px;
+            display: none;
+            z-index: 100;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+        #context-menu button { font-size: 0.7rem; padding: 3px 6px; }
+
+        /* --- Preview Mode --- */
+        #preview-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: white;
+            display: none;
+        }
+
+        /* --- Modals --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--modal-bg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            display: none;
+        }
+        
+        .modal {
+            background: var(--panel-bg);
+            border: 2px solid var(--accent-color);
+            padding: 20px;
+            width: 400px;
+            max-width: 90%;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        .modal h3 { margin-top: 0; color: var(--accent-color); border-bottom: 1px solid var(--border-color); padding-bottom: 10px;}
+        
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-size: 0.8rem; }
+        .form-group input, .form-group select { 
+            width: 100%; padding: 8px; 
+            background: var(--bg-color); color: var(--text-color); 
+            border: 1px solid var(--border-color);
+        }
+
+        .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+
+        /* Drag Over Effect */
+        #visual-editor.drag-over {
+            box-shadow: inset 0 0 50px var(--accent-color);
+        }
+
+        /* Status Bar */
+        #status-bar {
+            padding: 2px 10px;
+            font-size: 0.7rem;
+            background: var(--panel-bg);
+            border-top: 1px solid var(--border-color);
+            text-align: right;
+            opacity: 0.5;
+        }
+
+    </style>
+</head>
+<body class="">
+
+    <!-- Header -->
+    <header>
+        <div class="control-group">
+            <h1>RetroWeb<span style="font-size:0.5em; vertical-align: top;">HTML</span></h1>
+        </div>
+        
+        <div class="control-group">
+            <button onclick="setView('split')" id="btn-split" class="active">Split View</button>
+            <button onclick="setView('visual')" id="btn-visual">Visual</button>
+            <button onclick="setView('source')" id="btn-source">Source</button>
+            <button onclick="setView('preview')" id="btn-preview">Preview Site</button>
+        </div>
+
+        <div class="control-group">
+            <button onclick="toggleTheme()" id="theme-btn">☀/☾</button>
+            <button onclick="exportHtml()" style="color: var(--accent-color); border-color: var(--accent-color);">Save HTML</button>
+        </div>
+    </header>
+
+    <!-- Toolbar -->
+    <div id="toolbar">
+        <select onchange="format('formatBlock', this.value); this.value='';">
+            <option value="">Paragraph</option>
+            <option value="h1">Heading 1</option>
+            <option value="h2">Heading 2</option>
+            <option value="h3">Heading 3</option>
+            <option value="p">Normal Text</option>
+            <option value="pre">Code Block</option>
+            <option value="blockquote">Quote</option>
+        </select>
+        
+        <div class="tool-separator"></div>
+
+        <button onclick="format('bold')" title="Bold"><b>B</b></button>
+        <button onclick="format('italic')" title="Italic"><i>I</i></button>
+        <button onclick="format('underline')" title="Underline"><u>U</u></button>
+        <button onclick="format('strikeThrough')" title="Strike"><s>S</s></button>
+
+        <div class="tool-separator"></div>
+
+        <button onclick="format('justifyLeft')" title="Align Left">L</button>
+        <button onclick="format('justifyCenter')" title="Align Center">C</button>
+        <button onclick="format('justifyRight')" title="Align Right">R</button>
+
+        <div class="tool-separator"></div>
+
+        <button onclick="format('insertUnorderedList')" title="Bullet List">• List</button>
+        <button onclick="format('insertOrderedList')" title="Number List">1. List</button>
+
+        <div class="tool-separator"></div>
+
+        <button onclick="promptLink()" title="Insert Link">🔗 Link</button>
+        <button onclick="openMediaModal('image')" title="Insert Image">🖼 Img</button>
+        <button onclick="openMediaModal('video')" title="Insert Video">🎬 Vid</button>
+        <button onclick="insertTable()" title="Insert Table">▦ Table</button>
+        <button onclick="format('insertHorizontalRule')" title="Line">__</button>
+        
+        <div class="tool-separator"></div>
+        <button onclick="format('removeFormat')" title="Clear Formatting">✖ Clean</button>
+    </div>
+
+    <!-- Main Workspace -->
+    <div id="workspace" class="split-view">
+        
+        <!-- Visual Editor Pane -->
+        <div class="editor-pane" id="pane-visual">
+            <span class="pane-label">Visual / UI</span>
+            <div id="visual-editor" contenteditable="true" spellcheck="false">
+                <h1>Welcome to Retro Web!</h1>
+                <p>This is a <b>WYSIWYG</b> editor. Edit here or in the source code on the right.</p>
+                <p>Drag and drop images, or click the buttons above to add content.</p>
+                <hr>
+                <p><i>Start typing...</i></p>
+            </div>
+            <!-- Context Menu for Images/Videos -->
+            <div id="context-menu">
+                <button onclick="editSelectedMedia()">Edit</button>
+                <button onclick="format('justifyLeft')">Left</button>
+                <button onclick="format('justifyCenter')">Center</button>
+                <button onclick="format('justifyRight')">Right</button>
+                <button onclick="deleteSelectedMedia()">Delete</button>
+            </div>
+        </div>
+
+        <!-- Source Code Pane -->
+        <div class="editor-pane" id="pane-source">
+            <span class="pane-label">HTML Source</span>
+            <textarea id="source-editor" spellcheck="false"></textarea>
+        </div>
+
+        <!-- Preview Iframe (Hidden by default) -->
+        <iframe id="preview-frame"></iframe>
+
+    </div>
+    
+    <div id="status-bar">Ready | Words: 0</div>
+
+    <!-- Modals -->
+
+    <!-- Media Modal -->
+    <div class="modal-overlay" id="media-modal">
+        <div class="modal">
+            <h3 id="modal-title">Insert Media</h3>
+            <div class="form-group">
+                <label>Source URL (or Embed Code)</label>
+                <input type="text" id="media-src" placeholder="https://...">
+            </div>
+            <div class="form-group">
+                <label>Width (px or %)</label>
+                <input type="text" id="media-width" value="100%">
+            </div>
+            <div class="form-group" id="alt-group">
+                <label>Alt Text / Caption</label>
+                <input type="text" id="media-alt">
+            </div>
+            <div class="modal-actions">
+                <button onclick="closeModal('media-modal')">Cancel</button>
+                <button onclick="submitMedia()" class="active">Insert/Update</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Core Variables ---
+        const visualEditor = document.getElementById('visual-editor');
+        const sourceEditor = document.getElementById('source-editor');
+        const previewFrame = document.getElementById('preview-frame');
+        const workspace = document.getElementById('workspace');
+        const contextMenu = document.getElementById('context-menu');
+        const statusBar = document.getElementById('status-bar');
+        
+        let currentMode = 'split'; // split, visual, source, preview
+        let selectedElement = null; // For editing images/videos
+        let isEditingMedia = false; // Flag to distinguish insert vs edit
+
+        // --- Initialization ---
+        window.onload = function() {
+            // Initial sync: Visual -> Source
+            updateSource();
+            
+            // Listeners for Sync
+            visualEditor.addEventListener('input', updateSource);
+            visualEditor.addEventListener('keyup', updateSource);
+            visualEditor.addEventListener('click', updateStatus); // For word count
+
+            sourceEditor.addEventListener('input', updateVisual);
+            
+            // Drag and Drop
+            setupDragDrop();
+        };
+
+        // --- Synchronization Logic ---
+        function updateSource() {
+            if (currentMode === 'source') return; // Don't overwrite if typing in source
+            sourceEditor.value = visualEditor.innerHTML;
+            updateStatus();
+        }
+
+        function updateVisual() {
+            if (currentMode === 'visual') return; // Don't overwrite if typing in visual
+            if (visualEditor.innerHTML !== sourceEditor.value) {
+                visualEditor.innerHTML = sourceEditor.value;
+                attachMediaListeners(); // Re-attach click events to new HTML
+            }
+            updateStatus();
+        }
+
+        function updateStatus() {
+            const text = visualEditor.innerText || "";
+            const words = text.trim().split(/\s+/).length;
+            const chars = text.length;
+            statusBar.innerText = `Words: ${words} | Chars: ${chars} | Mode: ${currentMode.toUpperCase()}`;
+        }
+
+        // --- View Switching ---
+        function setView(mode) {
+            currentMode = mode;
+            const paneVisual = document.getElementById('pane-visual');
+            const paneSource = document.getElementById('pane-source');
+            const toolbar = document.getElementById('toolbar');
+
+            // Reset classes
+            document.querySelectorAll('header button').forEach(b => b.classList.remove('active'));
+            document.getElementById('btn-' + mode).classList.add('active');
+            
+            paneVisual.classList.remove('hidden');
+            paneSource.classList.remove('hidden');
+            previewFrame.style.display = 'none';
+            workspace.classList.remove('split-view');
+            toolbar.style.display = 'flex';
+
+            if (mode === 'split') {
+                workspace.classList.add('split-view');
+                updateVisual(); // Ensure sync
+            } else if (mode === 'visual') {
+                paneSource.classList.add('hidden');
+                updateVisual();
+            } else if (mode === 'source') {
+                paneVisual.classList.add('hidden');
+                updateSource();
+            } else if (mode === 'preview') {
+                paneVisual.classList.add('hidden');
+                paneSource.classList.add('hidden');
+                toolbar.style.display = 'none';
+                previewFrame.style.display = 'block';
+                
+                // Inject content into preview iframe
+                const doc = previewFrame.contentDocument || previewFrame.contentWindow.document;
+                doc.open();
+                // Add basic CSS to preview for consistent look
+                let css = `<style>body { font-family: sans-serif; padding: 20px; line-height: 1.6; max-width: 800px; margin: 0 auto; }</style>`;
+                if (!document.body.classList.contains('light-theme')) {
+                    css = `<style>body { background: #222; color: #eee; font-family: sans-serif; padding: 20px; line-height: 1.6; max-width: 800px; margin: 0 auto; } a { color: #88ff88; }</style>`;
+                }
+                doc.write(css + sourceEditor.value);
+                doc.close();
+            }
+        }
+
+        // --- Editor Formatting ---
+        function format(command, value = null) {
+            visualEditor.focus();
+            document.execCommand(command, false, value);
+            updateSource();
+        }
+
+        function promptLink() {
+            const url = prompt("Enter URL:", "http://");
+            if (url) format('createLink', url);
+        }
+
+        function insertTable() {
+            const rows = prompt("Rows:", 3);
+            const cols = prompt("Columns:", 3);
+            if (rows && cols) {
+                let html = '<table style="width:100%; border:1px solid #ccc;">';
+                for (let r = 0; r < rows; r++) {
+                    html += '<tr>';
+                    for (let c = 0; c < cols; c++) {
+                        html += '<td>Cell</td>';
+                    }
+                    html += '</tr>';
+                }
+                html += '</table><p><br></p>'; // Extra p to escape table
+                document.execCommand('insertHTML', false, html);
+                updateSource();
+            }
+        }
+
+        // --- Media Handling (Images/Video) ---
+        let mediaType = 'image';
+
+        function openMediaModal(type, isEdit = false) {
+            mediaType = type;
+            isEditingMedia = isEdit;
+            const modal = document.getElementById('media-modal');
+            const title = document.getElementById('modal-title');
+            const srcInput = document.getElementById('media-src');
+            const widthInput = document.getElementById('media-width');
+            const altInput = document.getElementById('media-alt');
+
+            modal.style.display = 'flex';
+            
+            if (isEdit && selectedElement) {
+                title.innerText = `Edit ${type === 'image' ? 'Image' : 'Video'}`;
+                srcInput.value = selectedElement.getAttribute('src') || '';
+                widthInput.value = selectedElement.style.width || selectedElement.getAttribute('width') || '100%';
+                if (type === 'image') altInput.value = selectedElement.getAttribute('alt') || '';
+            } else {
+                title.innerText = `Insert ${type === 'image' ? 'Image' : 'Video'}`;
+                srcInput.value = '';
+                widthInput.value = '100%';
+                altInput.value = '';
+            }
+
+            // Toggle alt field based on type
+            document.getElementById('alt-group').style.display = type === 'image' ? 'block' : 'none';
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
+        function submitMedia() {
+            const src = document.getElementById('media-src').value;
+            const width = document.getElementById('media-width').value;
+            const alt = document.getElementById('media-alt').value;
+
+            if (!src) return closeModal('media-modal');
+
+            visualEditor.focus();
+
+            if (isEditingMedia && selectedElement) {
+                // Update existing
+                selectedElement.src = src;
+                selectedElement.style.width = width;
+                if (mediaType === 'image') selectedElement.alt = alt;
+            } else {
+                // Insert New
+                let html = '';
+                if (mediaType === 'image') {
+                    html = `<img src="${src}" alt="${alt}" style="width:${width};">`;
+                } else {
+                    // Simple check for youtube/vimeo to use iframe, else video tag
+                    if (src.includes('youtube.com') || src.includes('youtu.be') || src.includes('vimeo')) {
+                         html = `<iframe src="${src}" style="width:${width}; aspect-ratio: 16/9; border:none;" allowfullscreen></iframe>`;
+                    } else {
+                         html = `<video src="${src}" controls style="width:${width};"></video>`;
+                    }
+                }
+                document.execCommand('insertHTML', false, html);
+            }
+
+            closeModal('media-modal');
+            updateSource();
+            attachMediaListeners();
+        }
+
+        // --- Media Context Menu & Hover ---
+        // Delegate events to visual editor for performance
+        visualEditor.addEventListener('mouseover', function(e) {
+            if (e.target.tagName === 'IMG' || e.target.tagName === 'VIDEO') {
+                e.target.style.outline = '2px solid var(--accent-color)';
+            }
+        });
+
+        visualEditor.addEventListener('mouseout', function(e) {
+            if (e.target.tagName === 'IMG' || e.target.tagName === 'VIDEO') {
+                if (e.target !== selectedElement) e.target.style.outline = 'none';
+            }
+        });
+
+        visualEditor.addEventListener('click', function(e) {
+            if (e.target.tagName === 'IMG' || e.target.tagName === 'VIDEO') {
+                showContextMenu(e.target, e.clientX, e.clientY);
+            } else {
+                hideContextMenu();
+            }
+        });
+
+        function showContextMenu(element, x, y) {
+            selectedElement = element;
+            // Highlight
+            if (document.querySelector('.selected')) document.querySelector('.selected').classList.remove('selected');
+            selectedElement.classList.add('selected');
+
+            contextMenu.style.display = 'block';
+            
+            // Boundary checks
+            const menuWidth = 150;
+            if (x + menuWidth > window.innerWidth) x -= menuWidth;
+            
+            contextMenu.style.top = y + 10 + 'px';
+            contextMenu.style.left = x + 'px';
+        }
+
+        function hideContextMenu() {
+            contextMenu.style.display = 'none';
+            if (selectedElement) {
+                selectedElement.classList.remove('selected');
+                selectedElement.style.outline = 'none';
+                selectedElement = null;
+            }
+        }
+
+        function editSelectedMedia() {
+            if (!selectedElement) return;
+            const type = selectedElement.tagName === 'IMG' ? 'image' : 'video';
+            openMediaModal(type, true);
+            contextMenu.style.display = 'none';
+        }
+
+        function deleteSelectedMedia() {
+            if (selectedElement) {
+                selectedElement.remove();
+                hideContextMenu();
+                updateSource();
+            }
+        }
+
+        // Helper to ensure new elements get listeners (mainly handled by delegation, 
+        // but useful if we attach specific events later)
+        function attachMediaListeners() {
+            // Logic handled by event delegation on #visual-editor
+        }
+
+        // --- Drag and Drop ---
+        function setupDragDrop() {
+            visualEditor.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                visualEditor.classList.add('drag-over');
+            });
+
+            visualEditor.addEventListener('dragleave', () => {
+                visualEditor.classList.remove('drag-over');
+            });
+
+            visualEditor.addEventListener('drop', (e) => {
+                e.preventDefault();
+                visualEditor.classList.remove('drag-over');
+
+                if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                    const file = e.dataTransfer.files[0];
+                    if (file.type.startsWith('image/')) {
+                        const reader = new FileReader();
+                        reader.onload = function(evt) {
+                            const html = `<img src="${evt.target.result}" style="max-width:100%; margin: 10px 0;">`;
+                            document.execCommand('insertHTML', false, html);
+                            updateSource();
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                }
+            });
+        }
+
+        // --- Misc ---
+        function toggleTheme() {
+            document.body.classList.toggle('light-theme');
+            // Re-render preview if active to match theme
+            if (currentMode === 'preview') setView('preview');
+        }
+
+        function exportHtml() {
+            const htmlContent = sourceEditor.value;
+            const blob = new Blob([htmlContent], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'retro-page.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        // --- Keyboard Shortcuts ---
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+                e.preventDefault();
+                exportHtml();
+            }
+        });
+
+    </script>
+</body>
+</html>

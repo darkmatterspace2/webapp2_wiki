@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Creator - RetroWiki</title>
+    <link rel="stylesheet" href="../style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../config.js"></script>
+    <script src="../assets/js/utils.js"></script>
+    <script src="../assets/js/layout.js"></script>
+</head>
+
+<body>
+
+    <!-- Content Wrapper for Layout Injection -->
+    <div id="view-ai-creator">
+        <h2>AI Article Generator</h2>
+
+        <!-- INITIAL PROMPT -->
+        <div id="ai-start-panel" style="background: #333; padding: 10px; border: 1px dashed #666; margin-bottom: 20px;">
+            <p>Enter a topic, and Gemini (Model: 2.5 Flash Preview) will write the article for you.</p>
+            Topic: <input type="text" id="ai-topic" style="width: 60%;" placeholder="e.g., History of the Floppy Disk">
+            <button onclick="generateArticle()">Generate with Gemini</button>
+        </div>
+
+        <hr>
+
+        <!-- EDITOR FORM -->
+        <form onsubmit="handleSave(event)" id="ai-form" style="display:none;">
+            <h3>Review & Edit</h3>
+            <div style="margin-bottom: 10px;">
+                <button type="button" onclick="showPreview()">Example Preview</button>
+                <button type="button" onclick="toggleRefinePanel()">Refine with AI</button>
+            </div>
+
+            <!-- REFINE PANEL -->
+            <div id="refine-panel"
+                style="display:none; background: #442222; padding: 10px; border: 1px solid red; margin-bottom: 15px;">
+                <b>Refine Article:</b> <input type="text" id="refine-prompt" style="width: 60%;"
+                    placeholder="e.g., Make it funnier, Add a section on X...">
+                <button type="button" onclick="refineArticle()">Update</button>
+                <button type="button" onclick="toggleRefinePanel()">Close</button>
+            </div>
+
+            <table width="100%" cellpadding="5">
+                <tr>
+                    <td width="100">Title:</td>
+                    <td><input type="text" id="edit-title" required style="width: 100%;"></td>
+                </tr>
+                <tr>
+                    <td>Category:</td>
+                    <td><input type="text" id="edit-category" required></td>
+                </tr>
+                <tr>
+                    <td>Tags:</td>
+                    <td><input type="text" id="edit-tags" placeholder="comma, separated"></td>
+                </tr>
+                <tr>
+                    <td>Rating:</td>
+                    <td>
+                        <select id="edit-rating">
+                            <option value="NR">NR (Not Rated)</option>
+                            <option value="M">M (Mature)</option>
+                            <option value="P">P (Prohibited)</option>
+                            <option value="X">X (Restricted)</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td valign="top">Content:</td>
+                    <td>
+                        <textarea id="edit-content" class="editor" required></textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <button type="submit">Publish to Net</button>
+                        <button type="button" onclick="resetAI()">Cancel / Reset</button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+
+        <!-- PREVIEW MODAL/OVERLAY -->
+        <div id="preview-overlay"
+            style="display:none; position:fixed; top:20px; left:20px; right:20px; bottom:20px; background:var(--bg-color); border:2px solid var(--border-color); padding:20px; z-index:1000; overflow:auto;">
+            <div
+                style="background:var(--header-bg); padding:10px; margin-bottom:20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between;">
+                <b>Article Preview</b>
+                <button onclick="closePreview()">Close Preview</button>
+            </div>
+
+            <h1 id="preview-title"></h1>
+            <div class="article-meta" id="preview-meta"></div>
+            <div id="preview-body" class="article-content"></div>
+        </div>
+    </div>
+
+    <script>
+        const sbClient = AppUtils.initSupabase();
+
+        async function initAI() {
+            // Auth Check
+            const user = await AppUtils.checkAuth(sbClient);
+            if (!user) {
+                alert("Restricted Area. Please Login.");
+                window.location.href = 'login.html';
+                return;
+            }
+        }
+
+        async function callGemini(prompt) {
+            if (!window.GEMINI_API_KEY || window.GEMINI_API_KEY.includes("YOUR_")) {
+                alert("API Key missing.");
+                return null;
+            }
+
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${window.GEMINI_API_KEY}`;
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [{ parts: [{ text: prompt }] }]
+                })
+            });
+            const data = await response.json();
+            if (data.error) throw new Error(data.error.message);
+
+            const rawText = data.candidates[0].content.parts[0].text;
+            const jsonText = rawText.replace(/```json/g, '').replace(/```/g, '').trim();
+            return JSON.parse(jsonText);
+        }
+
+        async function generateArticle() {
+            const topic = document.getElementById('ai-topic').value;
+            if (!topic) return alert("Please enter a topic.");
+
+            AppUtils.showLoading(true);
+
+            const prompt = `
+            You are an expert wiki writer 
+            Write a concise and complete wiki-style article about: "${topic}", modeled after Wikipedia structure.
+            OUTPUT
+            Output strictly valid JSON with the following keys:
+                        - title: The article title.
+                        - category: A single broad category.
+                        - tags: A comma-separated string of tags.
+                        - content: The full article content in HTML format.
+            - Output ONLY valid JSON with this EXACT schema:
+            {
+            	"title": "Article Title",
+            	"category": "Architecture",
+            	"tags": "tag1, tag2, tag3",
+            	"content_html": "<p>HTML content here</p>"
+            }
+            
+            Response must be JSON only. No markdown fence.
+
+            STRUCTURE REQUIREMENTS for content_html:
+            - Page title in <title> and main heading <h1>
+            - Short summary paragraph under the title (like Wikipedia lead section)
+            - A small info table infobox-style section aligned to the right
+               - Name
+               - Category
+               - Key facts (2–4 rows relevant to topic for example location, length, opened, type, designer, coordinates)
+               - Place a representative image above (use <img> with width max 200px)
+            - Horizontal rule <hr>   
+            - Table of Contents using a simple unordered list with anchor links   
+            - Main sections using <h2> and <h3>, such as:
+               - Overview
+               - History / Background
+               - Key Concepts or Features
+               - Applications / Usage
+               - Reception / Impact
+               - Notes/Trivia/Bonus info
+               - See Also
+            - “See Also” section must contain internal-style links (# anchors or placeholder links)
+            - External links can be included for references must open in a new tab
+            - all the links mentioned in the page must open in new tab
+            MEDIA & LINKS
+            - Use <img> for images/GIFs and <video controls> for videos.
+            - Use <a> for links; all must open in new tabs.
+            - Keep media centered and responsive with inline styles.
+            RULES
+            - Use only valid HTML inside <content_html>.
+            - No markdown, no explanations, no extra text.
+        
+            `;
+
+            try {
+                const article = await callGemini(prompt);
+                if (article) {
+                    populateForm(article);
+                    document.getElementById('ai-start-panel').style.display = 'none';
+                    document.getElementById('ai-form').style.display = 'block';
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Generation Failed: " + err.message);
+            }
+            AppUtils.showLoading(false);
+        }
+
+        async function refineArticle() {
+            const instruction = document.getElementById('refine-prompt').value;
+            if (!instruction) return alert("Enter instructions.");
+
+            AppUtils.showLoading(true);
+
+            // Get current state
+            const currentArticle = {
+                title: document.getElementById('edit-title').value,
+                category: document.getElementById('edit-category').value,
+                tags: document.getElementById('edit-tags').value,
+                content: document.getElementById('edit-content').value
+            };
+
+            const prompt = `
+            ${JSON.stringify(currentArticle)}
+
+            The above is a JSON article. 
+            User Request: "${instruction}".
+            
+            Refine the article fields based on the request.
+            Output the full updated JSON object (title, category, tags, content).
+            Response must be JSON only.
+            `;
+
+            try {
+                const article = await callGemini(prompt);
+                if (article) {
+                    populateForm(article);
+                    toggleRefinePanel(); // close panel
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Refine Failed: " + err.message);
+            }
+            AppUtils.showLoading(false);
+        }
+
+        function populateForm(article) {
+            document.getElementById('edit-title').value = article.title || "";
+            document.getElementById('edit-category').value = article.category || "";
+            document.getElementById('edit-tags').value = article.tags || "";
+            document.getElementById('edit-content').value = article.content || "";
+        }
+
+        function toggleRefinePanel() {
+            const panel = document.getElementById('refine-panel');
+            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function showPreview() {
+            const title = document.getElementById('edit-title').value;
+            const content = document.getElementById('edit-content').value;
+            const category = document.getElementById('edit-category').value;
+            const rating = document.getElementById('edit-rating').value;
+
+            document.getElementById('preview-title').textContent = title;
+            document.getElementById('preview-meta').textContent = `Category: ${category} | Rating: ${rating} | (Preview)`;
+            document.getElementById('preview-body').innerHTML = content;
+            document.getElementById('preview-overlay').style.display = 'block';
+        }
+
+        function closePreview() {
+            document.getElementById('preview-overlay').style.display = 'none';
+        }
+
+        function resetAI() {
+            document.getElementById('ai-form').style.display = 'none';
+            document.getElementById('ai-start-panel').style.display = 'block';
+            document.getElementById('ai-topic').value = '';
+        }
+
+        async function handleSave(e) {
+            e.preventDefault();
+            AppUtils.showLoading(true);
+            const title = document.getElementById('edit-title').value;
+            const category = document.getElementById('edit-category').value;
+            const tags = document.getElementById('edit-tags').value.split(',').map(t => t.trim());
+            const ratings = document.getElementById('edit-rating').value;
+            const content = document.getElementById('edit-content').value;
+
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hour = String(now.getHours()).padStart(2, '0');
+
+            const cleanTitle = title.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+            const fileName = `data/posts/${year}/${month}/${day}/${hour}/${now.getTime()}_${cleanTitle}.html`;
+
+            const fileBlob = new Blob([content], { type: 'text/html' });
+
+            const { data: uploadData, error: uploadError } = await sbClient.storage
+                .from('wiki-content')
+                .upload(fileName, fileBlob, { upsert: false });
+
+            if (uploadError) {
+                alert("Upload failed: " + uploadError.message);
+                AppUtils.showLoading(false); return;
+            }
+
+            const payload = { title, category, tags, ratings, bucket_path: uploadData.path };
+            const { error: dbError } = await sbClient.from('wiki_articles').insert([payload]);
+
+            if (dbError) { alert("DB Error: " + dbError.message); }
+            else { alert("Published!"); window.location.href = '../index.html'; }
+            AppUtils.showLoading(false);
+        }
+
+        window.onload = initAI;
+    </script>
+</body>
+
+</html>

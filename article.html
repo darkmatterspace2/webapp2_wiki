@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Article View - RetroWiki 2k25</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="assets/css/gallery.css">
+    <!-- Dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="assets/js/utils.js"></script>
+    <script src="assets/js/layout.js"></script>
+    <script src="assets/js/gallery.js"></script>
+</head>
+
+<body>
+
+    <!-- Content injected into layout -->
+    <div id="view-article">
+        <div style="margin-bottom: 10px;">
+            <a href="index.html">&lt;&lt; Back to Index</a>
+            <span id="admin-actions" class="hidden" style="float: right;">
+                <a href="#" id="edit-link">[Edit]</a>
+                <a href="#" id="delete-link" style="color: red;">[Delete]</a>
+            </span>
+        </div>
+
+        <h1 id="article-title">Loading...</h1>
+        <div class="article-meta" id="article-meta">
+            Posted by Admin | Views: 0
+        </div>
+
+        <!-- <div style="border: 1px dotted var(--border-color); padding: 10px; background: var(--sidebar-bg); width: 30%; float: right; margin-left: 20px; display: none;"
+            id="toc-container">
+            <b>Table of Contents</b>
+            <ul id="article-toc" style="padding-left: 20px;"></ul>
+        </div> -->
+
+        <div id="article-body" class="article-content">
+            <!-- Content loaded here -->
+        </div>
+
+        <div style="clear: both; margin-top: 50px; text-align: center;">
+            <a href="#top">^ Back to Top</a>
+        </div>
+    </div>
+
+    <script>
+        async function initArticle() {
+            const sbClient = AppUtils.initSupabase();
+            const id = AppUtils.getParam('id');
+            const user = await AppUtils.checkAuth(sbClient);
+
+            if (!id) {
+                document.getElementById('article-title').innerText = "Error: No Article ID";
+                return;
+            }
+
+            AppUtils.showLoading(true);
+
+            // 1. Fetch Metadata
+            const { data: meta, error } = await sbClient
+                .from('wiki_articles')
+                .select('*')
+                .eq('id', id)
+                .single();
+
+            if (error || !meta) {
+                document.getElementById('article-title').innerText = "Article Not Found";
+                AppUtils.showLoading(false);
+                return;
+            }
+
+            // 2. Fetch Content
+            // Use signed URL to bypass cache and ensure fresh content
+            const { data: signedData, error: signedError } = await sbClient
+                .storage
+                .from('wiki-content')
+                .createSignedUrl(meta.bucket_path, 60);
+
+            if (signedError) {
+                console.error("Error creating signed URL:", signedError);
+                alert("Error loading content file.");
+                AppUtils.showLoading(false);
+                return;
+            }
+
+            const response = await fetch(signedData.signedUrl);
+            if (!response.ok) {
+                alert("Error fetching content.");
+                AppUtils.showLoading(false);
+                return;
+            }
+
+            const content = await response.text();
+
+            // 3. Render
+            document.title = meta.title + " - RetroWiki";
+            document.getElementById('article-title').innerText = meta.title;
+            document.getElementById('article-meta').innerText = `Category: ${meta.category} | Created: ${AppUtils.formatDate(meta.created_at)} | Views: ${meta.views}`;
+            document.getElementById('article-body').innerHTML = content;
+
+            // 4. Admin Actions
+            if (user) {
+                document.getElementById('admin-actions').classList.remove('hidden');
+                document.getElementById('edit-link').href = `admin/editor.html?id=${id}`;
+                document.getElementById('delete-link').onclick = async (e) => {
+                    e.preventDefault();
+                    if (confirm("Delete this article? Irreversible.")) {
+                        await sbClient.from('wiki_articles').delete().eq('id', id);
+                        await sbClient.storage.from('wiki-content').remove([meta.bucket_path]);
+                        window.location.href = 'index.html';
+                    }
+                };
+            }
+
+            // 5. TOC
+            generateTOC();
+
+            // 5b. Initialize any galleries in the article content
+            if (typeof initGalleries === 'function') {
+                initGalleries(document.getElementById('article-body'));
+                // Delayed resize for late-loading images
+                if (typeof resizeGalleryImages === 'function') {
+                    setTimeout(resizeGalleryImages, 500);
+                    setTimeout(resizeGalleryImages, 1500);
+                    setTimeout(resizeGalleryImages, 3000);
+                }
+            }
+
+            // 6. Increment View
+            sbClient.rpc('increment_view', { row_id: id }).then(({ error }) => {
+                if (error) {
+                    // Fallback
+                    const newViews = (meta.views || 0) + 1;
+                    sbClient.from('wiki_articles').update({ views: newViews }).eq('id', id);
+                }
+            });
+
+            AppUtils.showLoading(false);
+        }
+
+        function generateTOC() {
+            const headers = document.querySelectorAll('#article-body h1, #article-body h2, #article-body h3');
+            const toc = document.getElementById('article-toc');
+            const container = document.getElementById('toc-container');
+
+            // Skip if TOC elements don't exist
+            if (!toc || !container) return;
+
+            if (headers.length < 2) {
+                container.style.display = 'none';
+                return;
+            }
+            container.style.display = 'block';
+            headers.forEach((h, index) => {
+                if (!h.id) h.id = `h-${index}`;
+                const li = document.createElement('li');
+                li.innerHTML = `<a href="#${h.id}">${h.textContent}</a>`;
+                toc.appendChild(li);
+            });
+        }
+
+        window.onload = initArticle;
+    </script>
+</body>
+
+</html>

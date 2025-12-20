@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Access - RetroWiki</title>
+    <link rel="stylesheet" href="../style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../config.js"></script>
+    <script src="../assets/js/utils.js"></script>
+    <script src="../assets/js/layout.js"></script>
+</head>
+
+<body>
+
+    <div id="view-login">
+        <h3>Restricted Access</h3>
+        <p>Please log in to manage the wiki.</p>
+
+        <form onsubmit="handleLogin(event)">
+            Email: <input type="email" id="login-email" required><br><br>
+            Password: <input type="password" id="login-password" required><br><br>
+            <button type="submit">Login</button>
+            <button type="button" onclick="handleSignUp(event)">Sign Up (Create Admin)</button>
+            <br><br>
+            <a href="../index.html">Cancel / Return Home</a>
+        </form>
+    </div>
+
+    <script>
+        // Debug helper (console only)
+        function log(msg) {
+            console.log('[LOGIN]', msg);
+        }
+
+        // Create a fresh Supabase client each time to avoid stale state on Android
+        function getSupabase() {
+            if (!window.supabase || !window.SUPABASE_URL) {
+                log('ERROR: Supabase not loaded');
+                return null;
+            }
+            return window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY, {
+                auth: {
+                    persistSession: true,
+                    storageKey: 'supabase-auth',
+                    storage: window.localStorage,
+                    autoRefreshToken: true,
+                    detectSessionInUrl: false
+                }
+            });
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            log('Login button clicked');
+
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            if (!email || !password) {
+                log('Missing credentials');
+                alert('Please enter email and password');
+                return;
+            }
+
+            log('Email: ' + email);
+            AppUtils.showLoading(true);
+
+            try {
+                // Get fresh client
+                const sb = getSupabase();
+                if (!sb) {
+                    throw new Error('Could not initialize Supabase');
+                }
+
+                // First, explicitly sign out any existing session
+                log('Clearing any existing session...');
+                await sb.auth.signOut({ scope: 'local' });
+
+                // Now attempt login
+                log('Attempting signInWithPassword...');
+                const { data, error } = await sb.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
+
+                log('Response received');
+
+                if (error) {
+                    log('ERROR: ' + error.message);
+                    alert("LOGIN FAILED: " + error.message);
+                } else if (data && data.session) {
+                    log('SUCCESS! Session obtained. Redirecting...');
+                    window.location.href = '../index.html';
+                } else {
+                    log('WARN: No error but no session either');
+                    alert("Login issue: No session returned. Try again.");
+                }
+            } catch (err) {
+                log('EXCEPTION: ' + err.message);
+                alert("Error: " + err.message);
+            }
+
+            AppUtils.showLoading(false);
+        }
+
+        async function handleSignUp(e) {
+            e.preventDefault();
+            log('SignUp button clicked');
+
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            if (!email || !password) {
+                alert("Enter email/pass");
+                return;
+            }
+
+            AppUtils.showLoading(true);
+
+            try {
+                const sb = getSupabase();
+                if (!sb) throw new Error('Could not initialize Supabase');
+
+                log('Attempting signUp...');
+                const { data, error } = await sb.auth.signUp({ email, password });
+
+                if (error) {
+                    log('SignUp ERROR: ' + error.message);
+                    alert("SIGN UP FAILED: " + error.message);
+                } else {
+                    log('SignUp success');
+                    alert("Sign Up Successful! Check email or login.");
+                    if (data.session) window.location.href = '../index.html';
+                }
+            } catch (err) {
+                log('SignUp EXCEPTION: ' + err.message);
+                alert("Error: " + err.message);
+            }
+
+            AppUtils.showLoading(false);
+        }
+
+        // Page load
+        log('Login page loaded');
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Creator - RetroWiki</title>
+    <link rel="stylesheet" href="../style.css">
+    <!-- Quill WYSIWYG -->
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../config.js"></script>
+    <script src="../assets/js/utils.js"></script>
+    <script src="../assets/js/layout.js"></script>
+
+    <style>
+        #editor-container {
+            height: 400px;
+            background: #fff;
+            color: #000;
+            /* Force black text for editor readability */
+        }
+
+        .ql-toolbar {
+            background: #ddd;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="view-advanced-creator">
+        <h2>Advanced AI Studio</h2>
+
+        <!-- CONTROL PANEL -->
+        <div style="background: #2a2a2a; padding: 15px; border: 1px solid #444; margin-bottom: 20px;">
+            <table width="100%">
+                <tr>
+                    <td><b>Model:</b></td>
+                    <td>
+                        <select id="ai-model" style="width: 200px;">
+                            <option value="gemini">Google Gemini 2.5</option>
+                            <option value="openai">OpenAI GPT-4o (Beta)</option>
+                            <option value="claude">Anthropic Claude 3.5</option>
+                            <option value="grok">xAI Grok Beta</option>
+                        </select>
+                    </td>
+                    <td><b>Topic:</b></td>
+                    <td><input type="text" id="ai-topic" style="width: 100%;" placeholder="Enter topic..."></td>
+                    <td><button onclick="generateContent()" style="background: #007bff; color: white;">Generate
+                            Article</button></td>
+                </tr>
+            </table>
+        </div>
+
+        <hr>
+
+        <form onsubmit="handleSave(event)">
+            <!-- META DATA -->
+            <table width="100%" cellpadding="5" style="margin-bottom: 10px;">
+                <tr>
+                    <td width="100">Title:</td>
+                    <td><input type="text" id="edit-title" required style="width: 100%;"></td>
+                </tr>
+                <tr>
+                    <td>Category:</td>
+                    <td><input type="text" id="edit-category" required></td>
+                    <td>Tags:</td>
+                    <td><input type="text" id="edit-tags" placeholder="csv"></td>
+                    <td>Rating:</td>
+                    <td>
+                        <select id="edit-rating">
+                            <option value="NR">NR</option>
+                            <option value="M">M</option>
+                            <option value="P">P</option>
+                            <option value="X">X</option>
+                        </select>
+                    </td>
+                </tr>
+            </table>
+
+            <!-- REFINEMENT BAR -->
+            <div id="refine-bar" style="background: #442222; padding: 5px; margin-bottom: 5px; display:block;">
+                <b>AI Refine:</b>
+                <input type="text" id="refine-instruction"
+                    placeholder="e.g. 'Add a table comparison', 'Insert a placeholder image'" style="width: 50%;">
+                <button type="button" onclick="refineContent()">Update Selection</button>
+                <div style="float: right;">
+                    <button type="button" onclick="toggleSource()" id="source-btn">View HTML Source</button>
+                </div>
+            </div>
+
+            <!-- WYSIWYG EDITOR -->
+            <div id="editor-container"></div>
+            <!-- RAW HTML EDITOR (Hidden) -->
+            <textarea id="html-source"
+                style="display:none; width: 100%; height: 400px; background: #222; color: #0f0; font-family: monospace; border: 1px solid #555; padding: 10px;"></textarea>
+
+            <div style="margin-top: 5px; font-size: 0.8em; color: #aaa;">
+                * Note: Switching back to Visual Editor may strip custom HTML styles. For complex layouts,
+                <b>Publish</b> directly from Source View.
+            </div>
+
+            <div style="margin-top: 15px;">
+                <button type="submit" style="font-size: 1.2em; padding: 10px 20px;">PUBLISH ARTICLE</button>
+                <button type="button" onclick="window.location.reload()">Reset</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Quill JS -->
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+
+    <script>
+        const sbClient = AppUtils.initSupabase();
+        let quill;
+        let isSourceMode = false;
+
+        async function init() {
+            const user = await AppUtils.checkAuth(sbClient);
+            if (!user) {
+                alert("Restricted Area.");
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Init Quill
+            quill = new Quill('#editor-container', {
+                theme: 'snow',
+                modules: {
+                    toolbar: [
+                        [{ 'header': [1, 2, 3, false] }],
+                        ['bold', 'italic', 'underline', 'strike'],
+                        ['blockquote', 'code-block'],
+                        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                        [{ 'color': [] }, { 'background': [] }],
+                        ['link', 'image', 'video'],
+                        ['clean']
+                    ]
+                }
+            });
+        }
+
+        function toggleSource() {
+            const editorDiv = document.getElementById('editor-container');
+            const sourceArea = document.getElementById('html-source');
+            const btn = document.getElementById('source-btn');
+
+            if (!isSourceMode) {
+                // Switch to Source
+                const html = quill.root.innerHTML;
+                sourceArea.value = html;
+
+                // Hide Quill
+                editorDiv.style.display = 'none';
+                document.querySelector('.ql-toolbar').style.display = 'none';
+                sourceArea.style.display = 'block';
+
+                btn.innerText = "Back to Visual Editor (May Clean HTML)";
+                isSourceMode = true;
+            } else {
+                // Switch to Visual
+                const html = sourceArea.value;
+                quill.clipboard.dangerouslyPasteHTML(html);
+
+                sourceArea.style.display = 'none';
+                editorDiv.style.display = 'block';
+                document.querySelector('.ql-toolbar').style.display = 'block';
+
+                btn.innerText = "View HTML Source";
+                isSourceMode = false;
+            }
+        }
+
+        async function generateContent() {
+            const topic = document.getElementById('ai-topic').value;
+            const model = document.getElementById('ai-model').value;
+            if (!topic) return alert("Enter a topic.");
+            if (isSourceMode) toggleSource(); // Force visual
+
+            AppUtils.showLoading(true);
+
+            // Construct Prompt
+            const systemPrompt = `
+                Write a comprehensive wiki article in HTML format about: "${topic}".
+                Structure:
+                1. Return a JSON object ONLY.
+                2. Keys: title, category, tags, content_html.
+                3. content_html should be compatible with Quill.js (standard HTML5 tags, <img> src placeholders if needed).
+            `;
+
+            try {
+                let result;
+                if (model === 'gemini') {
+                    result = await callGemini(systemPrompt);
+                } else {
+                    if ((model === 'openai' && !window.OPENAI_API_KEY) ||
+                        (model === 'claude' && !window.ANTHROPIC_API_KEY)) {
+                        throw new Error(`API Key for ${model} is missing in config.js`);
+                    }
+                    result = await callGemini(systemPrompt + ` (Simulating ${model} style)`);
+                }
+
+                if (result) {
+                    document.getElementById('edit-title').value = result.title;
+                    document.getElementById('edit-category').value = result.category;
+                    document.getElementById('edit-tags').value = result.tags;
+                    quill.clipboard.dangerouslyPasteHTML(result.content_html);
+                }
+
+            } catch (err) {
+                alert("Error: " + err.message);
+            }
+            AppUtils.showLoading(false);
+        }
+
+        async function refineContent() {
+            const instruction = document.getElementById('refine-instruction').value;
+            if (!instruction) return alert("Enter instruction.");
+            if (isSourceMode) toggleSource();
+
+            AppUtils.showLoading(true);
+
+            const currentHTML = quill.root.innerHTML;
+            const prompt = `
+                Analyze this HTML content: ${currentHTML}
+                User Request: "${instruction}"
+                Return a JSON object with a single key: "content_html" containing the updated HTML.
+                Do not output markdown.
+            `;
+
+            try {
+                const result = await callGemini(prompt);
+                if (result && result.content_html) {
+                    quill.clipboard.dangerouslyPasteHTML(result.content_html);
+                }
+            } catch (err) {
+                alert("Refine Error: " + err.message);
+            }
+            AppUtils.showLoading(false);
+        }
+
+        async function callGemini(prompt) {
+            const key = window.GEMINI_API_KEY;
+            if (!key || key.includes("YOUR")) throw new Error("Gemini Key Missing");
+
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${key}`;
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+            });
+
+            const data = await response.json();
+            if (data.error) throw new Error(data.error.message);
+
+            const txt = data.candidates[0].content.parts[0].text;
+            const cleaned = txt.replace(/```json/g, '').replace(/```/g, '').trim();
+            return JSON.parse(cleaned);
+        }
+
+        async function handleSave(e) {
+            e.preventDefault();
+
+            // Sync if in Source Mode - logic here works because we read from text area if mode is true
+            // If in source mode, we do NOT sync back to Quill to avoid cleaning
+
+            const title = document.getElementById('edit-title').value;
+            let content;
+
+            if (isSourceMode) {
+                content = document.getElementById('html-source').value;
+            } else {
+                content = quill.root.innerHTML;
+            }
+
+            const category = document.getElementById('edit-category').value;
+            const tags = document.getElementById('edit-tags').value.split(',');
+            const ratings = document.getElementById('edit-rating').value;
+
+            AppUtils.showLoading(true);
+
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hour = String(now.getHours()).padStart(2, '0');
+
+            const cleanTitle = title.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+            const fileName = `data/posts/${year}/${month}/${day}/${hour}/${now.getTime()}_${cleanTitle}.html`;
+
+            const fileBlob = new Blob([content], { type: 'text/html' });
+
+            const { data: uploadData, error: uploadError } = await sbClient.storage
+                .from('wiki-content')
+                .upload(fileName, fileBlob, { upsert: false });
+
+            if (uploadError) {
+                alert("Upload failed: " + uploadError.message);
+                AppUtils.showLoading(false); return;
+            }
+
+            const payload = { title, category, tags, ratings, bucket_path: uploadData.path };
+            const { error: dbError } = await sbClient.from('wiki_articles').insert([payload]);
+
+            if (dbError) alert("Error: " + dbError.message);
+            else {
+                alert("Published!");
+                window.location.href = '../index.html';
+            }
+            AppUtils.showLoading(false);
+        }
+
+        window.onload = init;
+    </script>
+</body>
+
+</html>

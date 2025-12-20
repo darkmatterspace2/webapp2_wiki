@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editor - RetroWiki</title>
+    <link rel="stylesheet" href="../style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../config.js"></script>
+    <script src="../assets/js/utils.js"></script>
+    <script src="../assets/js/layout.js"></script>
+</head>
+
+<body>
+
+    <div id="view-editor">
+        <h2 id="editor-title">Create New Article</h2>
+        <form onsubmit="handleSave(event)">
+            <table width="100%" cellpadding="5">
+                <tr>
+                    <td width="100">Title:</td>
+                    <td><input type="text" id="edit-title" required style="width: 100%;"></td>
+                </tr>
+                <tr>
+                    <td>Category:</td>
+                    <td><input type="text" id="edit-category" required></td>
+                </tr>
+                <tr>
+                    <td>Tags:</td>
+                    <td><input type="text" id="edit-tags" placeholder="comma, separated"></td>
+                </tr>
+                <tr>
+                    <td>Rating:</td>
+                    <td>
+                        <select id="edit-rating">
+                            <option value="NR">NR (Not Rated)</option>
+                            <option value="M">M (Mature)</option>
+                            <option value="P">P (Prohibited)</option>
+                            <option value="X">X (Restricted)</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td valign="top">Content:</td>
+                    <td>
+                        <small>Supports HTML. Make sure to close your tags!</small><br>
+                        <textarea id="edit-content" class="editor" required></textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <button type="submit">Publish to Net</button>
+                        <button type="button" onclick="showPreview()">Preview</button>
+                        <button type="button" onclick="window.history.back()">Cancel</button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+
+        <!-- PREVIEW MODAL -->
+        <div id="preview-overlay"
+            style="display:none; position:fixed; top:20px; left:20px; right:20px; bottom:20px; background:var(--bg-color); border:2px solid var(--border-color); padding:20px; z-index:1000; overflow:auto;">
+            <div
+                style="background:var(--header-bg); padding:10px; margin-bottom:20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between;">
+                <b>Article Preview</b>
+                <button type="button" onclick="closePreview()">Close Preview</button>
+            </div>
+
+            <h1 id="preview-title"></h1>
+            <div class="article-meta" id="preview-meta"></div>
+            <div id="preview-body" class="article-content"></div>
+        </div>
+    </div>
+
+    <script>
+        const sbClient = AppUtils.initSupabase();
+        let editingId = null;
+        let currentBucketPath = null;
+
+        async function initEditor() {
+            console.log('[EDITOR] initEditor called');
+
+            // Auth Check
+            const user = await AppUtils.checkAuth(sbClient);
+            console.log('[EDITOR] User:', user ? 'logged in' : 'not logged in');
+
+            if (!user) {
+                alert("Restricted Area. Please Login.");
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Check Edit Mode
+            editingId = AppUtils.getParam('id');
+            console.log('[EDITOR] editingId from URL:', editingId);
+
+            if (editingId) {
+                await loadArticleForEdit(editingId);
+            } else {
+                console.log('[EDITOR] No ID - creating new article');
+            }
+        }
+
+        async function loadArticleForEdit(id) {
+            console.log('[EDITOR] loadArticleForEdit called with id:', id);
+            document.getElementById('editor-title').innerText = "Edit Article";
+            AppUtils.showLoading(true);
+
+            try {
+                // Fetch Meta
+                console.log('[EDITOR] Fetching article metadata...');
+                const { data: meta, error } = await sbClient.from('wiki_articles').select('*').eq('id', id).single();
+
+                if (error) {
+                    console.error('[EDITOR] DB Error:', error);
+                    alert("Error loading article: " + error.message);
+                    AppUtils.showLoading(false);
+                    return;
+                }
+
+                if (!meta) {
+                    console.error('[EDITOR] No meta found');
+                    alert("Article not found");
+                    AppUtils.showLoading(false);
+                    return;
+                }
+
+                console.log('[EDITOR] Meta loaded:', meta.title);
+                currentBucketPath = meta.bucket_path;
+
+                // Fetch Content
+                console.log('[EDITOR] Downloading content from:', meta.bucket_path);
+
+                const { data: signedData, error: signedError } = await sbClient
+                    .storage
+                    .from('wiki-content')
+                    .createSignedUrl(meta.bucket_path, 60);
+
+                if (signedError) {
+                    console.error('[EDITOR] Signed URL Error:', signedError);
+                    throw new Error("Could not generate load URL");
+                }
+
+                const response = await fetch(signedData.signedUrl);
+                const content = await response.text();
+
+                console.log('[EDITOR] Content loaded, length:', content.length);
+                console.log('[EDITOR] Content loaded, length:', content.length);
+
+                // Populate Form
+                document.getElementById('edit-title').value = meta.title;
+                document.getElementById('edit-category').value = meta.category;
+                document.getElementById('edit-tags').value = (meta.tags || []).join(', ');
+                document.getElementById('edit-rating').value = meta.ratings || "NR";
+                document.getElementById('edit-content').value = content;
+
+                console.log('[EDITOR] Form populated successfully');
+            } catch (err) {
+                console.error('[EDITOR] Exception:', err);
+                alert("Error: " + err.message);
+            }
+
+            AppUtils.showLoading(false);
+        }
+
+        function showPreview() {
+            const title = document.getElementById('edit-title').value;
+            const content = document.getElementById('edit-content').value;
+            const category = document.getElementById('edit-category').value;
+            const rating = document.getElementById('edit-rating').value;
+
+            document.getElementById('preview-title').textContent = title || "Untitled";
+            document.getElementById('preview-meta').textContent = `Category: ${category} | Rating: ${rating} | (Preview)`;
+            document.getElementById('preview-body').innerHTML = content;
+            document.getElementById('preview-overlay').style.display = 'block';
+        }
+
+        function closePreview() {
+            document.getElementById('preview-overlay').style.display = 'none';
+        }
+
+        async function handleSave(e) {
+            e.preventDefault();
+            AppUtils.showLoading(true);
+
+            const title = document.getElementById('edit-title').value;
+            const category = document.getElementById('edit-category').value;
+            const tags = document.getElementById('edit-tags').value.split(',').map(t => t.trim());
+            const ratings = document.getElementById('edit-rating').value;
+            const content = document.getElementById('edit-content').value;
+
+            // Upload File
+            let fileName;
+            let upsertOption = false;
+
+            if (editingId && currentBucketPath) {
+                fileName = currentBucketPath;
+                upsertOption = true;
+            } else {
+                const now = new Date();
+                const year = now.getFullYear();
+                const month = String(now.getMonth() + 1).padStart(2, '0');
+                const day = String(now.getDate()).padStart(2, '0');
+                const hour = String(now.getHours()).padStart(2, '0');
+
+                const cleanTitle = title.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+                fileName = `data/posts/${year}/${month}/${day}/${hour}/${now.getTime()}_${cleanTitle}.html`;
+            }
+
+            const fileBlob = new Blob([content], { type: 'text/html' });
+
+            const { data: uploadData, error: uploadError } = await sbClient.storage
+                .from('wiki-content')
+                .upload(fileName, fileBlob, { upsert: upsertOption });
+
+            if (uploadError) {
+                alert("Upload failed: " + uploadError.message);
+                AppUtils.showLoading(false);
+                return;
+            }
+
+            // Save DB
+            const payload = {
+                title,
+                category,
+                tags,
+                ratings,
+                bucket_path: uploadData.path,
+                updated_at: new Date()
+            };
+
+            let error;
+            if (editingId) {
+                const { error: dbError } = await sbClient.from('wiki_articles').update(payload).eq('id', editingId);
+                error = dbError;
+            } else {
+                const { error: dbError } = await sbClient.from('wiki_articles').insert([payload]);
+                error = dbError;
+            }
+
+            if (error) {
+                alert("DB Error: " + error.message);
+            } else {
+                alert("Success!");
+                window.location.href = '../index.html';
+            }
+            AppUtils.showLoading(false);
+        }
+
+        window.onload = initEditor;
+    </script>
+    
+</body>
+
+</html>

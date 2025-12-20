@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML to Video Gallery Converter</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom scrollbar */
+        textarea::-webkit-scrollbar { width: 10px; height: 10px; }
+        textarea::-webkit-scrollbar-track { background: #1f2937; }
+        textarea::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 5px; }
+        textarea::-webkit-scrollbar-thumb:hover { background: #6b7280; }
+        
+        .h-30-pct { height: 30%; }
+        .h-70-pct { height: 70%; }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-100 h-screen flex flex-col overflow-hidden font-sans">
+
+    <!-- Header -->
+    <header class="bg-gray-800 border-b border-gray-700 p-4 flex justify-between items-center shrink-0">
+        <div class="flex items-center gap-2">
+            <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+            <h1 class="text-xl font-bold">HTML &rarr; Video CSV + Gallery</h1>
+        </div>
+        
+        <div class="flex gap-3">
+             <div class="flex items-center bg-gray-700 rounded px-3 py-1">
+                <span class="text-sm text-gray-300 mr-2">Videos Found:</span>
+                <span id="videoCount" class="font-mono text-white font-bold">0</span>
+            </div>
+            <button onclick="showPreview()" class="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded shadow transition flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                Preview Gallery
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col md:flex-row h-full overflow-hidden">
+        
+        <!-- Input Section -->
+        <section class="w-full md:w-1/3 flex flex-col border-b md:border-b-0 md:border-r border-gray-700 h-1/3 md:h-full">
+            <div class="bg-gray-800 px-4 py-2 border-b border-gray-700 text-sm font-semibold text-gray-400 uppercase tracking-wider flex justify-between">
+                <span>1. Input HTML Source</span>
+                <span class="text-xs normal-case text-gray-500">HTML with &lt;video&gt; tags</span>
+            </div>
+            <textarea id="inputHtml" class="flex-1 bg-gray-900 text-blue-300 p-4 outline-none resize-none font-mono text-xs leading-relaxed" placeholder='<video src="movie.mp4" poster="thumb.jpg" title="Action Movie"></video>
+<video controls>
+  <source src="clip.webm">
+</video>' spellcheck="false"></textarea>
+        </section>
+
+        <!-- Output Section -->
+        <section class="w-full md:w-2/3 flex flex-col h-2/3 md:h-full">
+            
+            <!-- CSV Output -->
+            <div class="h-30-pct flex flex-col border-b border-gray-700">
+                <div class="bg-gray-800 px-4 py-2 border-b border-gray-700 text-sm font-semibold text-gray-400 uppercase tracking-wider flex justify-between items-center">
+                    <span>2. CSV Output (Src, Poster, Caption, Preview)</span>
+                    <button onclick="copyToClipboard('outputCsv')" class="text-xs bg-gray-700 hover:bg-gray-600 text-white px-2 py-1 rounded transition">Copy CSV</button>
+                </div>
+                <textarea id="outputCsv" readonly class="flex-1 bg-[#151515] text-green-400 p-4 outline-none resize-none font-mono text-xs leading-relaxed whitespace-pre" spellcheck="false"></textarea>
+            </div>
+
+            <!-- Gallery Output -->
+            <div class="h-70-pct flex flex-col relative">
+                <div class="bg-gray-800 px-4 py-2 border-b border-gray-700 text-sm font-semibold text-gray-400 uppercase tracking-wider flex justify-between items-center">
+                    <span>3. Generated Video Gallery HTML</span>
+                    <button onclick="copyToClipboard('outputGallery')" class="text-xs bg-blue-600 hover:bg-blue-500 text-white px-2 py-1 rounded transition">Copy Code</button>
+                </div>
+                <textarea id="outputGallery" readonly class="flex-1 bg-[#1e1e1e] text-[#d4d4d4] p-4 outline-none resize-none font-mono text-xs leading-relaxed" spellcheck="false"></textarea>
+                
+                <!-- Toast -->
+                <div id="toast" class="absolute top-12 right-4 bg-green-600 text-white px-4 py-2 rounded shadow-lg opacity-0 transition-opacity duration-300 pointer-events-none">
+                    Copied!
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Preview Modal -->
+    <div id="previewModal" class="fixed inset-0 z-50 hidden bg-black/95 flex flex-col backdrop-blur-sm">
+        <div class="flex justify-between items-center p-3 bg-gray-800 border-b border-gray-700">
+            <span class="font-bold text-gray-200 pl-2">Video Gallery Preview</span>
+            <button onclick="closePreview()" class="text-gray-400 hover:text-white hover:bg-gray-700 rounded-lg p-2 transition">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+        <iframe id="previewFrame" class="w-full flex-1 bg-black border-none"></iframe>
+    </div>
+
+    <script>
+        // DOM Elements
+        const inputHtml = document.getElementById('inputHtml');
+        const outputCsv = document.getElementById('outputCsv');
+        const outputGallery = document.getElementById('outputGallery');
+        const videoCount = document.getElementById('videoCount');
+        const toast = document.getElementById('toast');
+        const previewModal = document.getElementById('previewModal');
+        const previewFrame = document.getElementById('previewFrame');
+
+        // --- Gallery Template (Updated for Zero-Gap Masonry) ---
+        const templateTop = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Zero Gap Video Gallery</title>
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: #000;
+    font-family: sans-serif;
+  }
+  
+  /* Masonry Grid */
+  .video-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    grid-auto-rows: 1px;
+    gap: 0; /* No gaps */
+  }
+
+  /* Video Card Wrapper */
+  .video-card {
+    position: relative;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    grid-row: span var(--rows);
+    background: #111;
+  }
+  
+  /* The Video */
+  video {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+  }
+
+  /* Overlay Caption */
+  figcaption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 20px 10px 10px;
+    font-size: 0.9rem;
+    color: #fff;
+    background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+  }
+
+  .video-card:hover figcaption {
+    opacity: 1;
+  }
+</style>
+</head>
+<body>
+
+<div class="video-grid">
+`;
+
+        const templateBottom = `
+</div>
+
+<script>
+  function resize() {
+    const rowHeight = 1;
+    document.querySelectorAll('.video-card').forEach(card => {
+      const content = card.querySelector('video');
+      if (content) {
+         // Get the height of the video element
+         const h = content.getBoundingClientRect().height;
+         if (h > 0) {
+             // Set the span on the wrapper card
+             card.style.setProperty('--rows', Math.ceil(h / rowHeight));
+         }
+      }
+    });
+  }
+
+  // Run resize on load, window resize, and when metadata loads for each video
+  window.addEventListener('load', resize);
+  window.addEventListener('resize', resize);
+  
+  // Specific listener for videos as they load dimensions
+  document.querySelectorAll('video').forEach(vid => {
+    vid.addEventListener('loadedmetadata', resize);
+  });
+  
+  // Backup loop to catch late renders
+  setTimeout(resize, 500);
+  setTimeout(resize, 2000);
+<\/script>
+
+</body>
+</html>`;
+
+        // --- Processing Logic ---
+
+        function processInput() {
+            const rawHtml = inputHtml.value;
+            let videosData = [];
+
+            if (rawHtml.trim()) {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(rawHtml, 'text/html');
+                const videoElements = doc.querySelectorAll('video');
+                
+                videoElements.forEach(v => {
+                    // 1. Get Source
+                    let src = v.getAttribute('src');
+                    if (!src) {
+                        const sourceTag = v.querySelector('source');
+                        if (sourceTag) src = sourceTag.getAttribute('src');
+                    }
+
+                    // 2. Get Poster
+                    const poster = v.getAttribute('poster') || '';
+
+                    // 3. Get Caption
+                    const caption = v.getAttribute('title') || v.getAttribute('aria-label') || '';
+
+                    // 4. Get Preview
+                    const preview = v.getAttribute('data-preview') || '';
+
+                    if (src) {
+                        videosData.push({ src, poster, caption, preview });
+                    }
+                });
+            }
+
+            // Update Count
+            videoCount.textContent = videosData.length;
+
+            // Generate CSV
+            const csvLines = videosData.map(v => `${v.src},${v.poster},${v.caption},${v.preview}`);
+            outputCsv.value = csvLines.join('\n');
+
+            // Generate HTML
+            if (videosData.length > 0) {
+                const videoTags = videosData.map(v => {
+                    let html = `  <figure class="video-card">\n    <video controls preload="metadata"`;
+                    
+                    if (v.src) html += ` src="${v.src}"`;
+                    if (v.poster) html += ` poster="${v.poster}"`;
+                    if (v.preview) html += ` data-preview="${v.preview}"`;
+                    
+                    html += `></video>`;
+                    
+                    if (v.caption) {
+                        html += `\n    <figcaption>${v.caption}</figcaption>`;
+                    }
+                    
+                    html += `\n  </figure>`;
+                    return html;
+                }).join('\n');
+
+                outputGallery.value = templateTop + videoTags + templateBottom;
+            } else {
+                outputGallery.value = templateTop + '  <!-- No videos found -->' + templateBottom;
+            }
+        }
+
+        // --- Utilities ---
+
+        function copyToClipboard(elementId) {
+            const el = document.getElementById(elementId);
+            el.select();
+            el.setSelectionRange(0, 99999);
+            try {
+                document.execCommand('copy');
+                toast.classList.remove('opacity-0');
+                setTimeout(() => toast.classList.add('opacity-0'), 2000);
+            } catch (err) { alert('Failed to copy'); }
+        }
+
+        function showPreview() {
+            const code = outputGallery.value;
+            previewModal.classList.remove('hidden');
+            const doc = previewFrame.contentWindow.document;
+            doc.open();
+            doc.write(code);
+            doc.close();
+        }
+
+        function closePreview() {
+            previewModal.classList.add('hidden');
+            previewFrame.src = 'about:blank';
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !previewModal.classList.contains('hidden')) {
+                closePreview();
+            }
+        });
+
+        inputHtml.addEventListener('input', processInput);
+        processInput(); // Initial run
+
+    </script>
+</body>
+</html>

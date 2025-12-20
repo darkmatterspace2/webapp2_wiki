@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML to Gallery Converter (All-in-One)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom scrollbar for textareas */
+        textarea::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+        textarea::-webkit-scrollbar-track {
+            background: #1f2937;
+        }
+        textarea::-webkit-scrollbar-thumb {
+            background: #4b5563;
+            border-radius: 5px;
+        }
+        textarea::-webkit-scrollbar-thumb:hover {
+            background: #6b7280;
+        }
+        /* Specific height adjustments for the split layout */
+        .h-30-pct { height: 30%; }
+        .h-70-pct { height: 70%; }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-100 h-screen flex flex-col overflow-hidden font-sans">
+
+    <!-- Header -->
+    <header class="bg-gray-800 border-b border-gray-700 p-4 flex justify-between items-center shrink-0">
+        <div class="flex items-center gap-2">
+            <svg class="w-6 h-6 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+            <h1 class="text-xl font-bold">HTML &rarr; CSV + Gallery</h1>
+        </div>
+        
+        <!-- Global Actions -->
+        <div class="flex gap-3">
+             <div class="flex items-center bg-gray-700 rounded px-3 py-1">
+                <span class="text-sm text-gray-300 mr-2">Images Found:</span>
+                <span id="imgCount" class="font-mono text-white font-bold">0</span>
+            </div>
+            <button onclick="showPreview()" class="bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 rounded shadow transition flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                Preview Gallery
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col md:flex-row h-full overflow-hidden">
+        
+        <!-- Left Panel: Input HTML -->
+        <section class="w-full md:w-1/3 flex flex-col border-b md:border-b-0 md:border-r border-gray-700 h-1/3 md:h-full">
+            <div class="bg-gray-800 px-4 py-2 border-b border-gray-700 text-sm font-semibold text-gray-400 uppercase tracking-wider flex justify-between">
+                <span>1. Input HTML Source</span>
+                <span class="text-xs normal-case text-gray-500">Paste raw HTML here</span>
+            </div>
+            <textarea id="inputHtml" class="flex-1 bg-gray-900 text-blue-300 p-4 outline-none resize-none font-mono text-xs leading-relaxed" placeholder='<div class="old-gallery">
+  <img src="https://site.com/photo1.jpg">
+  <img src="https://site.com/photo2.jpg">
+</div>' spellcheck="false"></textarea>
+        </section>
+
+        <!-- Right Panel: Outputs -->
+        <section class="w-full md:w-2/3 flex flex-col h-2/3 md:h-full">
+            
+            <!-- Top Right: CSV Output -->
+            <div class="h-30-pct flex flex-col border-b border-gray-700">
+                <div class="bg-gray-800 px-4 py-2 border-b border-gray-700 text-sm font-semibold text-gray-400 uppercase tracking-wider flex justify-between items-center">
+                    <span>2. CSV Output</span>
+                    <button onclick="copyToClipboard('outputCsv')" class="text-xs bg-gray-700 hover:bg-gray-600 text-white px-2 py-1 rounded transition">Copy CSV</button>
+                </div>
+                <textarea id="outputCsv" readonly class="flex-1 bg-[#151515] text-green-400 p-4 outline-none resize-none font-mono text-xs leading-relaxed" spellcheck="false"></textarea>
+            </div>
+
+            <!-- Bottom Right: Gallery HTML Output -->
+            <div class="h-70-pct flex flex-col relative">
+                <div class="bg-gray-800 px-4 py-2 border-b border-gray-700 text-sm font-semibold text-gray-400 uppercase tracking-wider flex justify-between items-center">
+                    <span>3. Generated Gallery HTML</span>
+                    <button onclick="copyToClipboard('outputGallery')" class="text-xs bg-blue-600 hover:bg-blue-500 text-white px-2 py-1 rounded transition">Copy Code</button>
+                </div>
+                <textarea id="outputGallery" readonly class="flex-1 bg-[#1e1e1e] text-[#d4d4d4] p-4 outline-none resize-none font-mono text-xs leading-relaxed" spellcheck="false"></textarea>
+                
+                <!-- Notification Toast -->
+                <div id="toast" class="absolute top-12 right-4 bg-green-600 text-white px-4 py-2 rounded shadow-lg opacity-0 transition-opacity duration-300 pointer-events-none">
+                    Copied!
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Preview Modal -->
+    <div id="previewModal" class="fixed inset-0 z-50 hidden bg-black/95 flex flex-col backdrop-blur-sm">
+        <div class="flex justify-between items-center p-3 bg-gray-800 border-b border-gray-700">
+            <span class="font-bold text-gray-200 pl-2">Gallery Preview</span>
+            <button onclick="closePreview()" class="text-gray-400 hover:text-white hover:bg-gray-700 rounded-lg p-2 transition">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+        <iframe id="previewFrame" class="w-full flex-1 bg-black border-none"></iframe>
+    </div>
+
+    <script>
+        // DOM Elements
+        const inputHtml = document.getElementById('inputHtml');
+        const outputCsv = document.getElementById('outputCsv');
+        const outputGallery = document.getElementById('outputGallery');
+        const imgCount = document.getElementById('imgCount');
+        const toast = document.getElementById('toast');
+        const previewModal = document.getElementById('previewModal');
+        const previewFrame = document.getElementById('previewFrame');
+
+        // --- Template Strings (Safely concatenated) ---
+        const templatePart1 = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Ultra Light Image Gallery – Zero Gap</title>
+
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: #000;
+  }
+
+  /* Gallery */
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
+    grid-auto-rows: 1px;
+    grid-auto-flow: row;
+  }
+
+  .gallery img {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    grid-row: span var(--rows);
+    cursor: zoom-in;
+  }
+
+  /* Fullscreen overlay */
+  .fullscreen {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.97);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+  }
+
+  .fullscreen.active {
+    display: flex;
+  }
+
+  .fullscreen img {
+    max-width: 95vw;
+    max-height: 95vh;
+  }
+</style>
+</head>
+
+<body>
+
+<div class="gallery">
+`;
+
+        const templatePart2 = `
+</div>
+
+<!-- Fullscreen container -->
+<div class="fullscreen" id="fullscreen">
+  <img id="fs-img">
+</div>
+
+<script>
+  const gallery = document.querySelector('.gallery');
+  const fullscreen = document.getElementById('fullscreen');
+  const fsImg = document.getElementById('fs-img');
+
+  /* Masonry resize logic */
+  function resize() {
+    const rowHeight = 1;
+    document.querySelectorAll('.gallery img').forEach(img => {
+      const h = img.getBoundingClientRect().height;
+      img.style.setProperty('--rows', Math.ceil(h / rowHeight));
+    });
+  }
+
+  window.addEventListener('load', resize);
+  window.addEventListener('resize', resize);
+
+  /* Click → fullscreen */
+  gallery.addEventListener('click', e => {
+    if (e.target.tagName === 'IMG') {
+      fsImg.src = e.target.src;
+      fullscreen.classList.add('active');
+    }
+  });
+
+  /* Click anywhere → close */
+  fullscreen.addEventListener('click', () => {
+    fullscreen.classList.remove('active');
+    fsImg.src = '';
+  });
+
+  /* ESC key → close */
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      fullscreen.classList.remove('active');
+      fsImg.src = '';
+    }
+  });
+` + '<' + '/script>' + `
+
+` + '<' + '/body>' + `
+` + '<' + '/html>';
+
+        // --- Main Logic ---
+
+        function processInput() {
+            const rawHtml = inputHtml.value;
+            
+            // 1. Extract Images from Input
+            let urls = [];
+            if (rawHtml.trim()) {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(rawHtml, 'text/html');
+                const images = doc.querySelectorAll('img');
+                
+                urls = Array.from(images)
+                    .map(img => img.getAttribute('src'))
+                    .filter(src => src && src.trim().length > 0);
+            }
+
+            // Update Count
+            imgCount.textContent = urls.length;
+
+            // 2. Generate CSV Output
+            outputCsv.value = urls.join(',');
+
+            // 3. Generate Gallery HTML Output
+            if (urls.length > 0) {
+                // Generate IMG tags
+                const imgTags = urls.map(url => `  <img src="${url}">`).join('\n');
+                // Combine template
+                outputGallery.value = templatePart1 + '\n' + imgTags + '\n' + templatePart2;
+            } else {
+                outputGallery.value = templatePart1 + '\n  <!-- No images found yet -->\n' + templatePart2;
+            }
+        }
+
+        // --- Utilities ---
+
+        function copyToClipboard(elementId) {
+            const el = document.getElementById(elementId);
+            el.select();
+            el.setSelectionRange(0, 99999);
+            
+            try {
+                document.execCommand('copy');
+                // Show toast
+                toast.classList.remove('opacity-0');
+                setTimeout(() => {
+                    toast.classList.add('opacity-0');
+                }, 2000);
+            } catch (err) {
+                alert('Failed to copy');
+            }
+        }
+
+        function showPreview() {
+            const code = outputGallery.value;
+            previewModal.classList.remove('hidden');
+            const doc = previewFrame.contentWindow.document;
+            doc.open();
+            doc.write(code);
+            doc.close();
+        }
+
+        function closePreview() {
+            previewModal.classList.add('hidden');
+            previewFrame.src = 'about:blank';
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !previewModal.classList.contains('hidden')) {
+                closePreview();
+            }
+        });
+
+        // Event Listener
+        inputHtml.addEventListener('input', processInput);
+        
+        // Initial run
+        processInput();
+
+    </script>
+</body>
+</html>

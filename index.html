@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RetroWiki 2k25</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="assets/js/utils.js"></script>
+    <script src="assets/js/layout.js"></script>
+</head>
+
+<body>
+
+    <div id="view-home">
+        <div class="jump-links" id="jump-links">
+            <!-- A-Z links injected here -->
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <input type="text" id="search-input" placeholder="Search titles..." class="search-box">
+            <button onclick="runSearch()">Search</button>
+        </div>
+
+        <h3>Article Index</h3>
+        <!-- Category Filter Display -->
+        <div id="filter-display" style="margin-bottom: 10px; font-style: italic; display: none;">
+            Showing category: <span id="current-cat" style="font-weight: bold;"></span>
+            (<a href="index.html">Clear</a>)
+        </div>
+
+        <table border="1" width="100%" cellpadding="5">
+            <thead>
+                <tr bgcolor="#444">
+                    <th align="left">Date</th>
+                    <th align="left">Title</th>
+                    <th align="left">Category</th>
+                    <th align="right">Views</th>
+                </tr>
+            </thead>
+            <tbody id="article-list-body">
+                <!-- Articles injected here -->
+            </tbody>
+        </table>
+
+        <div style="margin-top: 20px; text-align: center;">
+            <button onclick="changePage(-1)">&lt; Prev</button>
+            <span id="page-indicator">Page 1</span>
+            <button onclick="changePage(1)">Next &gt;</button>
+        </div>
+    </div>
+
+    <script>
+        // Local State
+        let currentPage = 1;
+        const itemsPerPage = 10;
+        let searchQuery = '';
+        let currentCategory = 'all';
+
+        async function initHome() {
+            // Read URL Params
+            currentCategory = AppUtils.getParam('cat') || 'all';
+            const q = AppUtils.getParam('q');
+            if (q) {
+                searchQuery = q;
+                document.getElementById('search-input').value = q;
+            }
+
+            if (currentCategory !== 'all') {
+                document.getElementById('filter-display').style.display = 'block';
+                document.getElementById('current-cat').textContent = currentCategory;
+            }
+
+            renderJumpLinks();
+            fetchArticles();
+
+            // Bind Search Enter Key
+            document.getElementById('search-input').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') runSearch();
+            });
+        }
+
+        async function fetchArticles() {
+            AppUtils.showLoading(true);
+            const sbClient = AppUtils.initSupabase();
+
+            const from = (currentPage - 1) * itemsPerPage;
+            const to = from + itemsPerPage - 1;
+
+            let query = sbClient
+                .from('wiki_articles')
+                .select('*', { count: 'exact' });
+
+            // Apply filter if "Show R Rated" is NOT checked
+            const showR = localStorage.getItem('show_r_rated') === 'true';
+            if (!showR) {
+                query = query.not("ratings", "in", '("M","P","X")');
+            }
+
+            query = query
+                .order('created_at', { ascending: false })
+                .range(from, to);
+
+            if (currentCategory !== 'all') {
+                query = query.eq('category', currentCategory);
+            }
+
+            if (searchQuery) {
+                query = query.ilike('title', `%${searchQuery}%`);
+            }
+
+            const { data, error, count } = await query;
+
+            if (error) {
+                console.error(error);
+                alert("Error retrieving data.");
+            } else {
+                renderList(data);
+                updatePagination(count);
+            }
+            AppUtils.showLoading(false);
+        }
+
+        function renderList(articles) {
+            const tbody = document.getElementById('article-list-body');
+            tbody.innerHTML = '';
+            if (articles.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" align="center">No data found in matrix.</td></tr>';
+                return;
+            }
+            articles.forEach(art => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td valign="top"><small>${AppUtils.formatDate(art.created_at)}</small></td>
+                    <td valign="top">
+                        <a href="article.html?id=${art.id}" style="font-weight: bold;">${art.title}</a>
+                        <br>
+                        <small>${(art.tags || []).join(', ')}</small>
+                    </td>
+                    <td valign="top">${art.category}</td>
+                    <td align="right" valign="top">${art.views || 0}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderJumpLinks() {
+            const container = document.getElementById('jump-links');
+            const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+            // Reload page with search params for jump links to stay statelessish?
+            // Or just update state. Let's redirect for true MPA feel.
+            const links = alphabet.map(char => `<a href="index.html?q=${char}">${char}</a>`).join(" | ");
+            container.innerHTML = `[ ${links} | <a href="index.html">ALL</a> ]`;
+        }
+
+        function runSearch() {
+            const val = document.getElementById('search-input').value;
+            window.location.href = `index.html?q=${encodeURIComponent(val)}`;
+        }
+
+        function changePage(delta) {
+            const newPage = currentPage + delta;
+            if (newPage < 1) return;
+            currentPage = newPage;
+            fetchArticles();
+        }
+
+        function updatePagination(totalCount) {
+            const totalPages = Math.ceil(totalCount / itemsPerPage);
+            document.getElementById('page-indicator').textContent = `Page ${currentPage} of ${totalPages || 1}`;
+        }
+
+        window.onload = initHome;
+    </script>
+
+</body>
+
+</html>

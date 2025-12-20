@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery Editor - RetroWiki</title>
+    <link rel="stylesheet" href="../style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../config.js"></script>
+    <script src="../assets/js/utils.js"></script>
+    <script src="../assets/js/layout.js"></script>
+    <style>
+        .split-panel {
+            display: flex;
+            gap: 10px;
+            height: 300px;
+        }
+
+        .split-panel textarea {
+            flex: 1;
+            font-family: monospace;
+            font-size: 12px;
+            background: #1a1a1a;
+            color: #0f0;
+            border: 1px solid var(--border-color);
+            padding: 10px;
+            resize: none;
+        }
+
+        .img-count {
+            background: #333;
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+
+        #preview-frame {
+            width: 100%;
+            height: 500px;
+            border: 2px solid var(--border-color);
+            background: #000;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="view-gallery-editor">
+        <h2>Gallery Article Creator</h2>
+        <p style="color: #888;">Paste HTML containing images → Auto-generates masonry gallery with fullscreen viewer</p>
+
+        <form onsubmit="handleSave(event)">
+            <table width="100%" cellpadding="5" style="margin-bottom: 15px;">
+                <tr>
+                    <td width="100">Title:</td>
+                    <td><input type="text" id="edit-title" required style="width: 100%;"></td>
+                </tr>
+                <tr>
+                    <td>Category:</td>
+                    <td><input type="text" id="edit-category" required></td>
+                </tr>
+                <tr>
+                    <td>Tags:</td>
+                    <td><input type="text" id="edit-tags" placeholder="comma, separated"></td>
+                </tr>
+                <tr>
+                    <td>Rating:</td>
+                    <td>
+                        <select id="edit-rating">
+                            <option value="NR">NR (Not Rated)</option>
+                            <option value="M">M (Mature)</option>
+                            <option value="P">P (Prohibited)</option>
+                            <option value="X">X (Restricted)</option>
+                        </select>
+                    </td>
+                </tr>
+            </table>
+
+            <hr>
+
+            <div style="margin-bottom: 10px;">
+                <b>Paste HTML with Images:</b>
+                <span class="img-count">Images Found: <span id="imgCount">0</span></span>
+            </div>
+
+            <div class="split-panel">
+                <textarea id="inputHtml" placeholder="Paste HTML here..." spellcheck="false"></textarea>
+                <textarea id="outputGallery" placeholder="Generated gallery HTML (editable)..."
+                    style="color: #6cf;"></textarea>
+            </div>
+
+            <div style="margin-top: 15px;">
+                <button type="button" onclick="showPreview()">Preview Gallery</button>
+                <button type="submit">Publish to Net</button>
+                <button type="button" onclick="window.location.reload()">Reset</button>
+            </div>
+        </form>
+
+        <div id="preview-overlay"
+            style="display:none; position:fixed; top:10px; left:10px; right:10px; bottom:10px; background:var(--bg-color); border:2px solid var(--border-color); padding:10px; z-index:1000; overflow:hidden;">
+            <div
+                style="background:var(--header-bg); padding:10px; margin-bottom:10px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between;">
+                <b>Gallery Preview</b>
+                <button type="button" onclick="closePreview()">Close Preview</button>
+            </div>
+            <iframe id="preview-frame"></iframe>
+        </div>
+    </div>
+
+    <script>
+        const sbClient = AppUtils.initSupabase();
+
+        // Template - generates simple gallery HTML (no embedded script needed)
+        // The global gallery.js in article.html handles all functionality
+        const galleryTemplate = '<div class="gallery">\n';
+        const galleryTemplateEnd = '\n</div>';
+
+        async function init() {
+            const user = await AppUtils.checkAuth(sbClient);
+            if (!user) {
+                alert("Restricted Area. Please Login.");
+                window.location.href = 'login.html';
+                return;
+            }
+        }
+
+        function processInput() {
+            const rawHtml = document.getElementById('inputHtml').value;
+            let urls = [];
+
+            if (rawHtml.trim()) {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(rawHtml, 'text/html');
+                const images = doc.querySelectorAll('img');
+
+                urls = Array.from(images)
+                    .map(img => img.getAttribute('src'))
+                    .filter(src => src && src.trim().length > 0);
+            }
+
+            document.getElementById('imgCount').textContent = urls.length;
+
+            if (urls.length > 0) {
+                const imgTags = urls.map(url => '  <img src="' + url + '">').join('\n');
+                document.getElementById('outputGallery').value = galleryTemplate + imgTags + galleryTemplateEnd;
+            } else {
+                document.getElementById('outputGallery').value = '';
+            }
+        }
+
+        function showPreview() {
+            const galleryHtml = document.getElementById('outputGallery').value;
+            if (!galleryHtml) {
+                alert("No gallery generated yet.");
+                return;
+            }
+
+            // Build a complete preview page with styles and JS
+            const previewPage = '<!DOCTYPE html><html><head><style>' +
+                '* { box-sizing: border-box; }' +
+                'html, body { margin: 0; padding: 0; background: #000; }' +
+                '.gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); grid-auto-rows: 1px; }' +
+                '.gallery img { display: block; width: 100%; height: auto; object-fit: cover; grid-row-end: span var(--rows, 200); cursor: zoom-in; }' +
+                '#fs-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.97); display: none; align-items: center; justify-content: center; z-index: 9999; cursor: pointer; }' +
+                '#fs-overlay img { max-width: 95vw; max-height: 95vh; }' +
+                '</style></head><body>' + galleryHtml +
+                '<div id="fs-overlay"><img id="fs-img"></div>' +
+                '<sc' + 'ript>' +
+                'var fsOverlay = document.getElementById("fs-overlay");' +
+                'var fsImg = document.getElementById("fs-img");' +
+                'function resize() { document.querySelectorAll(".gallery img").forEach(function(img) { var h = img.getBoundingClientRect().height; if (h > 0) img.style.setProperty("--rows", Math.ceil(h)); }); }' +
+                'window.addEventListener("load", resize);' +
+                'window.addEventListener("resize", resize);' +
+                'document.querySelector(".gallery").addEventListener("click", function(e) { if (e.target.tagName === "IMG") { fsImg.src = e.target.src; fsOverlay.style.display = "flex"; } });' +
+                'fsOverlay.addEventListener("click", function() { fsOverlay.style.display = "none"; });' +
+                'document.addEventListener("keydown", function(e) { if (e.key === "Escape") fsOverlay.style.display = "none"; });' +
+                '</' + 'script></' + 'body></' + 'html>';
+
+            document.getElementById('preview-overlay').style.display = 'block';
+            const frame = document.getElementById('preview-frame');
+            const doc = frame.contentWindow.document;
+            doc.open();
+            doc.write(previewPage);
+            doc.close();
+        }
+
+        function closePreview() {
+            document.getElementById('preview-overlay').style.display = 'none';
+            document.getElementById('preview-frame').src = 'about:blank';
+        }
+
+        async function handleSave(e) {
+            e.preventDefault();
+            const content = document.getElementById('outputGallery').value;
+            if (!content) {
+                alert("No gallery content to publish.");
+                return;
+            }
+
+            AppUtils.showLoading(true);
+
+            const title = document.getElementById('edit-title').value;
+            const category = document.getElementById('edit-category').value;
+            const tags = document.getElementById('edit-tags').value.split(',').map(t => t.trim());
+            const ratings = document.getElementById('edit-rating').value;
+
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hour = String(now.getHours()).padStart(2, '0');
+
+            const cleanTitle = title.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+            const fileName = 'data/posts/' + year + '/' + month + '/' + day + '/' + hour + '/' + now.getTime() + '_' + cleanTitle + '.html';
+
+            const fileBlob = new Blob([content], { type: 'text/html' });
+
+            const { data: uploadData, error: uploadError } = await sbClient.storage
+                .from('wiki-content')
+                .upload(fileName, fileBlob, { upsert: false });
+
+            if (uploadError) {
+                alert("Upload failed: " + uploadError.message);
+                AppUtils.showLoading(false);
+                return;
+            }
+
+            const payload = { title, category, tags, ratings, bucket_path: uploadData.path };
+            const { error: dbError } = await sbClient.from('wiki_articles').insert([payload]);
+
+            if (dbError) {
+                alert("DB Error: " + dbError.message);
+            } else {
+                alert("Gallery Published!");
+                window.location.href = '../index.html';
+            }
+            AppUtils.showLoading(false);
+        }
+        // Event listeners must be attached AFTER layout.js rebuilds the DOM
+        // So we attach them in window.onload, not at script parse time
+        window.onload = function () {
+            init();
+            document.getElementById('inputHtml').addEventListener('input', processInput);
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') closePreview();
+            });
+        };
+    </script>
+</body>
+
+</html>

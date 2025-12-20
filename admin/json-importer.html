@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON Importer - RetroWiki</title>
+    <link rel="stylesheet" href="../style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../config.js"></script>
+    <script src="../assets/js/utils.js"></script>
+    <script src="../assets/js/layout.js"></script>
+</head>
+
+<body>
+
+    <div id="view-json-importer">
+        <h2>JSON Article Importer</h2>
+
+        <!-- INSTRUCTIONS -->
+        <div style="background: #2a2a2a; padding: 15px; border: 1px solid #444; margin-bottom: 20px;">
+            <h3>Instructions</h3>
+            <p>Upload a <code>.json</code> file to automatically fill the editor below. You can generate these files
+                using any LLM (ChatGPT, Claude, etc).</p>
+
+            <details>
+                <summary style="cursor: pointer; color: #007bff;"><b>Click here for a Prompt to copy-paste into
+                        ChatGPT/Gemini</b></summary>
+                <div
+                    style="background: #111; padding: 10px; margin-top: 5px; border: 1px dashed #555; white-space: pre-wrap; font-family: monospace;">
+                    OPTION 1:
+                    You are an expert wiki writer
+                    Write a concise and complete wiki-style article about: "${topic}", modeled after Wikipedia
+                    structure.
+                    OUTPUT
+                    Output strictly valid JSON with the following keys:
+                    - title: The article title.
+                    - category: A single broad category.
+                    - tags: A comma-separated string of tags.
+                    - content: The full article content in HTML format.
+                    - Output ONLY valid JSON with this EXACT schema:
+                    {
+                    "title": "Article Title",
+                    "category": "Architecture",
+                    "tags": "tag1, tag2, tag3",
+                    "content_html": "&ltp&gt;HTML content here&lt/p&gt;"
+                    }
+
+                    Response must be JSON only. No markdown fence.
+
+                    STRUCTURE REQUIREMENTS for content_html:
+                    - Page title in &lttitle&gt; and main heading &lth1&gt;
+                    - Short summary paragraph under the title (like Wikipedia lead section)
+                    - A small info table infobox-style section aligned to the right
+                    - Name
+                    - Category
+                    - Key facts (2–4 rows relevant to topic for example location, length, opened, type, designer,
+                    coordinates)
+                    - Place a representative image above (use &ltimg&gt; with width max 200px)
+                    - Horizontal rule &lthr&gt;
+                    - Table of Contents using a simple unordered list with anchor links
+                    - Main sections using &lth2&gt; and &lth3&gt;, such as:
+                    - Overview
+                    - History / Background
+                    - Key Concepts or Features
+                    - Applications / Usage
+                    - Reception / Impact
+                    - Notes/Trivia/Bonus info
+                    - See Also
+                    - “See Also” section must contain internal-style links (# anchors or placeholder links)
+                    - External links can be included for references must open in a new tab
+                    - all the links mentioned in the page must open in new tab
+                    MEDIA & LINKS
+                    - Use &ltimg&gt; for images/GIFs and &ltvideo controls&gt; for videos.
+                    - Use &lta&gt; for links; all must open in new tabs.
+                    - Keep media centered and responsive with inline styles.
+                    RULES
+                    - Use only valid HTML inside &ltcontent_html&gt;.
+                    - No markdown, no explanations, no extra text.
+
+                    Do not use markdown formatting. Just raw JSON.
+                    IMPORTANT : put this exact json output in a code snippet format when I can see html "content_html":
+                    with hmtl tags and code
+                </div>
+            </details>
+
+
+            <br>
+            <input type="file" id="json-file-input" accept=".json" onchange="handleFileUpload(this)">
+        </div>
+
+        <hr>
+
+        <form onsubmit="handleSave(event)" id="import-form" style="display:none;">
+            <h3>Review & Publish</h3>
+
+            <div style="margin-bottom: 10px;">
+                <button type="button" onclick="showPreview()">Preview</button>
+            </div>
+
+            <table width="100%" cellpadding="5">
+                <tr>
+                    <td width="100">Title:</td>
+                    <td><input type="text" id="edit-title" required style="width: 100%;"></td>
+                </tr>
+                <tr>
+                    <td>Category:</td>
+                    <td><input type="text" id="edit-category" required></td>
+                </tr>
+                <tr>
+                    <td>Tags:</td>
+                    <td><input type="text" id="edit-tags" placeholder="comma, separated"></td>
+                </tr>
+                <tr>
+                    <td>Rating:</td>
+                    <td>
+                        <select id="edit-rating">
+                            <option value="NR">NR (Not Rated)</option>
+                            <option value="M">M (Mature)</option>
+                            <option value="P">P (Prohibited)</option>
+                            <option value="X">X (Restricted)</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td valign="top">Content:</td>
+                    <td>
+                        <textarea id="edit-content" class="editor" required style="height: 400px;"></textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <button type="submit">Publish to Net</button>
+                        <button type="button" onclick="window.location.reload()">Reset</button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+
+        <!-- PREVIEW MODAL -->
+        <div id="preview-overlay"
+            style="display:none; position:fixed; top:20px; left:20px; right:20px; bottom:20px; background:var(--bg-color); border:2px solid var(--border-color); padding:20px; z-index:1000; overflow:auto;">
+            <div
+                style="background:var(--header-bg); padding:10px; margin-bottom:20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between;">
+                <b>Article Preview</b>
+                <button type="button" onclick="closePreview()">Close Preview</button>
+            </div>
+
+            <h1 id="preview-title"></h1>
+            <div class="article-meta" id="preview-meta"></div>
+            <div id="preview-body" class="article-content"></div>
+        </div>
+    </div>
+
+    <script>
+        const sbClient = AppUtils.initSupabase();
+
+        async function init() {
+            const user = await AppUtils.checkAuth(sbClient);
+            if (!user) {
+                alert("Restricted Area.");
+                window.location.href = 'login.html';
+                return;
+            }
+        }
+
+        function handleFileUpload(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                try {
+                    const json = JSON.parse(e.target.result);
+                    populateForm(json);
+                } catch (err) {
+                    alert("Error parsing JSON: " + err.message);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function populateForm(data) {
+            if (!data.title || !data.content_html) {
+                alert("Invalid JSON format. Require title and content_html fields.");
+                return;
+            }
+
+            document.getElementById('edit-title').value = data.title;
+            document.getElementById('edit-category').value = data.category || 'General';
+            document.getElementById('edit-tags').value = Array.isArray(data.tags) ? data.tags.join(', ') : (data.tags || "");
+            document.getElementById('edit-rating').value = data.ratings || "NR";
+            document.getElementById('edit-content').value = data.content_html; // HTML Input for now, simple textarea
+
+            document.getElementById('import-form').style.display = 'block';
+        }
+
+        function showPreview() {
+            const title = document.getElementById('edit-title').value;
+            const content = document.getElementById('edit-content').value;
+            const category = document.getElementById('edit-category').value;
+            const rating = document.getElementById('edit-rating').value;
+
+            document.getElementById('preview-title').textContent = title || "Untitled";
+            document.getElementById('preview-meta').textContent = `Category: ${category} | Rating: ${rating} | (Preview)`;
+            document.getElementById('preview-body').innerHTML = content;
+            document.getElementById('preview-overlay').style.display = 'block';
+        }
+
+        function closePreview() {
+            document.getElementById('preview-overlay').style.display = 'none';
+        }
+
+        async function handleSave(e) {
+            e.preventDefault();
+            AppUtils.showLoading(true);
+
+            const title = document.getElementById('edit-title').value;
+            const category = document.getElementById('edit-category').value;
+            const tags = document.getElementById('edit-tags').value.split(',').map(t => t.trim());
+            const ratings = document.getElementById('edit-rating').value;
+            const content = document.getElementById('edit-content').value;
+
+            // Upload File
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hour = String(now.getHours()).padStart(2, '0');
+
+            const cleanTitle = title.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+            const fileName = `data/posts/${year}/${month}/${day}/${hour}/${now.getTime()}_${cleanTitle}.html`;
+
+            const fileBlob = new Blob([content], { type: 'text/html' });
+
+            const { data: uploadData, error: uploadError } = await sbClient.storage
+                .from('wiki-content')
+                .upload(fileName, fileBlob, { upsert: false });
+
+            if (uploadError) {
+                alert("Upload failed: " + uploadError.message);
+                AppUtils.showLoading(false);
+                return;
+            }
+
+            // Save DB
+            const payload = {
+                title,
+                category,
+                tags,
+                ratings,
+                bucket_path: uploadData.path
+            };
+
+            const { error: dbError } = await sbClient.from('wiki_articles').insert([payload]);
+
+            if (dbError) {
+                alert("DB Error: " + dbError.message);
+            } else {
+                alert("Imported Article Published!");
+                window.location.href = '../index.html';
+            }
+            AppUtils.showLoading(false);
+        }
+
+        window.onload = init;
+    </script>
+</body>
+
+</html>
