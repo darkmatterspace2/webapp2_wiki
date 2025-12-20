@@ -85,6 +85,14 @@ function initLayout() {
                 </ul>
 
                 <hr>
+
+                <b>Tag Search</b>
+                <div style="margin: 5px 0;">
+                    <input type="text" id="tag-search-input" placeholder="Enter tag..." style="width: 80%; font-size: 12px;">
+                    <button onclick="Layout.searchByTag()" style="font-size: 11px;">Go</button>
+                </div>
+
+                <hr>
                 
                 <div style="margin-bottom: 20px;">
                     <details>
@@ -150,7 +158,8 @@ function initLayout() {
     // Expose layout functions
     window.Layout = {
         toggleZenMode,
-        toggleTheme
+        toggleTheme,
+        searchByTag
     };
 }
 
@@ -164,6 +173,16 @@ function toggleTheme() {
         document.body.classList.add('dark-mode');
         delete document.body.dataset.theme;
         localStorage.setItem('theme', 'dark');
+    }
+}
+
+// Helper: Search by Tag
+function searchByTag() {
+    const input = document.getElementById('tag-search-input');
+    if (input && input.value.trim()) {
+        const isInAdmin = window.location.pathname.includes('/admin/');
+        const rootPath = isInAdmin ? '../' : './';
+        window.location.href = rootPath + 'index.html?tag=' + encodeURIComponent(input.value.trim());
     }
 }
 

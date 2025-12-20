@@ -31,6 +31,11 @@
             Showing category: <span id="current-cat" style="font-weight: bold;"></span>
             (<a href="index.html">Clear</a>)
         </div>
+        <!-- Tag Filter Display -->
+        <div id="tag-filter-display" style="margin-bottom: 10px; font-style: italic; display: none;">
+            Showing tag: <span id="current-tag" style="font-weight: bold;"></span>
+            (<a href="index.html">Clear</a>)
+        </div>
 
         <table border="1" width="100%" cellpadding="5">
             <thead>
@@ -59,6 +64,7 @@
         const itemsPerPage = 10;
         let searchQuery = '';
         let currentCategory = 'all';
+        let currentTag = '';
 
         async function initHome() {
             // Read URL Params
@@ -72,6 +78,13 @@
             if (currentCategory !== 'all') {
                 document.getElementById('filter-display').style.display = 'block';
                 document.getElementById('current-cat').textContent = currentCategory;
+            }
+
+            // Check for tag filter
+            currentTag = AppUtils.getParam('tag') || '';
+            if (currentTag) {
+                document.getElementById('tag-filter-display').style.display = 'block';
+                document.getElementById('current-tag').textContent = currentTag;
             }
 
             renderJumpLinks();
@@ -106,6 +119,10 @@
 
             if (currentCategory !== 'all') {
                 query = query.eq('category', currentCategory);
+            }
+
+            if (currentTag) {
+                query = query.contains('tags', [currentTag]);
             }
 
             if (searchQuery) {

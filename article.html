@@ -31,6 +31,7 @@
         <div class="article-meta" id="article-meta">
             Posted by Admin | Views: 0
         </div>
+        <div class="article-tags" id="article-tags"></div>
 
         <!-- <div style="border: 1px dotted var(--border-color); padding: 10px; background: var(--sidebar-bg); width: 30%; float: right; margin-left: 20px; display: none;"
             id="toc-container">
@@ -100,6 +101,17 @@
             document.title = meta.title + " - RetroWiki";
             document.getElementById('article-title').innerText = meta.title;
             document.getElementById('article-meta').innerText = `Category: ${meta.category} | Created: ${AppUtils.formatDate(meta.created_at)} | Views: ${meta.views}`;
+
+            // Render clickable tags
+            const tagsContainer = document.getElementById('article-tags');
+            if (meta.tags && meta.tags.length > 0) {
+                tagsContainer.innerHTML = 'Tags: ' + meta.tags.map(tag =>
+                    `<a href="index.html?tag=${encodeURIComponent(tag.trim())}">${tag.trim()}</a>`
+                ).join(' ');
+            } else {
+                tagsContainer.innerHTML = '';
+            }
+
             document.getElementById('article-body').innerHTML = content;
 
             // 4. Admin Actions
