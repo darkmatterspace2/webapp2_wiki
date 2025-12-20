@@ -16,7 +16,16 @@ function initLayout() {
     const bodyClass = document.body.className; // preserve classes like zen-mode
     const onLoadFn = document.body.onload; // preserve logic? better to use events.
 
-    // 2. Setup Base Theme
+    // Detect root path
+    const isInAdmin = window.location.pathname.includes('/admin/');
+    const isInOther = window.location.pathname.includes('/other_misc/');
+    const rootPath = (isInAdmin || isInOther) ? '../' : './';
+
+    // 1b. Apply saved CSS theme
+    const savedCssTheme = localStorage.getItem('cssTheme') || 'default';
+    applyCssTheme(savedCssTheme, rootPath);
+
+    // 2. Setup Base Theme (light/dark mode within current CSS theme)
     if (localStorage.getItem('theme') === 'light') {
         document.body.dataset.theme = 'light';
         document.body.classList.remove('dark-mode');
@@ -34,9 +43,7 @@ function initLayout() {
     // Assuming app is at root. If sub-path, we might need a base_url.
     // For local file usage, relative paths are tricky if depth varies. 
     // We will attempt to detect depth or just use relatively robust paths.
-    // Hack: Check if we are in 'admin' folder.
-    const isInAdmin = window.location.pathname.includes('/admin/');
-    const rootPath = isInAdmin ? '../' : './';
+    // rootPath already defined above
 
     const layoutHTML = `
     <table class="main-layout" border="1" cellpadding="0" cellspacing="0">
@@ -49,6 +56,9 @@ function initLayout() {
                         <span style="font-size: 10px; vertical-align: super;">v2.0</span>
                     </div>
                     <div>
+                        <select id="theme-selector" onchange="Layout.changeTheme(this.value)" style="font-size: 11px;">
+                            <option value="default">Loading themes...</option>
+                        </select>
                         <button onclick="Layout.toggleZenMode()">[ Zen Mode ]</button>
                         <button onclick="Layout.toggleTheme()">[ Light/Dark ]</button>
                     </div>
@@ -72,6 +82,7 @@ function initLayout() {
                     <li><a href="${rootPath}admin/ai-creator.html">AI Creator (Basic)</a></li>
                     <li><a href="${rootPath}admin/advanced-ai-creator.html">Advanced Creator (Pro)</a></li>
                     <li><a href="${rootPath}admin/json-importer.html">JSON Importer</a></li>
+                    <li><a href="${rootPath}other_misc/html_to_image_gallery_converter.html">Image Gallery Generator</a></li>
                     <li><a href="${rootPath}other_misc/useful_links.html">Useful Links</a></li>
                     <li><a href="#" id="auth-link">Admin Login</a></li>
                 </ul>
@@ -148,19 +159,24 @@ function initLayout() {
 
     // 5. Post-Inject Logic
     updateAuthLink(rootPath);
-    // 5. Post-Inject Logic
-    updateAuthLink(rootPath);
     setupRRatedCheckbox();
     setupThemeRadios();
     loadCategories(rootPath);
-    loadCategories(rootPath);
+    loadThemes(rootPath);  // Dynamically load theme options
 
     // Expose layout functions
     window.Layout = {
         toggleZenMode,
         toggleTheme,
-        searchByTag
+        searchByTag,
+        changeTheme
     };
+
+    // Set theme selector to current value
+    const selector = document.getElementById('theme-selector');
+    if (selector) {
+        selector.value = localStorage.getItem('cssTheme') || 'default';
+    }
 }
 
 // Helper: Toggle Theme
@@ -298,5 +314,70 @@ async function loadCategories(rootPath) {
             li.innerHTML = `<a href="${rootPath}index.html?cat=${cat}">${cat}</a>`;
             list.appendChild(li);
         });
+    }
+}
+
+// Helper: Apply CSS Theme
+function applyCssTheme(themeName, rootPath) {
+    // Find or create the theme stylesheet link
+    let themeLink = document.getElementById('theme-stylesheet');
+
+    if (!themeLink) {
+        // Create the link element if it doesn't exist
+        themeLink = document.createElement('link');
+        themeLink.id = 'theme-stylesheet';
+        themeLink.rel = 'stylesheet';
+        document.head.appendChild(themeLink);
+    }
+
+    // Set the href based on theme name
+    if (themeName === 'default') {
+        themeLink.href = rootPath + 'style.css';
+    } else {
+        themeLink.href = rootPath + 'Themes/' + themeName + '.css';
+    }
+}
+
+// Helper: Change Theme (called from dropdown)
+function changeTheme(themeName) {
+    // Detect root path
+    const isInAdmin = window.location.pathname.includes('/admin/');
+    const isInOther = window.location.pathname.includes('/other_misc/');
+    const rootPath = (isInAdmin || isInOther) ? '../' : './';
+
+    // Save to localStorage
+    localStorage.setItem('cssTheme', themeName);
+
+    // Apply immediately
+    applyCssTheme(themeName, rootPath);
+}
+
+// Helper: Load Themes from manifest
+async function loadThemes(rootPath) {
+    const selector = document.getElementById('theme-selector');
+    if (!selector) return;
+
+    try {
+        const response = await fetch(rootPath + 'Themes/themes.json');
+        if (!response.ok) throw new Error('Failed to load themes');
+
+        const data = await response.json();
+        const currentTheme = localStorage.getItem('cssTheme') || 'default';
+
+        // Clear and populate dropdown
+        selector.innerHTML = '';
+        data.themes.forEach(theme => {
+            const option = document.createElement('option');
+            option.value = theme.id;
+            option.textContent = theme.name;
+            if (theme.id === currentTheme) {
+                option.selected = true;
+            }
+            selector.appendChild(option);
+        });
+    } catch (error) {
+        console.warn('Could not load themes manifest:', error);
+        // Fallback to default option
+        selector.innerHTML = '<option value="default">Default</option>';
     }
 }

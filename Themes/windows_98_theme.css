@@ -1,0 +1,257 @@
+/* WINDOWS 98 RETRO THEME - FULL FILE */
+
+/* RESET & BASE STYLES */
+:root {
+    --bg-color: #008080; /* Teal Desktop */
+    --window-bg: #c0c0c0; /* Standard Gray */
+    --text-color: #000000;
+    --link-color: #0000FF;
+    --visited-color: #800080;
+    --header-bg: #000080; /* Active Title Bar Blue */
+    --header-text: #ffffff;
+    --sidebar-bg: #c0c0c0;
+    --input-bg: #ffffff;
+    --input-text: #000000;
+    --font-main: "Tahoma", "Segoe UI", sans-serif;
+    --font-mono: "Courier New", Courier, monospace;
+    
+    /* 3D Border Colors */
+    --light: #ffffff;
+    --dark: #808080;
+    --black: #000000;
+}
+
+[data-theme="light"] {
+    /* Variables remain largely same for Win98 consistency */
+    --bg-color: #008080;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: var(--font-main);
+    margin: 0;
+    padding: 0;
+    font-size: 14px; /* Slightly smaller for OS feel */
+    line-height: 1.5;
+}
+
+a {
+    color: var(--link-color);
+    text-decoration: underline;
+}
+
+a:visited {
+    color: var(--visited-color);
+}
+
+a:active {
+    color: red;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: bold;
+    margin-bottom: 0.5em;
+    border: none;
+    width: 100%;
+}
+
+/* LAYOUT TABLE - Acts as the Main Window */
+table.main-layout {
+    width: 98%;
+    height: 96vh;
+    margin: 2vh auto;
+    background: var(--window-bg);
+    border-collapse: separate; /* Required for window border */
+    /* Classic 3D Window Border */
+    border-top: 2px solid var(--light);
+    border-left: 2px solid var(--light);
+    border-right: 2px solid var(--black);
+    border-bottom: 2px solid var(--black);
+    box-shadow: 1px 1px 0px var(--black);
+}
+
+td {
+    vertical-align: top;
+    padding: 5px;
+}
+
+/* HEADER - The Title Bar */
+.header-cell {
+    background: linear-gradient(90deg, var(--header-bg), #1084d0);
+    color: var(--header-text);
+    height: 30px;
+    padding: 4px 8px;
+    font-weight: bold;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* SIDEBAR */
+.sidebar-cell {
+    width: 200px;
+    background-color: var(--sidebar-bg);
+    padding: 10px;
+    font-family: var(--font-main);
+    font-size: 13px;
+    border-right: 2px solid var(--dark);
+}
+
+/* MAIN CONTENT */
+.content-cell {
+    padding: 20px;
+    background-color: #ffffff; /* White content area */
+    /* Sunken border for content */
+    border-top: 2px solid var(--dark);
+    border-left: 2px solid var(--dark);
+    border-right: 2px solid var(--light);
+    border-bottom: 2px solid var(--light);
+    color: black;
+}
+
+/* HIDE SIDEBAR (ZEN MODE) */
+body.zen-mode .sidebar-cell {
+    display: none;
+}
+
+/* COMPONENTS */
+.search-box {
+    margin-bottom: 15px;
+    width: 90%;
+}
+
+input, textarea, select {
+    background: var(--input-bg);
+    color: var(--input-text);
+    /* Sunken Input Border */
+    border-top: 2px solid var(--dark);
+    border-left: 2px solid var(--dark);
+    border-right: 2px solid var(--light);
+    border-bottom: 2px solid var(--light);
+    padding: 3px;
+    font-family: var(--font-main);
+}
+
+button {
+    background: var(--window-bg);
+    color: black;
+    /* Popped Button Border */
+    border-top: 2px solid var(--light);
+    border-left: 2px solid var(--light);
+    border-right: 2px solid var(--black);
+    border-bottom: 2px solid var(--black);
+    padding: 4px 12px;
+    cursor: pointer;
+    font-family: var(--font-main);
+    font-size: 12px;
+}
+
+button:active {
+    /* Sunken on click */
+    border-top: 2px solid var(--black);
+    border-left: 2px solid var(--black);
+    border-right: 2px solid var(--light);
+    border-bottom: 2px solid var(--light);
+    transform: translate(1px, 1px);
+}
+
+/* JUMP LINKS */
+.jump-links {
+    margin-bottom: 20px;
+    font-family: var(--font-main);
+    font-size: 12px;
+    text-align: center;
+    border: 1px dotted var(--dark);
+    padding: 5px;
+    background: var(--sidebar-bg);
+}
+
+/* ARTICLE LIST */
+.article-list-item {
+    margin-bottom: 5px;
+    font-family: var(--font-main);
+    display: flex;
+    align-items: center;
+}
+.article-list-item:before {
+    content: "📄"; /* File Icon */
+    margin-right: 5px;
+    font-size: 12px;
+}
+
+/* ARTICLE VIEW */
+.article-meta {
+    font-size: 0.8em;
+    color: #888;
+    margin-bottom: 20px;
+    border-bottom: 2px groove var(--light);
+    padding-bottom: 5px;
+}
+
+.article-content {
+    margin-top: 20px;
+    width: 100%;
+}
+
+/* FOOTER */
+.footer-cell {
+    height: 30px;
+    background-color: var(--window-bg);
+    border-top: 2px solid var(--light);
+    text-align: center;
+    font-size: 11px;
+    font-family: var(--font-main);
+    padding-top: 5px;
+}
+
+/* VISITOR COUNTER */
+.visitor-counter {
+    border: 2px inset var(--dark);
+    background: black;
+    color: red;
+    padding: 2px 5px;
+    font-family: "Courier New", monospace;
+    font-weight: bold;
+    display: inline-block;
+}
+
+/* UTILS */
+.hidden {
+    display: none !important;
+}
+
+/* LOADING */
+#loading-indicator {
+    font-weight: bold;
+    color: white;
+    background: blue;
+    padding: 5px;
+    border: 2px outset white;
+}
+
+/* EDITOR */
+textarea.editor {
+    width: 100%;
+    height: 400px;
+    font-family: "Courier New", monospace;
+}
+
+/* TAGS */
+.article-tags {
+    margin-bottom: 15px;
+    font-size: 11px;
+}
+
+.article-tags a {
+    display: inline-block;
+    border: 1px solid #888;
+    padding: 1px 5px;
+    margin: 2px;
+    text-decoration: none;
+    background: #fff;
+    color: #000;
+}

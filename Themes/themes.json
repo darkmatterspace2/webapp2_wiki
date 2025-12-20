@@ -1,0 +1,36 @@
+{
+    "themes": [
+        {
+            "id": "default",
+            "name": "Default (Retro)"
+        },
+        {
+            "id": "cyberpunk_terminal_matrix_style",
+            "name": "Cyberpunk Terminal"
+        },
+        {
+            "id": "modern_bento_theme",
+            "name": "Modern Bento"
+        },
+        {
+            "id": "windows_98_theme",
+            "name": "Windows 98"
+        },
+        {
+            "id": "luxury_vogue",
+            "name": "Luxury Vogue Magzine"
+        },
+        {
+            "id": "tron_legacy",
+            "name": "Tron Legacy"
+        },
+        {
+            "id": "medieval_rpg_scroll",
+            "name": "Medieval RPG Scroll"
+        },
+        {
+            "id": "mass_effect",
+            "name": "Mass Effect"
+        }
+    ]
+}
