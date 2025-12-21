@@ -206,6 +206,10 @@
         window.onload = initArticle;
 
         // LIGHTBOX LOGIC
+        // DRAG LOGIC
+        let isDragging = false;
+        let startX, startY, translateX = 0, translateY = 0;
+
         function initLightbox() {
             const images = document.querySelectorAll('#article-content img');
             images.forEach(img => {
@@ -213,6 +217,28 @@
                 img.onclick = function () {
                     openLightbox(this.src, this.alt);
                 }
+            });
+
+            // Attach drag events to the lightbox image
+            const lightboxImg = document.getElementById('lightbox-img');
+
+            lightboxImg.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                startX = e.clientX - translateX;
+                startY = e.clientY - translateY;
+                e.preventDefault(); // Prevent default drag behavior
+            });
+
+            window.addEventListener('mouseup', () => {
+                isDragging = false;
+            });
+
+            window.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                e.preventDefault();
+                translateX = e.clientX - startX;
+                translateY = e.clientY - startY;
+                lightboxImg.style.transform = `translate(${translateX}px, ${translateY}px)`;
             });
         }
 
@@ -224,17 +250,129 @@
             modal.classList.add('active');
             modalImg.src = src;
             captionText.innerHTML = alt || '';
+
+            // Reset Drag
+            translateX = 0;
+            translateY = 0;
+            modalImg.style.transform = 'translate(0px, 0px)';
+
+            // Default to 'fit'
+            resizeLightbox('fit');
         }
 
         function closeLightbox() {
             document.getElementById('lightbox').classList.remove('active');
+
+            // Exit Fullscreen if active
+            if (document.fullscreenElement) {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+            }
+        }
+
+        function resizeLightbox(mode) {
+            const img = document.getElementById('lightbox-img');
+
+            // Reset Drag
+            translateX = 0;
+            translateY = 0;
+            img.style.transform = 'translate(0px, 0px)';
+
+            // Reset common styles
+            img.style.width = '';
+            img.style.height = '';
+            img.style.maxWidth = '';
+            img.style.maxHeight = '';
+            img.style.objectFit = '';
+            img.style.margin = 'auto'; // Center by default
+
+            switch (mode) {
+                case 'fit':
+                    // Default: contained within max dimensions
+                    img.style.maxWidth = '90%';
+                    img.style.maxHeight = '90vh';
+                    img.style.objectFit = 'contain';
+                    break;
+                case '100':
+                    // Natural size, allowing scroll
+                    img.style.maxWidth = 'none';
+                    img.style.maxHeight = 'none';
+                    // No specific width/height set, uses natural
+                    break;
+                case 'crop':
+                    // "Zoom" logic: Fill screen but allow panning (don't clip with object-fit)
+                    const winRatio = window.innerWidth / window.innerHeight;
+                    const imgRatio = (img.naturalWidth || 1) / (img.naturalHeight || 1);
+
+                    if (imgRatio > winRatio) {
+                        // Image is wider than screen relative to height -> Fill Height to cover
+                        img.style.height = '100vh';
+                        img.style.width = 'auto';
+                    } else {
+                        // Image is taller than screen relative to width -> Fill Width to cover
+                        img.style.width = '100vw'; // 100vw to ensure it covers width
+                        img.style.height = 'auto';
+                    }
+
+                    img.style.maxWidth = 'none';
+                    img.style.maxHeight = 'none';
+                    // object-fit not needed as we set dimensions
+                    break;
+                case 'stretch':
+                    // Force fill screen, distorting
+                    img.style.width = '100%';
+                    img.style.height = '100vh';
+                    img.style.maxWidth = 'none';
+                    img.style.maxHeight = 'none';
+                    img.style.objectFit = 'fill';
+                    break;
+            }
+        }
+
+        function toggleFullScreen() {
+            const elem = document.getElementById('lightbox');
+
+            if (!document.fullscreenElement) {
+                if (elem.requestFullscreen) {
+                    elem.requestFullscreen();
+                } else if (elem.webkitRequestFullscreen) { /* Safari */
+                    elem.webkitRequestFullscreen();
+                } else if (elem.msRequestFullscreen) { /* IE11 */
+                    elem.msRequestFullscreen();
+                }
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) { /* Safari */
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) { /* IE11 */
+                    document.msExitFullscreen();
+                }
+            }
         }
     </script>
 
     <!-- Lightbox Modal -->
     <div id="lightbox" class="lightbox-modal" onclick="closeLightbox()">
         <span class="lightbox-close">&times;</span>
-        <img class="lightbox-content" id="lightbox-img">
+
+        <!-- Image Container -->
+        <img class="lightbox-content" id="lightbox-img" onclick="event.stopPropagation()">
+
+        <!-- Controls -->
+        <div class="lightbox-controls" onclick="event.stopPropagation()">
+            <button onclick="resizeLightbox('fit')">Fit</button>
+            <button onclick="resizeLightbox('100')">100%</button>
+            <button onclick="resizeLightbox('crop')">Crop</button>
+            <button onclick="resizeLightbox('stretch')">Stretch</button>
+            <button onclick="toggleFullScreen()">Screen</button>
+        </div>
+
         <div class="lightbox-caption" id="lightbox-caption"></div>
     </div>
 
