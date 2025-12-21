@@ -87,6 +87,12 @@
                 const contentHtml = await StorageService.downloadAsText(meta.bucket_path);
                 document.getElementById('article-content').innerHTML = contentHtml;
 
+                // 1. Format Galleries (Masonry)
+                formatGalleries();
+
+                // 2. Initialize Lightbox
+                initLightbox();
+
                 // Increment views
                 ArticleService.incrementViews(id, meta.views);
 
@@ -96,6 +102,36 @@
             }
 
             AppUtils.showLoading(false);
+        }
+
+        // MASONRY GALLERY LOGIC
+        function formatGalleries() {
+            const galleries = document.querySelectorAll('.retro-gallery');
+            galleries.forEach(gallery => {
+                // If already formatted, skip
+                if (gallery.querySelector('.retro-gallery-col')) return;
+
+                const images = Array.from(gallery.children).filter(el => el.tagName === 'IMG');
+                if (images.length === 0) return;
+
+                // Create columns
+                const cols = [
+                    document.createElement('div'),
+                    document.createElement('div'),
+                    document.createElement('div')
+                ];
+                cols.forEach(c => c.className = 'retro-gallery-col');
+
+                // Distribute images: 0->Col1, 1->Col2, 2->Col3, 3->Col1...
+                images.forEach((img, index) => {
+                    const colIndex = index % 3;
+                    cols[colIndex].appendChild(img);
+                });
+
+                // Clear and Append
+                gallery.innerHTML = '';
+                cols.forEach(c => gallery.appendChild(c));
+            });
         }
 
         async function deleteArticle() {
@@ -126,7 +162,39 @@
         }
 
         window.onload = initArticle;
+
+        // LIGHTBOX LOGIC
+        function initLightbox() {
+            const images = document.querySelectorAll('#article-content img');
+            images.forEach(img => {
+                img.style.cursor = 'zoom-in';
+                img.onclick = function () {
+                    openLightbox(this.src, this.alt);
+                }
+            });
+        }
+
+        function openLightbox(src, alt) {
+            const modal = document.getElementById('lightbox');
+            const modalImg = document.getElementById('lightbox-img');
+            const captionText = document.getElementById('lightbox-caption');
+
+            modal.classList.add('active');
+            modalImg.src = src;
+            captionText.innerHTML = alt || '';
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('active');
+        }
     </script>
+
+    <!-- Lightbox Modal -->
+    <div id="lightbox" class="lightbox-modal" onclick="closeLightbox()">
+        <span class="lightbox-close">&times;</span>
+        <img class="lightbox-content" id="lightbox-img">
+        <div class="lightbox-caption" id="lightbox-caption"></div>
+    </div>
 
 </body>
 
