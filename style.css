@@ -407,22 +407,20 @@ textarea.editor {
     top: 15px;
     right: 35px;
     color: red;
-    /* Red color */
-    opacity: 1;
-    /* More opaque */
+    opacity: 0.3;
+    /* Low opacity by default */
     z-index: 1005;
-    /* On top of image and controls */
     font-size: 40px;
     font-weight: bold;
     cursor: pointer;
-    transition: 0.3s;
+    transition: opacity 0.4s ease-in-out;
     font-family: Arial, sans-serif;
     line-height: 0.5;
 }
 
 .lightbox-close:hover,
 .lightbox-close:focus {
-    color: #bbb;
+    opacity: 1.0;
     text-decoration: none;
     cursor: pointer;
 }
@@ -439,6 +437,12 @@ textarea.editor {
     padding: 10px;
     border-radius: 5px;
     border: 1px solid #444;
+    opacity: 0.1;
+    transition: opacity 0.4s ease-in-out;
+}
+
+.lightbox-controls:hover {
+    opacity: 1.0;
 }
 
 .lightbox-controls button {
