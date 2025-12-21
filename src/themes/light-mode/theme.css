@@ -88,3 +88,35 @@ select {
     background: #dddddd !important;
     color: #333333 !important;
 }
+
+/* Article Cards */
+.article-card {
+    border-color: #999999 !important;
+    border-left-color: #666666 !important;
+    background: #ffffff !important;
+}
+
+.article-card-title {
+    color: #0000cc !important;
+}
+
+.article-card-stats {
+    color: #666666 !important;
+}
+
+/* Search Help */
+.search-help-content {
+    background: #f0f0f0 !important;
+    border-color: #999999 !important;
+}
+
+/* Article Header */
+.article-actions button {
+    background: #e0e0e0 !important;
+    color: #333333 !important;
+    border-color: #999999 !important;
+}
+
+.btn-delete {
+    color: #cc0000 !important;
+}

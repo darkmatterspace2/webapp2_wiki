@@ -28,8 +28,18 @@
         </div>
 
         <div style="margin-bottom: 20px;">
-            <input type="text" id="search-input" placeholder="Search titles..." class="search-box">
+            <input type="text" id="search-input" placeholder="Search: react -deprecated ~vue web*" class="search-box">
             <button onclick="runSearch()">Search</button>
+            <details class="search-help">
+                <summary>Search Syntax Help</summary>
+                <div class="search-help-content">
+                    <code>word</code> - Match title or tags<br>
+                    <code>tag1 tag2</code> - Must have BOTH<br>
+                    <code>-tag</code> - Exclude this tag<br>
+                    <code>~tag1 ~tag2</code> - Either tag (OR)<br>
+                    <code>web*</code> - Wildcard (starts with)
+                </div>
+            </details>
         </div>
 
         <h3>Article Index</h3>
@@ -39,19 +49,9 @@
             (<a href="index.html">Clear</a>)
         </div>
 
-        <table border="1" width="100%" cellpadding="5">
-            <thead>
-                <tr bgcolor="#444">
-                    <th align="left">Date</th>
-                    <th align="left">Title</th>
-                    <th align="left">Category</th>
-                    <th align="right">Views</th>
-                </tr>
-            </thead>
-            <tbody id="article-list-body">
-                <!-- Articles injected here -->
-            </tbody>
-        </table>
+        <div id="article-list" class="article-list">
+            <!-- Article cards injected here -->
+        </div>
 
         <div style="margin-top: 20px; text-align: center;">
             <button onclick="changePage(-1)">&lt; Prev</button>
@@ -114,25 +114,35 @@
         }
 
         function renderList(articles) {
-            const tbody = document.getElementById('article-list-body');
-            tbody.innerHTML = '';
+            const container = document.getElementById('article-list');
+            container.innerHTML = '';
             if (!articles || articles.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" align="center">No data found in matrix.</td></tr>';
+                container.innerHTML = '<div style="text-align: center; padding: 20px;">No data found in matrix.</div>';
                 return;
             }
             articles.forEach(art => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td valign="top"><small>${AppUtils.formatDate(art.created_at)}</small></td>
-                    <td valign="top">
-                        <a href="pages/article.html?id=${art.id}" style="font-weight: bold;">${art.title}</a>
-                        <br>
-                        <small>${(art.tags || []).join(', ')}</small>
-                    </td>
-                    <td valign="top">${art.category}</td>
-                    <td align="right" valign="top">${art.views || 0}</td>
+                // Generate clickable tag links
+                const tagLinks = (art.tags || []).map(tag =>
+                    `<a href="index.html?q=${encodeURIComponent(tag)}">${tag}</a>`
+                ).join(' ');
+
+                const card = document.createElement('div');
+                card.className = 'article-card';
+                card.innerHTML = `
+                    <div class="article-card-inner">
+                        <div class="article-card-main">
+                            <a href="pages/article.html?id=${art.id}" class="article-card-title">${art.title}</a>
+                            <div class="article-card-meta">
+                                <a href="index.html?cat=${encodeURIComponent(art.category)}"><b>${art.category}</b></a>: ${tagLinks || '<i>no tags</i>'}
+                            </div>
+                        </div>
+                        <div class="article-card-stats">
+                            ${AppUtils.formatDate(art.created_at)}<br>
+                            ${art.views || 0} views
+                        </div>
+                    </div>
                 `;
-                tbody.appendChild(tr);
+                container.appendChild(card);
             });
         }
 

@@ -28,6 +28,10 @@ function initLayout() {
     // 4. Define Layout HTML
     const layoutHTML = `
     <table class="main-layout" border="1" cellpadding="0" cellspacing="0">
+        <colgroup>
+            <col class="col-sidebar">
+            <col class="col-content">
+        </colgroup>
         <!-- HEADER ROW -->
         <tr>
             <td colspan="2" class="header-cell">
@@ -35,12 +39,14 @@ function initLayout() {
                     <div>
                         <a href="${rootPath}index.html" style="text-decoration: none; color: inherit;">
                             <span style="font-size: 24px; font-weight: bold;">RetroWiki</span>
-                            <span style="font-size: 10px; vertical-align: super;">v2.0</span>
+                            <span style="font-size: 10px; vertical-align: super;">v3.0</span>
                         </a>
                     </div>
                     <div>
-                        <button onclick="Layout.toggleZenMode()">[ Zen Mode ]</button>
-                        <button onclick="Layout.toggleTheme()">[ Light/Dark ]</button>
+                        <button onclick="Layout.zoom(-0.1)" class="btn-header" title="Zoom Out">[-]</button>
+                        <button onclick="Layout.zoom(0.1)" class="btn-header" title="Zoom In">[+]</button>
+                        <button id="btn-zen" onclick="Layout.toggleZenMode()" class="btn-header">[ Zen Mode ]</button>
+                        <button id="btn-theme" onclick="Layout.toggleTheme()" class="btn-header">[ Light Mode ]</button>
                     </div>
                 </div>
             </td>
@@ -82,8 +88,10 @@ function initLayout() {
                         <div style="font-size: 12px; font-weight: bold; margin-top: 10px;">Theme:</div>
                         <select id="theme-selector" style="width: 100%; font-size: 11px; margin-top: 5px;">
                             <option value="default">Retro Classic</option>
-                            <option value="retro-green">Matrix Green</option>
+                            <option value="retro-green">Cyberpunk Terminal</option>
                             <option value="light-mode">Light Mode</option>
+                            <option value="windows-98">Windows 98</option>
+                            <option value="minecraft">Minecraft</option>
                         </select>
                         
                         <br><br>
@@ -91,7 +99,7 @@ function initLayout() {
                         <div style="margin-left: 5px;">
                             <label style="font-size: 12px; cursor: pointer;">
                                 <input type="checkbox" id="show-r-rated-checkbox">
-                                Show R Rated content
+                                 Show R Rated content
                             </label>
                         </div>
                     </details>
@@ -139,11 +147,15 @@ function initLayout() {
     setupRRatedCheckbox();
     setupThemeSelector();
     loadCategories(rootPath);
+    initZoom(); // New Zoom Init
 
     // Initialize theme loader if available
     if (window.ThemeLoader) {
         ThemeLoader.init();
     }
+
+    // Update Toggle Button States
+    updateToggleButtons();
 
     // Setup Back to Top button
     setupBackToTop();
@@ -151,21 +163,74 @@ function initLayout() {
     // Expose layout functions
     window.Layout = {
         toggleZenMode,
-        toggleTheme
+        toggleTheme,
+        zoom // Expose zoom
     };
 }
 
-// Helper: Toggle Theme (legacy button)
-function toggleTheme() {
-    if (document.body.classList.contains('dark-mode')) {
-        document.body.classList.remove('dark-mode');
-        document.body.dataset.theme = 'light';
-        localStorage.setItem('theme', 'light');
-    } else {
-        document.body.classList.add('dark-mode');
-        delete document.body.dataset.theme;
-        localStorage.setItem('theme', 'dark');
+// ZOOM LOGIC
+let currentZoom = parseFloat(localStorage.getItem('pageZoom')) || 1.0;
+
+function initZoom() {
+    document.body.style.zoom = currentZoom;
+}
+
+function zoom(delta) {
+    currentZoom += delta;
+    // Clamp zoom between 0.5x and 2.0x
+    currentZoom = Math.min(Math.max(currentZoom, 0.5), 2.0);
+    document.body.style.zoom = currentZoom;
+    localStorage.setItem('pageZoom', currentZoom);
+}
+
+// UPDATE BTN STATES
+function updateToggleButtons() {
+    // Zen
+    const btnZen = document.getElementById('btn-zen');
+    if (btnZen) {
+        if (document.body.classList.contains('zen-mode')) {
+            btnZen.classList.add('active');
+        } else {
+            btnZen.classList.remove('active');
+        }
     }
+
+    // Theme (Active if Light Mode)
+    const btnTheme = document.getElementById('btn-theme');
+    if (btnTheme) {
+        const isLight = document.body.dataset.theme === 'light' || localStorage.getItem('theme') === 'light' || localStorage.getItem('selected-theme') === 'light-mode';
+        if (isLight) {
+            btnTheme.classList.add('active');
+        } else {
+            btnTheme.classList.remove('active');
+        }
+    }
+}
+
+// Helper: Toggle Theme
+async function toggleTheme() {
+    // Current state check
+    const currentId = localStorage.getItem('selected-theme') || 'default';
+    const isLight = currentId === 'light-mode';
+
+    let newThemeId = 'default';
+    if (!isLight) {
+        newThemeId = 'light-mode';
+    }
+
+    // Apply via ThemeLoader (No Reload!)
+    if (window.ThemeLoader) {
+        await ThemeLoader.applyTheme(newThemeId);
+    }
+
+    // Update State
+    localStorage.setItem('selected-theme', newThemeId);
+
+    // Update UI elements
+    const selector = document.getElementById('theme-selector');
+    if (selector) selector.value = newThemeId;
+
+    updateToggleButtons();
 }
 
 // Helper: Toggle Zen
@@ -173,6 +238,7 @@ function toggleZenMode() {
     document.body.classList.toggle('zen-mode');
     const isZen = document.body.classList.contains('zen-mode');
     localStorage.setItem('zenMode', isZen);
+    updateToggleButtons();
 }
 
 // Helper: Update Login/Logout Link
@@ -229,7 +295,8 @@ function setupThemeSelector() {
             await ThemeLoader.applyTheme(themeId);
         }
         localStorage.setItem('selected-theme', themeId);
-        window.location.reload(); // Reload to fully apply theme
+        // NO RELOAD NEEDED
+        updateToggleButtons();
     });
 }
 

@@ -1,0 +1,242 @@
+/* MINECRAFT THEME
+   Pixelated block-style UI inspired by Minecraft
+   This file contains ONLY overrides - base styles come from style.css */
+
+@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
+/* OVERRIDE CSS VARIABLES */
+:root {
+    --bg-color: #1a1a1a;
+    --text-color: #3f3f3f;
+    --link-color: #0000AA;
+    --visited-color: #AA00AA;
+    --header-bg: #7bbf43;
+    --sidebar-bg: #eaddcf;
+    --border-color: #000000;
+    --input-bg: #000000;
+    --input-text: #ffffff;
+    --font-main: 'VT323', monospace;
+
+    /* Minecraft Colors */
+    --mc-grass: #7bbf43;
+    --mc-dirt: #866043;
+    --mc-stone: #757575;
+    --diamond-blue: #3dd1e4;
+    --ui-bg: #c6c6c6;
+}
+
+/* PIXELATION */
+* {
+    image-rendering: pixelated !important;
+}
+
+/* BODY - Block grid background */
+body {
+    font-size: 22px !important;
+    background-image:
+        linear-gradient(rgba(0, 0, 0, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 0, 0, 0.1) 1px, transparent 1px) !important;
+    background-size: 32px 32px !important;
+}
+
+/* LINKS */
+a {
+    color: #0000AA !important;
+    text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.2) !important;
+    text-decoration: none !important;
+    border-bottom: 2px solid transparent !important;
+}
+
+a:hover {
+    color: #3dd1e4 !important;
+    text-shadow: 2px 2px 0 #000 !important;
+    text-decoration: underline !important;
+}
+
+/* HEADINGS */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    text-shadow: 2px 2px 0 #bfbfbf !important;
+    border-bottom: 4px solid var(--text-color) !important;
+    text-transform: uppercase !important;
+}
+
+/* LAYOUT - Minecraft UI Box */
+table.main-layout {
+    width: 90% !important;
+    margin: 20px auto !important;
+    border: 4px solid #000 !important;
+    background: #c6c6c6 !important;
+    box-shadow:
+        inset 4px 4px 0 #ffffff,
+        inset -4px -4px 0 #373737,
+        10px 10px 0 rgba(0, 0, 0, 0.5) !important;
+}
+
+/* HEADER - Grass Block */
+.header-cell {
+    background-color: #7bbf43 !important;
+    border-bottom: 8px solid #583e2a !important;
+    height: 80px !important;
+}
+
+/* SIDEBAR - Wooden Planks */
+.sidebar-cell {
+    background-color: #eaddcf !important;
+    width: 250px !important;
+    border-right: 4px solid #000 !important;
+    font-size: 18px !important;
+    background-image: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.1) 0px, rgba(0, 0, 0, 0.1) 2px, transparent 2px, transparent 40px) !important;
+}
+
+/* CONTENT */
+.content-cell {
+    background-color: #c6c6c6 !important;
+}
+
+/* INPUTS - Command Block Console */
+input,
+textarea,
+select {
+    background: #000000 !important;
+    color: #ffffff !important;
+    border: 2px solid #a0a0a0 !important;
+    border-top-color: #555555 !important;
+    border-left-color: #555555 !important;
+    padding: 10px !important;
+    font-size: 18px !important;
+}
+
+input:focus,
+textarea:focus {
+    border-color: #ffffff !important;
+    background: #111111 !important;
+}
+
+/* BUTTONS - Minecraft UI */
+button {
+    background-color: #8b8b8b !important;
+    color: #ffffff !important;
+    font-size: 20px !important;
+    padding: 10px 20px !important;
+    text-shadow: 2px 2px 0 #000 !important;
+    border: 2px solid #000 !important;
+    box-shadow:
+        inset 2px 2px 0 rgba(255, 255, 255, 0.5),
+        inset -2px -2px 0 rgba(0, 0, 0, 0.5) !important;
+}
+
+button:hover {
+    background-color: #a0a0aa !important;
+    color: #ffffa0 !important;
+}
+
+button:active {
+    background-color: #6b6b6b !important;
+    box-shadow: inset 2px 2px 0 #000 !important;
+}
+
+/* FOOTER */
+.footer-cell {
+    background-color: #000000 !important;
+    color: #ffffff !important;
+    border-top: 4px solid #ffffff !important;
+    height: 50px !important;
+}
+
+/* VISITOR COUNTER - XP Counter */
+.visitor-counter {
+    background: transparent !important;
+    color: #80ff20 !important;
+    text-shadow: 2px 2px 0 #000 !important;
+    border: none !important;
+}
+
+/* LOADING - Mojang Red */
+#loading-indicator {
+    background: #F81616 !important;
+    color: #ffffff !important;
+    border: 4px solid #ffffff !important;
+    box-shadow: 4px 4px 0 #000 !important;
+}
+
+/* EDITOR - Book and Quill */
+textarea.editor {
+    background: #fdf5dc !important;
+    color: #4a3b2a !important;
+    border: 8px solid #6d4e2e !important;
+}
+
+/* ARTICLE CARDS - Achievement Popup */
+.article-card {
+    border: 2px solid #ffffff !important;
+    border-left-width: 2px !important;
+    background: #212121 !important;
+    color: #ffffff !important;
+    box-shadow: 4px 4px 0 #000 !important;
+}
+
+.article-card-title {
+    color: #ffff55 !important;
+    text-shadow: 2px 2px 0 #333 !important;
+}
+
+.article-card-stats {
+    color: #aaaaaa !important;
+}
+
+.article-card-meta {
+    color: #cccccc !important;
+}
+
+/* TAG LINKS - Item Tooltips */
+.tag-link {
+    border: 2px solid #280b56 !important;
+    padding: 5px 8px !important;
+    background: #100010 !important;
+    color: #ffffff !important;
+    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.5) !important;
+}
+
+.tag-link:hover {
+    color: #ffff55 !important;
+    border-color: #ffffff !important;
+    background: #100010 !important;
+}
+
+/* SEARCH HELP */
+.search-help-content {
+    background: #212121 !important;
+    border: 2px solid #555555 !important;
+    color: #ffffff !important;
+}
+
+/* ARTICLE HEADER */
+.article-actions button {
+    background: #8b8b8b !important;
+    color: #ffffff !important;
+}
+
+.btn-delete {
+    color: #ff5555 !important;
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar {
+    width: 12px !important;
+}
+
+::-webkit-scrollbar-track {
+    background: #000 !important;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #c6c6c6 !important;
+    border: 2px solid #ffffff !important;
+    border-right-color: #555555 !important;
+    border-bottom-color: #555555 !important;
+}

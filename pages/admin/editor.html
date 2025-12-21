@@ -32,15 +32,9 @@
                 </tr>
                 <tr>
                     <td>Category:</td>
-                    <td><input type="text" id="edit-category" required></td>
-                </tr>
-                <tr>
-                    <td>Tags:</td>
-                    <td><input type="text" id="edit-tags" placeholder="comma, separated"></td>
-                </tr>
-                <tr>
-                    <td>Rating:</td>
                     <td>
+                        <input type="text" id="edit-category" required style="width: 150px;">
+                        &nbsp;&nbsp;Rating:
                         <select id="edit-rating">
                             <option value="NR">NR (Not Rated)</option>
                             <option value="M">M (Mature)</option>
@@ -50,9 +44,16 @@
                     </td>
                 </tr>
                 <tr>
+                    <td>Tags:</td>
+                    <td><input type="text" id="edit-tags" placeholder="comma, separated" style="width: 100%;"></td>
+                </tr>
+                <tr>
                     <td valign="top">Content:</td>
                     <td>
-                        <small>Supports HTML. Make sure to close your tags!</small><br>
+                        <small>Supports HTML. Make sure to close your tags!</small>
+                        <button type="button" onclick="insertGallery()" style="font-size: 10px; cursor:pointer;">[+
+                            Gallery]</button>
+                        <br>
                         <textarea id="edit-content" class="editor" required></textarea>
                     </td>
                 </tr>
@@ -131,6 +132,27 @@
             AppUtils.showLoading(false);
         }
 
+        function insertGallery() {
+            const textarea = document.getElementById('edit-content');
+            const snippet = `\n<div class="retro-gallery">
+    <img src="YOUR_IMAGE_HERE.jpg">
+    <img src="YOUR_IMAGE_HERE.jpg">
+    <img src="YOUR_IMAGE_HERE.jpg">
+</div>\n`;
+
+            if (textarea.selectionStart || textarea.selectionStart == '0') {
+                var startPos = textarea.selectionStart;
+                var endPos = textarea.selectionEnd;
+                textarea.value = textarea.value.substring(0, startPos)
+                    + snippet
+                    + textarea.value.substring(endPos, textarea.value.length);
+                textarea.selectionStart = textarea.selectionEnd = startPos + snippet.length;
+            } else {
+                textarea.value += snippet;
+            }
+            textarea.focus();
+        }
+
         function showPreview() {
             const title = document.getElementById('edit-title').value;
             const content = document.getElementById('edit-content').value;
@@ -139,8 +161,33 @@
 
             document.getElementById('preview-title').textContent = title || "Untitled";
             document.getElementById('preview-meta').textContent = `Category: ${category} | Rating: ${rating} | (Preview)`;
-            document.getElementById('preview-body').innerHTML = content;
+
+            const body = document.getElementById('preview-body');
+            body.innerHTML = content;
+
+            // Apply Gallery Logic to Preview
+            formatGalleries(body);
+
             document.getElementById('preview-overlay').style.display = 'block';
+        }
+
+        function formatGalleries(container) {
+            const galleries = container.querySelectorAll('.retro-gallery');
+            galleries.forEach(gallery => {
+                if (gallery.querySelector('.retro-gallery-col')) return;
+                const images = Array.from(gallery.children).filter(el => el.tagName === 'IMG');
+                if (images.length === 0) return;
+
+                const cols = [document.createElement('div'), document.createElement('div'), document.createElement('div')];
+                cols.forEach(c => c.className = 'retro-gallery-col');
+
+                images.forEach((img, index) => {
+                    cols[index % 3].appendChild(img);
+                });
+
+                gallery.innerHTML = '';
+                cols.forEach(c => gallery.appendChild(c));
+            });
         }
 
         function closePreview() {
@@ -158,11 +205,8 @@
             const content = document.getElementById('edit-content').value;
 
             try {
-                // Generate filename
-                const fileName = `${Date.now()}_${title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.html`;
-
-                // Upload content using StorageService
-                await StorageService.upload(fileName, content);
+                // Upload content using date-based folder structure
+                const bucketPath = await StorageService.uploadArticle(title, content);
 
                 // Build payload
                 const payload = {
@@ -170,15 +214,15 @@
                     category,
                     tags,
                     ratings,
-                    bucket_path: fileName,
+                    bucket_path: bucketPath,
                     updated_at: new Date().toISOString()
                 };
 
                 if (editingId) {
                     // Update existing
                     await ArticleService.update(editingId, payload);
-                    // Optionally delete old file if path changed
-                    if (existingBucketPath && existingBucketPath !== fileName) {
+                    // Delete old file if path changed
+                    if (existingBucketPath && existingBucketPath !== bucketPath) {
                         try { await StorageService.delete(existingBucketPath); } catch (e) { }
                     }
                 } else {

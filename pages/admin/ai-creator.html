@@ -272,14 +272,11 @@
             const content = document.getElementById('edit-content').value;
 
             try {
-                // Generate filename
-                const fileName = `${Date.now()}_${title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.html`;
-
-                // Upload content using StorageService
-                await StorageService.upload(fileName, content);
+                // Upload content using date-based folder structure
+                const bucketPath = await StorageService.uploadArticle(title, content);
 
                 // Create article using ArticleService
-                const payload = { title, category, tags, ratings, bucket_path: fileName };
+                const payload = { title, category, tags, ratings, bucket_path: bucketPath };
                 await ArticleService.create(payload);
 
                 alert("Published!");

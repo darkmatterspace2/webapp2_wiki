@@ -8,8 +8,8 @@
         },
         {
             "id": "retro-green",
-            "name": "Matrix Green",
-            "description": "Green-on-black terminal aesthetic",
+            "name": "Cyberpunk Terminal",
+            "description": "Green-on-black terminal aesthetic with scanlines",
             "css": "retro-green/theme.css"
         },
         {
@@ -17,6 +17,18 @@
             "name": "Light Mode",
             "description": "Clean light theme",
             "css": "light-mode/theme.css"
+        },
+        {
+            "id": "windows-98",
+            "name": "Windows 98",
+            "description": "Classic Win98 look with 3D borders and teal desktop",
+            "css": "windows-98/theme.css"
+        },
+        {
+            "id": "minecraft",
+            "name": "Minecraft",
+            "description": "Pixelated block-style UI inspired by Minecraft",
+            "css": "minecraft/theme.css"
         }
     ],
     "default": "default"

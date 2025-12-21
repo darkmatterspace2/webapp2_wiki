@@ -1,0 +1,180 @@
+/* WINDOWS 98 THEME
+   Classic Win98/2000 look with 3D borders and teal desktop
+   This file contains ONLY overrides - base styles come from style.css */
+
+/* OVERRIDE CSS VARIABLES */
+:root {
+    --bg-color: #008080;
+    --text-color: #000000;
+    --link-color: #0000FF;
+    --visited-color: #800080;
+    --header-bg: #000080;
+    --sidebar-bg: #c0c0c0;
+    --border-color: #808080;
+    --input-bg: #ffffff;
+    --input-text: #000000;
+    --font-main: "Tahoma", "Segoe UI", sans-serif;
+
+    /* Win98 3D Border Colors */
+    --win-light: #ffffff;
+    --win-dark: #808080;
+    --win-black: #000000;
+}
+
+/* BODY */
+body {
+    font-size: 14px !important;
+}
+
+/* LAYOUT - Window Frame */
+table.main-layout {
+    width: 98% !important;
+    height: 96vh !important;
+    margin: 2vh auto !important;
+    background: #c0c0c0 !important;
+    border-collapse: separate !important;
+    border-top: 2px solid var(--win-light) !important;
+    border-left: 2px solid var(--win-light) !important;
+    border-right: 2px solid var(--win-black) !important;
+    border-bottom: 2px solid var(--win-black) !important;
+    box-shadow: 1px 1px 0px var(--win-black) !important;
+}
+
+/* HEADER - Title Bar */
+.header-cell {
+    background: linear-gradient(90deg, #000080, #1084d0) !important;
+    color: #ffffff !important;
+    height: 30px !important;
+    padding: 4px 8px !important;
+    font-weight: bold !important;
+}
+
+/* SIDEBAR */
+.sidebar-cell {
+    background-color: #c0c0c0 !important;
+    border-right: 2px solid var(--win-dark) !important;
+    font-size: 13px !important;
+}
+
+/* CONTENT - White with sunken border */
+.content-cell {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    border-top: 2px solid var(--win-dark) !important;
+    border-left: 2px solid var(--win-dark) !important;
+    border-right: 2px solid var(--win-light) !important;
+    border-bottom: 2px solid var(--win-light) !important;
+}
+
+/* HEADING - No bottom border in Win98 style */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    border: none !important;
+}
+
+/* INPUTS - Sunken border */
+input,
+textarea,
+select {
+    background: #ffffff !important;
+    color: #000000 !important;
+    border-top: 2px solid var(--win-dark) !important;
+    border-left: 2px solid var(--win-dark) !important;
+    border-right: 2px solid var(--win-light) !important;
+    border-bottom: 2px solid var(--win-light) !important;
+}
+
+/* BUTTONS - Classic 3D */
+button {
+    background: #c0c0c0 !important;
+    color: #000000 !important;
+    border-top: 2px solid var(--win-light) !important;
+    border-left: 2px solid var(--win-light) !important;
+    border-right: 2px solid var(--win-black) !important;
+    border-bottom: 2px solid var(--win-black) !important;
+    padding: 4px 12px !important;
+    font-size: 12px !important;
+}
+
+button:active {
+    border-top: 2px solid var(--win-black) !important;
+    border-left: 2px solid var(--win-black) !important;
+    border-right: 2px solid var(--win-light) !important;
+    border-bottom: 2px solid var(--win-light) !important;
+    transform: translate(1px, 1px) !important;
+}
+
+/* FOOTER */
+.footer-cell {
+    background-color: #c0c0c0 !important;
+    border-top: 2px solid var(--win-light) !important;
+    height: 30px !important;
+    font-size: 11px !important;
+}
+
+/* JUMP LINKS */
+.jump-links {
+    border: 1px dotted var(--win-dark) !important;
+}
+
+/* ARTICLE CARDS */
+.article-card {
+    border: 2px solid var(--win-dark) !important;
+    border-left-width: 2px !important;
+    background: #ffffff !important;
+}
+
+.article-card-title {
+    color: #0000FF !important;
+}
+
+.article-card-stats {
+    color: #808080 !important;
+}
+
+/* TAG LINKS */
+.tag-link {
+    border: 1px solid #888888 !important;
+    padding: 1px 5px !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+}
+
+.tag-link:hover {
+    background: #0000FF !important;
+    color: #ffffff !important;
+}
+
+/* VISITOR COUNTER */
+.visitor-counter {
+    border: 2px inset var(--win-dark) !important;
+    background: #000000 !important;
+    color: #ff0000 !important;
+}
+
+/* LOADING */
+#loading-indicator {
+    color: #ffffff !important;
+    background: #0000FF !important;
+    border: 2px outset #ffffff !important;
+}
+
+/* SEARCH HELP */
+.search-help-content {
+    background: #c0c0c0 !important;
+    border: 1px solid #808080 !important;
+}
+
+/* ARTICLE HEADER */
+.article-actions button {
+    background: #c0c0c0 !important;
+    color: #000000 !important;
+}
+
+.btn-delete {
+    color: #ff0000 !important;
+}

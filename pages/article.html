@@ -59,20 +59,25 @@
                 const sbClient = AppUtils.initSupabase();
                 const user = await AppUtils.checkAuth(sbClient);
                 const actionButtons = user ? `
-                    <span style="display: flex; gap: 5px;">
-                        <button onclick="editArticle()" style="white-space: nowrap;">[ Edit ]</button>
-                        <button onclick="deleteArticle()" style="white-space: nowrap; color: red;">[ Delete ]</button>
+                    <span class="article-actions">
+                        <button onclick="editArticle()">[ Edit ]</button>
+                        <button onclick="deleteArticle()" class="btn-delete">[ Delete ]</button>
                     </span>` : '';
+
+                // Generate clickable tag links
+                const tagLinks = (meta.tags || []).map(tag =>
+                    `<a href="../index.html?q=${encodeURIComponent(tag)}" class="tag-link">${tag}</a>`
+                ).join(' ');
 
                 // Render metadata with action buttons in title row
                 document.getElementById('article-meta').innerHTML = `
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <h2 style="margin: 0;">${meta.title}</h2>
+                    <div class="article-header">
+                        <h2>${meta.title}</h2>
                         ${actionButtons}
                     </div>
                     <p>
                         <b>Category:</b> ${meta.category} | 
-                        <b>Tags:</b> ${(meta.tags || []).join(', ')} | 
+                        <b>Tags:</b> ${tagLinks || 'None'} | 
                         <b>Views:</b> ${meta.views || 0}
                     </p>
                     <p><small>Created: ${AppUtils.formatDate(meta.created_at)}</small></p>
@@ -81,6 +86,12 @@
                 // Use StorageService to get content
                 const contentHtml = await StorageService.downloadAsText(meta.bucket_path);
                 document.getElementById('article-content').innerHTML = contentHtml;
+
+                // 1. Format Galleries (Masonry)
+                formatGalleries();
+
+                // 2. Initialize Lightbox
+                initLightbox();
 
                 // Increment views
                 ArticleService.incrementViews(id, meta.views);
@@ -91,6 +102,36 @@
             }
 
             AppUtils.showLoading(false);
+        }
+
+        // MASONRY GALLERY LOGIC
+        function formatGalleries() {
+            const galleries = document.querySelectorAll('.retro-gallery');
+            galleries.forEach(gallery => {
+                // If already formatted, skip
+                if (gallery.querySelector('.retro-gallery-col')) return;
+
+                const images = Array.from(gallery.children).filter(el => el.tagName === 'IMG');
+                if (images.length === 0) return;
+
+                // Create columns
+                const cols = [
+                    document.createElement('div'),
+                    document.createElement('div'),
+                    document.createElement('div')
+                ];
+                cols.forEach(c => c.className = 'retro-gallery-col');
+
+                // Distribute images: 0->Col1, 1->Col2, 2->Col3, 3->Col1...
+                images.forEach((img, index) => {
+                    const colIndex = index % 3;
+                    cols[colIndex].appendChild(img);
+                });
+
+                // Clear and Append
+                gallery.innerHTML = '';
+                cols.forEach(c => gallery.appendChild(c));
+            });
         }
 
         async function deleteArticle() {
@@ -121,7 +162,39 @@
         }
 
         window.onload = initArticle;
+
+        // LIGHTBOX LOGIC
+        function initLightbox() {
+            const images = document.querySelectorAll('#article-content img');
+            images.forEach(img => {
+                img.style.cursor = 'zoom-in';
+                img.onclick = function () {
+                    openLightbox(this.src, this.alt);
+                }
+            });
+        }
+
+        function openLightbox(src, alt) {
+            const modal = document.getElementById('lightbox');
+            const modalImg = document.getElementById('lightbox-img');
+            const captionText = document.getElementById('lightbox-caption');
+
+            modal.classList.add('active');
+            modalImg.src = src;
+            captionText.innerHTML = alt || '';
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('active');
+        }
     </script>
+
+    <!-- Lightbox Modal -->
+    <div id="lightbox" class="lightbox-modal" onclick="closeLightbox()">
+        <span class="lightbox-close">&times;</span>
+        <img class="lightbox-content" id="lightbox-img">
+        <div class="lightbox-caption" id="lightbox-caption"></div>
+    </div>
 
 </body>
 
