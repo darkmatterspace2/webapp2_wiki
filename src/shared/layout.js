@@ -296,9 +296,27 @@ function setupRRatedCheckbox() {
 }
 
 // Helper: Setup Theme Selector (new dropdown)
-function setupThemeSelector() {
+async function setupThemeSelector() {
     const selector = document.getElementById('theme-selector');
     if (!selector) return;
+
+    // Dynamic Population from Registry
+    if (window.ThemeLoader) {
+        try {
+            const registry = await ThemeLoader.loadRegistry();
+            if (registry && registry.themes) {
+                selector.innerHTML = ''; // Clear hardcoded
+                registry.themes.forEach(theme => {
+                    const option = document.createElement('option');
+                    option.value = theme.id;
+                    option.textContent = theme.name;
+                    selector.appendChild(option);
+                });
+            }
+        } catch (e) {
+            console.warn("Error populating theme selector", e);
+        }
+    }
 
     // Load current theme
     const currentTheme = localStorage.getItem('selected-theme') || 'default';

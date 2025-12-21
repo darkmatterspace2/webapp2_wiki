@@ -1,180 +1,257 @@
-/* WINDOWS 98 THEME
-   Classic Win98/2000 look with 3D borders and teal desktop
-   This file contains ONLY overrides - base styles come from style.css */
+/* WINDOWS 98 RETRO THEME - FULL FILE */
 
-/* OVERRIDE CSS VARIABLES */
+/* RESET & BASE STYLES */
 :root {
-    --bg-color: #008080;
+    --bg-color: #008080; /* Teal Desktop */
+    --window-bg: #c0c0c0; /* Standard Gray */
     --text-color: #000000;
     --link-color: #0000FF;
     --visited-color: #800080;
-    --header-bg: #000080;
+    --header-bg: #000080; /* Active Title Bar Blue */
+    --header-text: #ffffff;
     --sidebar-bg: #c0c0c0;
-    --border-color: #808080;
     --input-bg: #ffffff;
     --input-text: #000000;
     --font-main: "Tahoma", "Segoe UI", sans-serif;
-
-    /* Win98 3D Border Colors */
-    --win-light: #ffffff;
-    --win-dark: #808080;
-    --win-black: #000000;
+    --font-mono: "Courier New", Courier, monospace;
+    
+    /* 3D Border Colors */
+    --light: #ffffff;
+    --dark: #808080;
+    --black: #000000;
 }
 
-/* BODY */
+[data-theme="light"] {
+    /* Variables remain largely same for Win98 consistency */
+    --bg-color: #008080;
+}
+
 body {
-    font-size: 14px !important;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: var(--font-main);
+    margin: 0;
+    padding: 0;
+    font-size: 14px; /* Slightly smaller for OS feel */
+    line-height: 1.5;
 }
 
-/* LAYOUT - Window Frame */
+a {
+    color: var(--link-color);
+    text-decoration: underline;
+}
+
+a:visited {
+    color: var(--visited-color);
+}
+
+a:active {
+    color: red;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: bold;
+    margin-bottom: 0.5em;
+    border: none;
+    width: 100%;
+}
+
+/* LAYOUT TABLE - Acts as the Main Window */
 table.main-layout {
-    width: 98% !important;
-    height: 96vh !important;
-    margin: 2vh auto !important;
-    background: #c0c0c0 !important;
-    border-collapse: separate !important;
-    border-top: 2px solid var(--win-light) !important;
-    border-left: 2px solid var(--win-light) !important;
-    border-right: 2px solid var(--win-black) !important;
-    border-bottom: 2px solid var(--win-black) !important;
-    box-shadow: 1px 1px 0px var(--win-black) !important;
+    width: 98%;
+    height: 96vh;
+    margin: 2vh auto;
+    background: var(--window-bg);
+    border-collapse: separate; /* Required for window border */
+    /* Classic 3D Window Border */
+    border-top: 2px solid var(--light);
+    border-left: 2px solid var(--light);
+    border-right: 2px solid var(--black);
+    border-bottom: 2px solid var(--black);
+    box-shadow: 1px 1px 0px var(--black);
 }
 
-/* HEADER - Title Bar */
+td {
+    vertical-align: top;
+    padding: 5px;
+}
+
+/* HEADER - The Title Bar */
 .header-cell {
-    background: linear-gradient(90deg, #000080, #1084d0) !important;
-    color: #ffffff !important;
-    height: 30px !important;
-    padding: 4px 8px !important;
-    font-weight: bold !important;
+    background: linear-gradient(90deg, var(--header-bg), #1084d0);
+    color: var(--header-text);
+    height: 30px;
+    padding: 4px 8px;
+    font-weight: bold;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 /* SIDEBAR */
 .sidebar-cell {
-    background-color: #c0c0c0 !important;
-    border-right: 2px solid var(--win-dark) !important;
-    font-size: 13px !important;
+    width: 200px;
+    background-color: var(--sidebar-bg);
+    padding: 10px;
+    font-family: var(--font-main);
+    font-size: 13px;
+    border-right: 2px solid var(--dark);
 }
 
-/* CONTENT - White with sunken border */
+/* MAIN CONTENT */
 .content-cell {
-    background-color: #ffffff !important;
-    color: #000000 !important;
-    border-top: 2px solid var(--win-dark) !important;
-    border-left: 2px solid var(--win-dark) !important;
-    border-right: 2px solid var(--win-light) !important;
-    border-bottom: 2px solid var(--win-light) !important;
+    padding: 20px;
+    background-color: #ffffff; /* White content area */
+    /* Sunken border for content */
+    border-top: 2px solid var(--dark);
+    border-left: 2px solid var(--dark);
+    border-right: 2px solid var(--light);
+    border-bottom: 2px solid var(--light);
+    color: black;
 }
 
-/* HEADING - No bottom border in Win98 style */
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-    border: none !important;
+/* HIDE SIDEBAR (ZEN MODE) */
+body.zen-mode .sidebar-cell {
+    display: none;
 }
 
-/* INPUTS - Sunken border */
-input,
-textarea,
-select {
-    background: #ffffff !important;
-    color: #000000 !important;
-    border-top: 2px solid var(--win-dark) !important;
-    border-left: 2px solid var(--win-dark) !important;
-    border-right: 2px solid var(--win-light) !important;
-    border-bottom: 2px solid var(--win-light) !important;
+/* COMPONENTS */
+.search-box {
+    margin-bottom: 15px;
+    width: 90%;
 }
 
-/* BUTTONS - Classic 3D */
+input, textarea, select {
+    background: var(--input-bg);
+    color: var(--input-text);
+    /* Sunken Input Border */
+    border-top: 2px solid var(--dark);
+    border-left: 2px solid var(--dark);
+    border-right: 2px solid var(--light);
+    border-bottom: 2px solid var(--light);
+    padding: 3px;
+    font-family: var(--font-main);
+}
+
 button {
-    background: #c0c0c0 !important;
-    color: #000000 !important;
-    border-top: 2px solid var(--win-light) !important;
-    border-left: 2px solid var(--win-light) !important;
-    border-right: 2px solid var(--win-black) !important;
-    border-bottom: 2px solid var(--win-black) !important;
-    padding: 4px 12px !important;
-    font-size: 12px !important;
+    background: var(--window-bg);
+    color: black;
+    /* Popped Button Border */
+    border-top: 2px solid var(--light);
+    border-left: 2px solid var(--light);
+    border-right: 2px solid var(--black);
+    border-bottom: 2px solid var(--black);
+    padding: 4px 12px;
+    cursor: pointer;
+    font-family: var(--font-main);
+    font-size: 12px;
 }
 
 button:active {
-    border-top: 2px solid var(--win-black) !important;
-    border-left: 2px solid var(--win-black) !important;
-    border-right: 2px solid var(--win-light) !important;
-    border-bottom: 2px solid var(--win-light) !important;
-    transform: translate(1px, 1px) !important;
-}
-
-/* FOOTER */
-.footer-cell {
-    background-color: #c0c0c0 !important;
-    border-top: 2px solid var(--win-light) !important;
-    height: 30px !important;
-    font-size: 11px !important;
+    /* Sunken on click */
+    border-top: 2px solid var(--black);
+    border-left: 2px solid var(--black);
+    border-right: 2px solid var(--light);
+    border-bottom: 2px solid var(--light);
+    transform: translate(1px, 1px);
 }
 
 /* JUMP LINKS */
 .jump-links {
-    border: 1px dotted var(--win-dark) !important;
+    margin-bottom: 20px;
+    font-family: var(--font-main);
+    font-size: 12px;
+    text-align: center;
+    border: 1px dotted var(--dark);
+    padding: 5px;
+    background: var(--sidebar-bg);
 }
 
-/* ARTICLE CARDS */
-.article-card {
-    border: 2px solid var(--win-dark) !important;
-    border-left-width: 2px !important;
-    background: #ffffff !important;
+/* ARTICLE LIST */
+.article-list-item {
+    margin-bottom: 5px;
+    font-family: var(--font-main);
+    display: flex;
+    align-items: center;
+}
+.article-list-item:before {
+    content: "📄"; /* File Icon */
+    margin-right: 5px;
+    font-size: 12px;
 }
 
-.article-card-title {
-    color: #0000FF !important;
+/* ARTICLE VIEW */
+.article-meta {
+    font-size: 0.8em;
+    color: #888;
+    margin-bottom: 20px;
+    border-bottom: 2px groove var(--light);
+    padding-bottom: 5px;
 }
 
-.article-card-stats {
-    color: #808080 !important;
+.article-content {
+    margin-top: 20px;
+    width: 100%;
 }
 
-/* TAG LINKS */
-.tag-link {
-    border: 1px solid #888888 !important;
-    padding: 1px 5px !important;
-    background: #ffffff !important;
-    color: #000000 !important;
-}
-
-.tag-link:hover {
-    background: #0000FF !important;
-    color: #ffffff !important;
+/* FOOTER */
+.footer-cell {
+    height: 30px;
+    background-color: var(--window-bg);
+    border-top: 2px solid var(--light);
+    text-align: center;
+    font-size: 11px;
+    font-family: var(--font-main);
+    padding-top: 5px;
 }
 
 /* VISITOR COUNTER */
 .visitor-counter {
-    border: 2px inset var(--win-dark) !important;
-    background: #000000 !important;
-    color: #ff0000 !important;
+    border: 2px inset var(--dark);
+    background: black;
+    color: red;
+    padding: 2px 5px;
+    font-family: "Courier New", monospace;
+    font-weight: bold;
+    display: inline-block;
+}
+
+/* UTILS */
+.hidden {
+    display: none !important;
 }
 
 /* LOADING */
 #loading-indicator {
-    color: #ffffff !important;
-    background: #0000FF !important;
-    border: 2px outset #ffffff !important;
+    font-weight: bold;
+    color: white;
+    background: blue;
+    padding: 5px;
+    border: 2px outset white;
 }
 
-/* SEARCH HELP */
-.search-help-content {
-    background: #c0c0c0 !important;
-    border: 1px solid #808080 !important;
+/* EDITOR */
+textarea.editor {
+    width: 100%;
+    height: 400px;
+    font-family: "Courier New", monospace;
 }
 
-/* ARTICLE HEADER */
-.article-actions button {
-    background: #c0c0c0 !important;
-    color: #000000 !important;
+/* TAGS */
+.article-tags {
+    margin-bottom: 15px;
+    font-size: 11px;
 }
 
-.btn-delete {
-    color: #ff0000 !important;
+.article-tags a {
+    display: inline-block;
+    border: 1px solid #888;
+    padding: 1px 5px;
+    margin: 2px;
+    text-decoration: none;
+    background: #fff;
+    color: #000;
 }
