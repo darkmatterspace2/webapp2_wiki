@@ -133,7 +133,7 @@
                         <div class="article-card-main">
                             <a href="pages/article.html?id=${art.id}" class="article-card-title">${art.title}</a>
                             <div class="article-card-meta">
-                                <b>${art.category}</b>: ${tagLinks || '<i>no tags</i>'}
+                                <a href="index.html?cat=${encodeURIComponent(art.category)}"><b>${art.category}</b></a>: ${tagLinks || '<i>no tags</i>'}
                             </div>
                         </div>
                         <div class="article-card-stats">

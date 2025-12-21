@@ -1,0 +1,453 @@
+/* THEME: MINECRAFT (OVERWORLD & NETHER) */
+
+@import url('https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap');
+
+/* RESET & BASE STYLES */
+:root {
+    /* Overworld Palette */
+    --mc-grass: #7bbf43;
+    --mc-dirt-light: #866043;
+    --mc-dirt-dark: #583e2a;
+    --mc-stone: #757575;
+    --mc-wood: #6d4e2e;
+    --ui-bg: #c6c6c6;
+    --ui-dark: #373737;
+    --ui-light: #ffffff;
+    --shadow: #212121;
+    --diamond-blue: #3dd1e4;
+    
+    /* Mapped Variables */
+    --bg-color: #1a1a1a; /* Bedrock level */
+    --text-color: #3f3f3f;
+    --header-bg: var(--mc-grass);
+    --sidebar-bg: #eaddcf; /* Birch Planks / Sand */
+    --border-color: #000000;
+    --link-color: #0000AA; /* Standard Minecraft Chat Link Blue */
+    --visited-color: #AA00AA;
+    --input-bg: #000000;
+    --input-text: #ffffff;
+    
+    /* Typography */
+    --font-main: 'VT323', monospace; /* Readable pixel font */
+    --font-headers: 'Press Start 2P', cursive; /* Title font */
+    --font-chat: 'VT323', monospace;
+    
+    /* Textures (CSS Generated) */
+    --dirt-texture: repeating-linear-gradient(45deg, var(--mc-dirt-dark) 25%, transparent 25%, transparent 75%, var(--mc-dirt-dark) 75%, var(--mc-dirt-dark)), repeating-linear-gradient(45deg, var(--mc-dirt-dark) 25%, var(--mc-dirt-light) 25%, var(--mc-dirt-light) 75%, var(--mc-dirt-dark) 75%, var(--mc-dirt-dark));
+}
+
+[data-theme="light"] {
+    --bg-color: #8faadd; /* Sky Blue */
+    --sidebar-bg: #f2f2f2; /* Quartz */
+}
+
+/* DARK MODE - THE NETHER */
+body.dark-mode {
+    --bg-color: #2b0000; /* Nether Red */
+    --header-bg: #4a0808; /* Netherrack */
+    --sidebar-bg: #1a0505;
+    --text-color: #ffcccc;
+    --link-color: #ffaa00; /* Gold */
+    --ui-bg: #3c2a2a;
+    --border-color: #590000;
+    --input-bg: #111;
+}
+
+/* PIXELATION ENFORCEMENT */
+* {
+    image-rendering: pixelated;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-color);
+    /* Simple grid pattern to simulate blocks */
+    background-image: 
+        linear-gradient(rgba(0,0,0,0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,0,0,0.1) 1px, transparent 1px);
+    background-size: 32px 32px;
+    color: var(--text-color);
+    font-family: var(--font-main);
+    margin: 0;
+    padding: 0;
+    font-size: 22px; /* Pixel fonts need to be larger */
+    line-height: 1.4;
+}
+
+a {
+    color: var(--link-color);
+    text-decoration: none;
+    text-shadow: 2px 2px 0px rgba(0,0,0,0.2);
+    border-bottom: 2px solid transparent;
+}
+
+a:hover {
+    text-decoration: underline;
+    color: var(--diamond-blue);
+    text-shadow: 2px 2px 0 #000;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-main);
+    font-weight: normal;
+    margin-bottom: 1rem;
+    color: #3f3f3f;
+    text-shadow: 2px 2px 0 #bfbfbf;
+    border-bottom: 4px solid var(--text-color);
+    width: 100%;
+    text-transform: uppercase;
+}
+
+body.dark-mode h1, body.dark-mode h2 {
+    color: #ffd700; /* Gold text */
+    text-shadow: 2px 2px 0 #8b0000;
+    border-bottom-color: #ffd700;
+}
+
+/* LAYOUT TABLE - The World */
+table.main-layout {
+    width: 90%;
+    margin: 20px auto;
+    height: 90vh;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 4px solid #000;
+    background: var(--ui-bg);
+    /* Minecraft UI Box Shadow Logic */
+    box-shadow: 
+        inset 4px 4px 0 var(--ui-light),
+        inset -4px -4px 0 var(--ui-dark),
+        10px 10px 0 rgba(0,0,0,0.5);
+}
+
+td {
+    vertical-align: top;
+    padding: 0;
+}
+
+/* HEADER - Grass Block Top */
+.header-cell {
+    background-color: var(--header-bg);
+    /* Side grass texture logic */
+    border-bottom: 8px solid var(--mc-dirt-dark);
+    height: 80px;
+    padding: 10px 20px;
+    image-rendering: pixelated;
+    position: relative;
+}
+
+/* Pixelated Grass Edge */
+.header-cell::after {
+    content: '';
+    position: absolute;
+    bottom: -16px;
+    left: 0;
+    width: 100%;
+    height: 8px;
+    background: repeating-linear-gradient(90deg, 
+        var(--mc-grass) 0px, var(--mc-grass) 10px, 
+        transparent 10px, transparent 20px);
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+}
+
+.header-content h1 {
+    font-family: var(--font-headers);
+    color: #fff;
+    text-shadow: 4px 4px 0 #000;
+    font-size: 1.5em;
+    border: none;
+    margin: 0;
+}
+
+/* SIDEBAR - Wooden Planks */
+.sidebar-cell {
+    width: 250px;
+    background-color: var(--sidebar-bg);
+    border-right: 4px solid #000;
+    font-size: 18px;
+    padding: 20px;
+    /* Plank Texture */
+    background-image: repeating-linear-gradient(0deg, rgba(0,0,0,0.1) 0px, rgba(0,0,0,0.1) 2px, transparent 2px, transparent 40px);
+}
+
+/* MAIN CONTENT */
+.content-cell {
+    padding: 20px;
+    background-color: var(--ui-bg);
+}
+
+/* HIDE SIDEBAR (ZEN MODE) */
+body.zen-mode .sidebar-cell {
+    display: none;
+}
+
+/* COMPONENTS */
+.search-box {
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+/* INPUTS - Command Block Console */
+input, textarea, select {
+    background: #000;
+    color: #fff;
+    border: 2px solid #a0a0a0;
+    border-top-color: #555; /* Inset effect */
+    border-left-color: #555;
+    padding: 10px;
+    font-family: var(--font-chat);
+    font-size: 18px;
+    width: 100%;
+    outline: none;
+}
+
+input:focus, textarea:focus {
+    border-color: #fff;
+    background: #111;
+}
+
+/* BUTTONS - Minecraft UI Buttons */
+button {
+    background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='); /* Simple grey filler */
+    background-color: #8b8b8b;
+    color: #fff;
+    font-family: var(--font-main);
+    font-size: 20px;
+    padding: 10px 20px;
+    cursor: pointer;
+    text-shadow: 2px 2px 0 #000;
+    /* The Classic Minecraft Button Border Stack */
+    border: 2px solid #000;
+    box-shadow: 
+        inset 2px 2px 0 rgba(255,255,255,0.5),
+        inset -2px -2px 0 rgba(0,0,0,0.5);
+    margin: 5px;
+    position: relative;
+}
+
+button:hover {
+    background-color: #a0a0aa; /* Highlight blueish grey */
+    color: #ffffa0; /* Yellow text on hover */
+}
+
+button:active {
+    background-color: #6b6b6b;
+    box-shadow: inset 2px 2px 0 #000; /* Pressed effect */
+}
+
+/* JUMP LINKS - Inventory Slots */
+.jump-links {
+    margin-bottom: 20px;
+    font-family: var(--font-main);
+    font-size: 16px;
+    text-align: center;
+    border: none;
+    padding: 10px;
+    background: transparent;
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+}
+
+.jump-links a {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    background: #8b8b8b;
+    border: 2px solid #373737;
+    border-right-color: #fff;
+    border-bottom-color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: #fff;
+    font-weight: bold;
+}
+
+.jump-links a:hover {
+    background: rgba(255,255,255,0.5);
+}
+
+/* ARTICLE LIST */
+.article-list-item {
+    margin-bottom: 10px;
+    padding: 5px;
+}
+
+/* ARTICLE VIEW */
+.article-meta {
+    font-size: 0.9em;
+    color: #555;
+    margin-bottom: 20px;
+    border-bottom: 2px dashed #777;
+    padding-bottom: 5px;
+}
+
+.article-content {
+    margin-top: 20px;
+    width: 100%;
+}
+
+/* Code blocks look like Command Blocks */
+.article-content pre {
+    background: repeating-linear-gradient(
+        45deg,
+        #bca483,
+        #bca483 10px,
+        #b09572 10px,
+        #b09572 20px
+    );
+    border: 4px solid #56381d;
+    padding: 10px;
+    color: #000;
+}
+
+/* FOOTER */
+.footer-cell {
+    height: 50px;
+    background-color: #000;
+    color: #fff;
+    border-top: 4px solid #fff;
+    text-align: center;
+    font-family: var(--font-chat);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* VISITOR COUNTER - XP Bar Level */
+.visitor-counter {
+    background: transparent;
+    color: #80ff20; /* XP Green */
+    padding: 0 10px;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 1.2em;
+    text-shadow: 2px 2px 0 #000;
+    border: none;
+    display: inline-block;
+}
+
+/* UTILS */
+.hidden {
+    display: none !important;
+}
+
+/* LOADING - Mojang Screen */
+#loading-indicator {
+    background: #F81616; /* Mojang Red */
+    color: #fff;
+    padding: 10px;
+    font-family: var(--font-headers);
+    border: 4px solid #fff;
+    box-shadow: 4px 4px 0 #000;
+}
+
+/* EDITOR - Book and Quill */
+textarea.editor {
+    width: 100%;
+    height: 400px;
+    font-family: var(--font-main);
+    background: #fdf5dc; /* Parchment */
+    color: #4a3b2a;
+    border: 8px solid #6d4e2e; /* Leather cover */
+    padding: 20px;
+    font-size: 1.2em;
+}
+
+/* TAGS - Item Tooltips */
+.article-tags {
+    margin-bottom: 15px;
+    font-size: 16px;
+}
+
+.article-tags a {
+    display: inline-block;
+    border: 2px solid #280b56; /* Purple border */
+    padding: 5px 8px;
+    margin: 2px;
+    text-decoration: none;
+    background: #100010; /* Dark tooltip bg */
+    color: #fff;
+    font-family: var(--font-chat);
+    box-shadow: 4px 4px 0 rgba(0,0,0,0.5);
+}
+
+.article-tags a:hover {
+    color: #ffff55; /* Enchantment yellow */
+    border-color: #fff;
+}
+
+/* ARTICLE CARDS (Index Page) - Achievement Popups */
+.article-cards {
+    width: 100%;
+    border-spacing: 0 15px;
+}
+
+.article-card {
+    display: table;
+    width: 100%;
+    border: 2px solid #fff;
+    margin-bottom: 15px;
+    background: #212121; /* Toast background */
+    color: #fff;
+    box-shadow: 4px 4px 0 #000;
+}
+
+.article-card .card-main {
+    display: table-cell;
+    padding: 15px;
+    vertical-align: top;
+}
+
+.article-card .card-title {
+    font-size: 1.4em;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #ffff55; /* Achievement Title Yellow */
+    text-shadow: 2px 2px 0 #333;
+}
+
+.article-card .card-title a {
+    color: #ffff55;
+    text-decoration: none;
+}
+
+.article-card .card-meta {
+    font-size: 0.9em;
+    color: #aaa;
+}
+
+.article-card .card-meta strong {
+    color: #fff;
+}
+
+.article-card .card-right {
+    display: table-cell;
+    width: 100px;
+    padding: 10px;
+    vertical-align: middle;
+    text-align: center;
+    border-left: 2px solid #555;
+}
+
+/* Scrollbar - Minecraft Style */
+::-webkit-scrollbar {
+    width: 12px;
+}
+::-webkit-scrollbar-track {
+    background: #000;
+    border-left: 1px solid #555;
+}
+::-webkit-scrollbar-thumb {
+    background: #c6c6c6;
+    border: 2px solid #fff;
+    border-right-color: #555;
+    border-bottom-color: #555;
+}

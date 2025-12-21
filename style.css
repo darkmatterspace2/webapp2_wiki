@@ -73,6 +73,8 @@ table.main-layout {
     height: 100vh;
     border-collapse: collapse;
     border: 1px solid var(--border-color);
+    table-layout: fixed;
+    /* STRICTLY ENFORCE WIDTH to prevent content overflowing */
 }
 
 td {
@@ -98,6 +100,8 @@ td {
 /* SIDEBAR */
 .sidebar-cell {
     width: 200px;
+    min-width: 200px;
+    /* Prevent shrinking */
     background-color: var(--sidebar-bg);
     border-right: 2px solid var(--border-color);
     font-family: var(--font-main);
@@ -113,6 +117,24 @@ td {
 /* HIDE SIDEBAR (ZEN MODE) */
 body.zen-mode .sidebar-cell {
     display: none;
+}
+
+/* TABLE COLUMNS */
+.col-sidebar {
+    width: 200px;
+}
+
+.col-content {
+    width: auto;
+}
+
+/* ZEN MODE: Sidebar column becomes 100% width because content cell moves into it (sidebar hidden) */
+body.zen-mode .col-sidebar {
+    width: 100% !important;
+}
+
+body.zen-mode .col-content {
+    width: 0 !important;
 }
 
 /* COMPONENTS */
@@ -145,6 +167,29 @@ button {
 
 button:active {
     border-style: inset;
+}
+
+/* HEADER BUTTONS */
+.btn-header {
+    margin-left: 5px;
+    min-width: 30px;
+    text-align: center;
+}
+
+/* Active Toggle State (Sunken/Highlighted) */
+.btn-header.active {
+    border-style: inset;
+    background: #444;
+    /* Darker bg for contrast */
+    color: #fff;
+    box-shadow: inset 1px 1px 2px #000;
+}
+
+/* Light mode override for active state */
+[data-theme="light"] .btn-header.active {
+    background: #ccc;
+    color: #000;
+    box-shadow: inset 1px 1px 2px #666;
 }
 
 /* JUMP LINKS */
@@ -215,6 +260,14 @@ button:active {
 .article-content {
     margin-top: 20px;
     width: 100%;
+}
+
+/* Ensure images don't overflow */
+.article-content img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 10px 0;
 }
 
 /* ARTICLE HEADER */

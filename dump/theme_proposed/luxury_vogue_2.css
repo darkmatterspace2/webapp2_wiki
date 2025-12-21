@@ -1,0 +1,491 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,700&family=Cinzel:wght@400;600;700&family=Libre+Baskerville:ital@0;1&display=swap');
+
+/* RESET & BASE STYLES - GLAMOUR EDITORIAL UPGRADE */
+:root {
+    /* Palette: Ultra-Luxe High Fashion */
+    --vogue-black: #000000;
+    --vogue-white: #fafafa;
+    --deep-obsidian: #0f0f0f;
+    --platinum: #e8e8e8;
+    --champagne-gold: #c9a96e;
+    --editorial-rose: #e84a5f;
+    --smokey-quartz: #2c2c2c;
+    --soft-ivory: #fffff8;
+    
+    /* Accents & Glows */
+    --accent-primary: var(--editorial-rose);
+    --accent-gold: var(--champagne-gold);
+    
+    /* Mapped Variables */
+    --bg-color: var(--vogue-white);
+    --text-color: #1a1a1a;
+    --header-bg: rgba(250, 250, 250, 0.95);
+    --sidebar-bg: var(--soft-ivory);
+    --border-color: var(--vogue-black);
+    --link-color: var(--vogue-black);
+    --visited-color: #666666;
+    --input-bg: transparent;
+    --input-text: #000;
+    
+    /* Typography - Haute Couture */
+    --font-main: 'Cormorant Garamond', serif;
+    --font-serif: 'Libre Baskerville', serif;
+    --font-display: 'Cinzel', serif;
+    --font-mono: 'Courier New', monospace;
+}
+
+[data-theme="light"] {
+    --bg-color: var(--vogue-white);
+    --text-color: #111;
+}
+
+/* DARK MODE - MIDNIGHT GALA EDITORIAL */
+body.dark-mode {
+    --bg-color: var(--deep-obsidian);
+    --text-color: #f0f0f0;
+    --header-bg: rgba(15, 15, 15, 0.98);
+    --sidebar-bg: #111111;
+    --border-color: #444444;
+    --link-color: #ffffff;
+    --input-bg: #1f1f1f;
+    --input-text: #fff;
+    --accent-primary: #ff6b81;
+    --accent-gold: #f4d06f;
+}
+
+/* BASE STYLING */
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: var(--font-main);
+    margin: 0;
+    padding: 0;
+    font-size: 18px;
+    line-height: 1.85;
+    letter-spacing: 0.03em;
+    transition: background-color 0.6s ease, color 0.6s ease;
+}
+
+a {
+    color: var(--link-color);
+    text-decoration: none;
+    background-image: linear-gradient(var(--accent-primary), var(--accent-primary));
+    background-position: 0% 100%;
+    background-repeat: no-repeat;
+    background-size: 0% 1.5px;
+    transition: background-size 0.5s cubic-bezier(0.22, 1, 0.36, 1), color 0.4s;
+    font-weight: 500;
+}
+
+a:hover {
+    background-size: 100% 1.5px;
+    color: var(--accent-primary);
+}
+
+body.dark-mode a:hover {
+    color: var(--accent-primary);
+}
+
+a:visited {
+    color: var(--visited-color);
+}
+
+/* TYPOGRAPHY - RUNWAY HEADLINES */
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    color: var(--vogue-black);
+    margin-bottom: 0.8em;
+    border-bottom: 2px solid var(--accent-gold);
+    padding-bottom: 12px;
+    width: fit-content;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    position: relative;
+}
+
+h1::after, h2::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 60px;
+    height: 1px;
+    background: var(--accent-primary);
+}
+
+body.dark-mode h1, body.dark-mode h2, body.dark-mode h3 {
+    color: #fff;
+    border-bottom-color: var(--accent-gold);
+}
+
+h1 { font-size: 4.2em; line-height: 1.05; letter-spacing: 0.08em; }
+h2 { font-size: 2.8em; line-height: 1.15; }
+
+/* LAYOUT TABLE - COUTURE GRID WITH DECORATIVE BORDERS */
+table.main-layout {
+    width: 100%;
+    max-width: 1600px;
+    margin: 0 auto;
+    height: 100vh;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 1px double var(--border-color);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+    background: var(--bg-color);
+    overflow: hidden;
+}
+
+td {
+    vertical-align: top;
+    padding: 0;
+    position: relative;
+}
+
+/* HEADER - THE ICONIC MASTHEAD */
+.header-cell {
+    background-color: var(--header-bg);
+    border-bottom: 6px double var(--accent-gold);
+    height: 120px;
+    padding: 0 60px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+    font-family: var(--font-display);
+    font-size: 2.4em;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+}
+
+/* SIDEBAR - THE GLAMOUR INDEX */
+.sidebar-cell {
+    width: 320px;
+    background: linear-gradient(to bottom, var(--sidebar-bg), var(--vogue-white));
+    border-right: 3px double var(--accent-gold);
+    padding: 60px 30px;
+    font-size: 15px;
+    text-align: right;
+    box-shadow: inset -10px 0 30px rgba(0,0,0,0.05);
+}
+
+body.dark-mode .sidebar-cell {
+    background: linear-gradient(to bottom, #111, var(--deep-obsidian));
+}
+
+/* MAIN CONTENT - THE EDITORIAL SPREAD */
+.content-cell {
+    padding: 100px 120px;
+    background-color: var(--bg-color);
+}
+
+/* HIDE SIDEBAR (ZEN MODE) */
+body.zen-mode .sidebar-cell {
+    display: none;
+}
+
+/* COMPONENTS */
+.search-box {
+    margin-bottom: 60px;
+    width: 100%;
+    border-bottom: 2px solid var(--accent-gold);
+    padding-bottom: 30px;
+}
+
+/* INPUTS - LUXE & REFINED */
+input, textarea, select {
+    background: var(--input-bg);
+    color: var(--input-text);
+    border: none;
+    border-bottom: 1px solid #aaa;
+    padding: 15px 0;
+    font-family: var(--font-serif);
+    font-size: 1.3em;
+    font-style: italic;
+    width: 100%;
+    transition: all 0.5s ease;
+}
+
+input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-bottom: 3px solid var(--accent-primary);
+    padding-left: 15px;
+    background: rgba(232, 74, 95, 0.04);
+}
+
+/* BUTTONS - RED CARPET CALL TO ACTION */
+button {
+    background: var(--vogue-black);
+    color: #fff;
+    border: 2px solid var(--accent-gold);
+    padding: 16px 40px;
+    cursor: pointer;
+    font-weight: 600;
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-size: 12px;
+    transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+
+button:hover {
+    background: var(--accent-primary);
+    color: #fff;
+    border-color: var(--accent-primary);
+    transform: translateY(-4px);
+    box-shadow: 0 15px 35px rgba(232, 74, 95, 0.3);
+}
+
+/* JUMP LINKS - CONTENTS PAGE */
+.jump-links {
+    margin-bottom: 60px;
+    font-family: var(--font-main);
+    font-size: 12px;
+    text-transform: uppercase;
+    text-align: center;
+    border: 2px double var(--accent-gold);
+    padding: 25px;
+    background: var(--vogue-white);
+    letter-spacing: 2.5px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+body.dark-mode .jump-links {
+    background: var(--deep-obsidian);
+    border-color: var(--accent-gold);
+}
+
+/* ARTICLE LIST - SIDEBAR GLAMOUR LINKS */
+.article-list-item {
+    margin-bottom: 20px;
+    font-family: var(--font-serif);
+    font-size: 1.3em;
+    position: relative;
+    padding-right: 20px;
+    transition: all 0.4s ease;
+}
+
+.article-list-item:hover {
+    color: var(--accent-primary);
+    font-style: italic;
+    padding-right: 30px;
+}
+
+.article-list-item::before {
+    content: '→';
+    position: absolute;
+    right: 0;
+    opacity: 0;
+    transition: opacity 0.4s;
+}
+
+.article-list-item:hover::before {
+    opacity: 1;
+}
+
+/* ARTICLE VIEW */
+.article-meta {
+    font-size: 0.9em;
+    color: #777;
+    margin-bottom: 60px;
+    border-top: 1px solid var(--accent-gold);
+    border-bottom: 1px solid var(--accent-gold);
+    padding: 20px 0;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    font-family: var(--font-display);
+}
+
+/* Drop Cap - Haute Couture Opening */
+.article-content p:first-of-type::first-letter {
+    font-family: var(--font-display);
+    font-size: 6em;
+    line-height: 0.8;
+    float: left;
+    margin: 10px 20px 0 0;
+    color: var(--accent-primary);
+    text-shadow: 3px 3px 8px rgba(0,0,0,0.1);
+}
+
+body.dark-mode .article-content p:first-of-type::first-letter {
+    color: var(--accent-primary);
+}
+
+/* FOOTER - CLOSING CREDIT */
+.footer-cell {
+    height: 100px;
+    background: linear-gradient(to top, var(--vogue-black), #1a1a1a);
+    color: var(--champagne-gold);
+    text-align: center;
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    font-family: var(--font-display);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-top: 3px double var(--accent-gold);
+}
+
+/* VISITOR COUNTER - ISSUE DIAMOND */
+.visitor-counter {
+    border: 2px solid var(--accent-gold);
+    background: transparent;
+    color: var(--champagne-gold);
+    padding: 10px 25px;
+    font-family: var(--font-display);
+    font-size: 1.8em;
+    margin-left: 30px;
+    letter-spacing: 0.1em;
+}
+
+/* UTILS */
+.hidden { display: none !important; }
+
+/* LOADING */
+#loading-indicator {
+    font-weight: 700;
+    color: var(--accent-primary);
+    background: var(--vogue-white);
+    padding: 40px;
+    text-transform: uppercase;
+    letter-spacing: 8px;
+    font-family: var(--font-display);
+    font-size: 1.5em;
+    border: 3px double var(--accent-gold);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+}
+
+/* EDITOR */
+textarea.editor {
+    width: 100%;
+    height: 700px;
+    font-family: var(--font-mono);
+    border: 2px solid var(--accent-gold);
+    background: var(--soft-ivory);
+    padding: 60px;
+    font-size: 16px;
+    color: #222;
+    box-shadow: inset 0 0 40px rgba(0,0,0,0.05);
+}
+
+/* TAGS - THE SEASON'S COLLECTION */
+.article-tags {
+    margin-bottom: 50px;
+    font-size: 12px;
+    text-align: center;
+}
+
+.article-tags a {
+    display: inline-block;
+    border: 1px solid var(--accent-gold);
+    padding: 12px 24px;
+    margin: 8px;
+    background: transparent;
+    color: var(--vogue-black);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    transition: all 0.5s ease;
+    font-family: var(--font-display);
+}
+
+.article-tags a:hover {
+    background: var(--accent-primary);
+    color: #fff;
+    border-color: var(--accent-primary);
+    transform: scale(1.05);
+}
+
+/* ARTICLE CARDS - COVER SHOOT GRID */
+.article-cards {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 60px;
+}
+
+.article-card {
+    display: table;
+    width: 100%;
+    margin-bottom: 60px;
+    background: transparent;
+    border-bottom: 3px double var(--accent-gold);
+    padding-bottom: 60px;
+    transition: transform 0.4s ease;
+}
+
+.article-card:hover {
+    transform: translateY(-8px);
+}
+
+.article-card .card-main {
+    display: table-cell;
+    padding: 0 40px 30px 0;
+    vertical-align: top;
+}
+
+.article-card .card-title {
+    font-size: 3em;
+    font-weight: 600;
+    margin-bottom: 20px;
+    font-family: var(--font-display);
+    line-height: 1.15;
+    letter-spacing: 0.05em;
+}
+
+.article-card .card-title a {
+    color: var(--text-color);
+    background-image: none;
+    transition: color 0.5s ease;
+}
+
+.article-card .card-title a:hover {
+    color: var(--accent-primary);
+}
+
+.article-card .card-meta {
+    font-size: 0.9em;
+    color: #888;
+    font-family: var(--font-main);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-top: 15px;
+}
+
+.article-card .card-meta strong {
+    color: var(--vogue-black);
+    margin-right: 20px;
+    font-weight: 600;
+}
+
+body.dark-mode .article-card .card-meta strong {
+    color: #fff;
+}
+
+.article-card .card-right {
+    display: table-cell;
+    width: 180px;
+    padding: 0;
+    vertical-align: top;
+    text-align: right;
+    font-size: 1.1em;
+    color: var(--accent-gold);
+    font-style: italic;
+    font-family: var(--font-serif);
+    letter-spacing: 0.08em;
+}
+
+/* Selection Glow */
+::selection {
+    background: var(--accent-primary);
+    color: #fff;
+}

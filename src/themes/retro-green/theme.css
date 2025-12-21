@@ -1,77 +1,144 @@
-/* MATRIX GREEN THEME
-   Green-on-black terminal/matrix aesthetic */
+/* CYBERPUNK TERMINAL THEME
+   Green-on-black terminal aesthetic with scanlines and glow effects
+   This file contains ONLY overrides - base styles come from style.css */
 
+/* OVERRIDE CSS VARIABLES */
+:root {
+    --bg-color: #050505;
+    --text-color: #00ff41;
+    --link-color: #008F11;
+    --visited-color: #003b00;
+    --header-bg: #000000;
+    --sidebar-bg: #0a0a0a;
+    --border-color: #00ff41;
+    --input-bg: #000;
+    --input-text: #00ff41;
+    --font-main: "Courier New", Courier, monospace;
+    --font-mono: "Courier New", Courier, monospace;
+}
+
+/* UNIQUE EFFECTS */
 body {
-    background: #0a0a0a !important;
-    color: #00ff00 !important;
+    /* Scanline Effect */
+    background-image: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06)) !important;
+    background-size: 100% 2px, 3px 100% !important;
+    text-shadow: 0 0 5px rgba(0, 255, 65, 0.5) !important;
 }
 
-.dark-mode {
-    background: #0a0a0a !important;
-    color: #00ff00 !important;
-}
-
-a:link {
-    color: #00cc00 !important;
+/* LINKS - Cyberpunk style */
+a {
+    color: #00ff41 !important;
+    text-decoration: none !important;
+    border-bottom: 1px dashed #00ff41 !important;
 }
 
 a:visited {
-    color: #009900 !important;
+    color: #008F11 !important;
 }
 
 a:hover {
-    color: #33ff33 !important;
+    background-color: #00ff41 !important;
+    color: #000 !important;
 }
 
-/* Header */
-.header-cell {
-    background: #001100 !important;
-    border-color: #00ff00 !important;
+/* HEADINGS - Cyberpunk style */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    text-transform: uppercase !important;
+    letter-spacing: 2px !important;
 }
 
-/* Sidebar */
-.sidebar-cell {
-    background: #001100 !important;
-    border-color: #00ff00 !important;
-}
-
-/* Footer */
-.footer-cell {
-    background: #001100 !important;
-    border-color: #00ff00 !important;
-}
-
-/* Tables */
-table {
-    border-color: #00ff00 !important;
-}
-
-th {
-    background: #002200 !important;
-}
-
-/* Buttons */
+/* BUTTONS - Glow effect */
 button {
-    background: #002200 !important;
-    color: #00ff00 !important;
-    border: 1px solid #00ff00 !important;
+    background: #000 !important;
+    color: var(--text-color) !important;
+    border: 1px solid var(--border-color) !important;
+    text-transform: uppercase !important;
+    box-shadow: 0 0 5px rgba(0, 255, 65, 0.5) !important;
+    transition: all 0.2s !important;
 }
 
 button:hover {
-    background: #003300 !important;
+    background: var(--text-color) !important;
+    color: #000 !important;
 }
 
-/* Inputs */
+button:active {
+    transform: translateY(2px) !important;
+}
+
+/* INPUTS - Glow effect */
 input,
 textarea,
 select {
-    background: #001100 !important;
-    color: #00ff00 !important;
-    border: 1px solid #00ff00 !important;
+    box-shadow: 0 0 5px rgba(0, 255, 65, 0.5) !important;
 }
 
-/* Loading indicator */
+input:focus,
+textarea:focus {
+    outline: none !important;
+    background-color: #111 !important;
+}
+
+/* VISITOR COUNTER - Glow */
+.visitor-counter {
+    box-shadow: 0 0 5px rgba(0, 255, 65, 0.5) !important;
+}
+
+/* LOADING */
 #loading-indicator {
-    color: #00ff00 !important;
+    color: #000 !important;
+    background: var(--text-color) !important;
+}
+
+/* ARTICLE CARDS */
+.article-card {
+    border-color: var(--border-color) !important;
+    border-left-color: #00cc00 !important;
+}
+
+.article-card-title {
+    color: var(--text-color) !important;
+}
+
+.article-card-stats {
+    color: #009900 !important;
+}
+
+/* SEARCH HELP */
+.search-help-content {
+    background: #001100 !important;
+    border-color: var(--border-color) !important;
+}
+
+/* ARTICLE HEADER & ACTIONS */
+.article-actions button {
     background: #002200 !important;
+    color: var(--text-color) !important;
+    border-color: var(--border-color) !important;
+}
+
+.btn-delete {
+    color: #ff3333 !important;
+}
+
+/* TAG LINKS - Booru style */
+.tag-link {
+    display: inline-block !important;
+    border: 1px solid #00ff41 !important;
+    padding: 2px 6px !important;
+    margin: 2px !important;
+    background: #002200 !important;
+    color: #00ff41 !important;
+    text-decoration: none !important;
+}
+
+.tag-link:hover {
+    background: #00ff41 !important;
+    color: #000 !important;
+    border-color: #00ff41 !important;
 }
