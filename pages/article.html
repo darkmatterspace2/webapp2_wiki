@@ -59,20 +59,25 @@
                 const sbClient = AppUtils.initSupabase();
                 const user = await AppUtils.checkAuth(sbClient);
                 const actionButtons = user ? `
-                    <span style="display: flex; gap: 5px;">
-                        <button onclick="editArticle()" style="white-space: nowrap;">[ Edit ]</button>
-                        <button onclick="deleteArticle()" style="white-space: nowrap; color: red;">[ Delete ]</button>
+                    <span class="article-actions">
+                        <button onclick="editArticle()">[ Edit ]</button>
+                        <button onclick="deleteArticle()" class="btn-delete">[ Delete ]</button>
                     </span>` : '';
+
+                // Generate clickable tag links
+                const tagLinks = (meta.tags || []).map(tag =>
+                    `<a href="../index.html?q=${encodeURIComponent(tag)}" class="tag-link">${tag}</a>`
+                ).join(' ');
 
                 // Render metadata with action buttons in title row
                 document.getElementById('article-meta').innerHTML = `
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <h2 style="margin: 0;">${meta.title}</h2>
+                    <div class="article-header">
+                        <h2>${meta.title}</h2>
                         ${actionButtons}
                     </div>
                     <p>
                         <b>Category:</b> ${meta.category} | 
-                        <b>Tags:</b> ${(meta.tags || []).join(', ')} | 
+                        <b>Tags:</b> ${tagLinks || 'None'} | 
                         <b>Views:</b> ${meta.views || 0}
                     </p>
                     <p><small>Created: ${AppUtils.formatDate(meta.created_at)}</small></p>

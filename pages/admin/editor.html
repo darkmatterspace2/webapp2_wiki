@@ -32,15 +32,9 @@
                 </tr>
                 <tr>
                     <td>Category:</td>
-                    <td><input type="text" id="edit-category" required></td>
-                </tr>
-                <tr>
-                    <td>Tags:</td>
-                    <td><input type="text" id="edit-tags" placeholder="comma, separated"></td>
-                </tr>
-                <tr>
-                    <td>Rating:</td>
                     <td>
+                        <input type="text" id="edit-category" required style="width: 150px;">
+                        &nbsp;&nbsp;Rating:
                         <select id="edit-rating">
                             <option value="NR">NR (Not Rated)</option>
                             <option value="M">M (Mature)</option>
@@ -48,6 +42,10 @@
                             <option value="X">X (Restricted)</option>
                         </select>
                     </td>
+                </tr>
+                <tr>
+                    <td>Tags:</td>
+                    <td><input type="text" id="edit-tags" placeholder="comma, separated" style="width: 100%;"></td>
                 </tr>
                 <tr>
                     <td valign="top">Content:</td>
@@ -158,11 +156,8 @@
             const content = document.getElementById('edit-content').value;
 
             try {
-                // Generate filename
-                const fileName = `${Date.now()}_${title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.html`;
-
-                // Upload content using StorageService
-                await StorageService.upload(fileName, content);
+                // Upload content using date-based folder structure
+                const bucketPath = await StorageService.uploadArticle(title, content);
 
                 // Build payload
                 const payload = {
@@ -170,15 +165,15 @@
                     category,
                     tags,
                     ratings,
-                    bucket_path: fileName,
+                    bucket_path: bucketPath,
                     updated_at: new Date().toISOString()
                 };
 
                 if (editingId) {
                     // Update existing
                     await ArticleService.update(editingId, payload);
-                    // Optionally delete old file if path changed
-                    if (existingBucketPath && existingBucketPath !== fileName) {
+                    // Delete old file if path changed
+                    if (existingBucketPath && existingBucketPath !== bucketPath) {
                         try { await StorageService.delete(existingBucketPath); } catch (e) { }
                     }
                 } else {

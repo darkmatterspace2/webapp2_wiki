@@ -186,13 +186,11 @@
             const content = document.getElementById('edit-content').value;
 
             try {
-                const fileName = `${Date.now()}_${title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.html`;
-
-                // Use StorageService
-                await StorageService.upload(fileName, content);
+                // Upload content using date-based folder structure
+                const bucketPath = await StorageService.uploadArticle(title, content);
 
                 // Use ArticleService
-                const payload = { title, category, tags, ratings, bucket_path: fileName };
+                const payload = { title, category, tags, ratings, bucket_path: bucketPath };
                 await ArticleService.create(payload);
 
                 alert("Imported Article Published!");
