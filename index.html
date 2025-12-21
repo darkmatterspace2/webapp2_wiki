@@ -37,19 +37,10 @@
             (<a href="index.html">Clear</a>)
         </div>
 
-        <table border="1" width="100%" cellpadding="5">
-            <thead>
-                <tr bgcolor="#444">
-                    <th align="left">Date</th>
-                    <th align="left">Title</th>
-                    <th align="left">Category</th>
-                    <th align="right">Views</th>
-                </tr>
-            </thead>
-            <tbody id="article-list-body">
-                <!-- Articles injected here -->
-            </tbody>
-        </table>
+        <!-- Article Cards Container -->
+        <div id="article-list-body" class="article-cards">
+            <!-- Articles injected here -->
+        </div>
 
         <div style="margin-top: 20px; text-align: center;">
             <button onclick="changePage(-1)">&lt; Prev</button>
@@ -142,25 +133,36 @@
         }
 
         function renderList(articles) {
-            const tbody = document.getElementById('article-list-body');
-            tbody.innerHTML = '';
+            const container = document.getElementById('article-list-body');
+            container.innerHTML = '';
             if (articles.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" align="center">No data found in matrix.</td></tr>';
+                container.innerHTML = '<div class="article-card"><p style="text-align:center;">No data found in matrix.</p></div>';
                 return;
             }
             articles.forEach(art => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td valign="top"><small>${AppUtils.formatDate(art.created_at)}</small></td>
-                    <td valign="top">
-                        <a href="article.html?id=${art.id}" style="font-weight: bold;">${art.title}</a>
-                        <br>
-                        <small>${(art.tags || []).join(', ')}</small>
-                    </td>
-                    <td valign="top">${art.category}</td>
-                    <td align="right" valign="top">${art.views || 0}</td>
+                const card = document.createElement('div');
+                card.className = 'article-card';
+
+                // Build tags HTML
+                const tagsHtml = (art.tags && art.tags.length > 0)
+                    ? art.tags.map(t => `<a href="index.html?tag=${encodeURIComponent(t.trim())}">${t.trim()}</a>`).join(' ')
+                    : '';
+
+                card.innerHTML = `
+                    <div class="card-main">
+                        <div class="card-title">
+                            <a href="article.html?id=${art.id}">${art.title}</a>
+                        </div>
+                        <div class="card-meta">
+                            <strong>${art.category}</strong> ${tagsHtml}
+                        </div>
+                    </div>
+                    <div class="card-right">
+                        <div>${AppUtils.formatDate(art.created_at)}</div>
+                        <div>${art.views || 0} views</div>
+                    </div>
                 `;
-                tbody.appendChild(tr);
+                container.appendChild(card);
             });
         }
 

@@ -238,3 +238,57 @@ textarea.editor {
 .article-tags a:hover {
     background: var(--header-bg);
 }
+
+/* ARTICLE CARDS (Index Page) */
+.article-cards {
+    width: 100%;
+}
+
+.article-card {
+    display: table;
+    width: 100%;
+    border: 1px solid var(--border-color);
+    margin-bottom: 10px;
+    background: var(--sidebar-bg);
+}
+
+.article-card .card-main {
+    display: table-cell;
+    padding: 10px 15px;
+    vertical-align: top;
+}
+
+.article-card .card-title {
+    font-size: 1.3em;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.article-card .card-title a {
+    text-decoration: none;
+}
+
+.article-card .card-meta {
+    font-size: 0.85em;
+    color: var(--text-color);
+}
+
+.article-card .card-meta strong {
+    margin-right: 10px;
+}
+
+.article-card .card-meta a {
+    font-size: 0.9em;
+    margin-right: 5px;
+}
+
+.article-card .card-right {
+    display: table-cell;
+    width: 120px;
+    padding: 10px;
+    vertical-align: top;
+    text-align: right;
+    font-size: 0.85em;
+    color: var(--text-color);
+    border-left: 1px solid var(--border-color);
+}

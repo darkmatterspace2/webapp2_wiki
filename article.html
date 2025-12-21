@@ -134,12 +134,6 @@
             // 5b. Initialize any galleries in the article content
             if (typeof initGalleries === 'function') {
                 initGalleries(document.getElementById('article-body'));
-                // Delayed resize for late-loading images
-                if (typeof resizeGalleryImages === 'function') {
-                    setTimeout(resizeGalleryImages, 500);
-                    setTimeout(resizeGalleryImages, 1500);
-                    setTimeout(resizeGalleryImages, 3000);
-                }
             }
 
             // 6. Increment View
