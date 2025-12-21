@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Article - RetroWiki 2k25</title>
+    <link rel="stylesheet" href="../style.css">
+    <!-- Dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Config -->
+    <script src="../src/config/app.config.js"></script>
+    <script src="../src/config/supabase.config.js"></script>
+    <!-- Services -->
+    <script src="../src/services/article.service.js"></script>
+    <script src="../src/services/storage.service.js"></script>
+    <script src="../src/services/category.service.js"></script>
+    <!-- Shared -->
+    <script src="../src/shared/utils.js"></script>
+    <script src="../src/themes/theme-loader.js"></script>
+    <script src="../src/shared/layout.js"></script>
+</head>
+
+<body>
+
+    <div id="article-view">
+        <div id="article-meta">
+            <!-- Populated by JS -->
+        </div>
+        <hr>
+        <div id="article-content">
+            <p><i>Loading article...</i></p>
+        </div>
+        <hr>
+        <p><a href="../index.html">&lt;&lt; Back to Index</a></p>
+    </div>
+
+    <script>
+        let currentMeta = null;
+
+        async function initArticle() {
+            const id = AppUtils.getParam('id');
+            if (!id) {
+                document.getElementById('article-content').innerHTML = '<p style="color:red;">No article ID provided.</p>';
+                return;
+            }
+
+            AppUtils.showLoading(true);
+
+            try {
+                // Use ArticleService to get metadata
+                const meta = await ArticleService.getById(id);
+                currentMeta = meta;
+
+                // Update page title
+                document.title = `${meta.title} - RetroWiki 2k25`;
+
+                // Check if user is logged in (for showing edit/delete buttons)
+                const sbClient = AppUtils.initSupabase();
+                const user = await AppUtils.checkAuth(sbClient);
+                const actionButtons = user ? `
+                    <span style="display: flex; gap: 5px;">
+                        <button onclick="editArticle()" style="white-space: nowrap;">[ Edit ]</button>
+                        <button onclick="deleteArticle()" style="white-space: nowrap; color: red;">[ Delete ]</button>
+                    </span>` : '';
+
+                // Render metadata with action buttons in title row
+                document.getElementById('article-meta').innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h2 style="margin: 0;">${meta.title}</h2>
+                        ${actionButtons}
+                    </div>
+                    <p>
+                        <b>Category:</b> ${meta.category} | 
+                        <b>Tags:</b> ${(meta.tags || []).join(', ')} | 
+                        <b>Views:</b> ${meta.views || 0}
+                    </p>
+                    <p><small>Created: ${AppUtils.formatDate(meta.created_at)}</small></p>
+                `;
+
+                // Use StorageService to get content
+                const contentHtml = await StorageService.downloadAsText(meta.bucket_path);
+                document.getElementById('article-content').innerHTML = contentHtml;
+
+                // Increment views
+                ArticleService.incrementViews(id, meta.views);
+
+            } catch (error) {
+                console.error(error);
+                document.getElementById('article-content').innerHTML = '<p style="color:red;">Error loading article.</p>';
+            }
+
+            AppUtils.showLoading(false);
+        }
+
+        async function deleteArticle() {
+            if (!currentMeta) return;
+            if (!confirm('Are you sure you want to delete this article? This cannot be undone.')) return;
+
+            AppUtils.showLoading(true);
+
+            try {
+                // Delete from storage first
+                await StorageService.delete(currentMeta.bucket_path);
+                // Then delete from database
+                await ArticleService.delete(currentMeta.id);
+
+                alert('Article deleted successfully.');
+                window.location.href = '../index.html';
+            } catch (error) {
+                console.error(error);
+                alert('Error deleting article: ' + error.message);
+            }
+
+            AppUtils.showLoading(false);
+        }
+
+        function editArticle() {
+            if (!currentMeta) return;
+            window.location.href = `admin/editor.html?edit=${currentMeta.id}`;
+        }
+
+        window.onload = initArticle;
+    </script>
+
+</body>
+
+</html>

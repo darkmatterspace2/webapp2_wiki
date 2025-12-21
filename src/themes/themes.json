@@ -1,0 +1,23 @@
+{
+    "themes": [
+        {
+            "id": "default",
+            "name": "Retro Classic",
+            "description": "The classic dark retro look",
+            "css": "default/theme.css"
+        },
+        {
+            "id": "retro-green",
+            "name": "Matrix Green",
+            "description": "Green-on-black terminal aesthetic",
+            "css": "retro-green/theme.css"
+        },
+        {
+            "id": "light-mode",
+            "name": "Light Mode",
+            "description": "Clean light theme",
+            "css": "light-mode/theme.css"
+        }
+    ],
+    "default": "default"
+}

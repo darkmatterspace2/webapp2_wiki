@@ -5,11 +5,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editor - RetroWiki</title>
-    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="../../style.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="../config.js"></script>
-    <script src="../assets/js/utils.js"></script>
-    <script src="../assets/js/layout.js"></script>
+    <!-- Config -->
+    <script src="../../src/config/app.config.js"></script>
+    <script src="../../src/config/supabase.config.js"></script>
+    <!-- Services -->
+    <script src="../../src/services/article.service.js"></script>
+    <script src="../../src/services/storage.service.js"></script>
+    <script src="../../src/services/category.service.js"></script>
+    <!-- Shared -->
+    <script src="../../src/shared/utils.js"></script>
+    <script src="../../src/themes/theme-loader.js"></script>
+    <script src="../../src/shared/layout.js"></script>
 </head>
 
 <body>
@@ -75,16 +83,14 @@
     </div>
 
     <script>
-        const sbClient = AppUtils.initSupabase();
         let editingId = null;
+        let existingBucketPath = null;
 
         async function initEditor() {
-            console.log('[EDITOR] initEditor called');
+            const sbClient = AppUtils.initSupabase();
 
             // Auth Check
             const user = await AppUtils.checkAuth(sbClient);
-            console.log('[EDITOR] User:', user ? 'logged in' : 'not logged in');
-
             if (!user) {
                 alert("Restricted Area. Please Login.");
                 window.location.href = 'login.html';
@@ -92,55 +98,23 @@
             }
 
             // Check Edit Mode
-            editingId = AppUtils.getParam('id');
-            console.log('[EDITOR] editingId from URL:', editingId);
-
+            editingId = AppUtils.getParam('edit') || AppUtils.getParam('id');
             if (editingId) {
                 await loadArticleForEdit(editingId);
-            } else {
-                console.log('[EDITOR] No ID - creating new article');
             }
         }
 
         async function loadArticleForEdit(id) {
-            console.log('[EDITOR] loadArticleForEdit called with id:', id);
             document.getElementById('editor-title').innerText = "Edit Article";
             AppUtils.showLoading(true);
 
             try {
-                // Fetch Meta
-                console.log('[EDITOR] Fetching article metadata...');
-                const { data: meta, error } = await sbClient.from('wiki_articles').select('*').eq('id', id).single();
+                // Use ArticleService to get metadata
+                const meta = await ArticleService.getById(id);
+                existingBucketPath = meta.bucket_path;
 
-                if (error) {
-                    console.error('[EDITOR] DB Error:', error);
-                    alert("Error loading article: " + error.message);
-                    AppUtils.showLoading(false);
-                    return;
-                }
-
-                if (!meta) {
-                    console.error('[EDITOR] No meta found');
-                    alert("Article not found");
-                    AppUtils.showLoading(false);
-                    return;
-                }
-
-                console.log('[EDITOR] Meta loaded:', meta.title);
-
-                // Fetch Content
-                console.log('[EDITOR] Downloading content from:', meta.bucket_path);
-                const { data: fileData, error: fileError } = await sbClient.storage.from('wiki-content').download(meta.bucket_path);
-
-                if (fileError) {
-                    console.error('[EDITOR] File Error:', fileError);
-                    alert("Error loading content file: " + fileError.message);
-                    AppUtils.showLoading(false);
-                    return;
-                }
-
-                const content = await fileData.text();
-                console.log('[EDITOR] Content loaded, length:', content.length);
+                // Use StorageService to get content
+                const content = await StorageService.downloadAsText(meta.bucket_path);
 
                 // Populate Form
                 document.getElementById('edit-title').value = meta.title;
@@ -149,10 +123,9 @@
                 document.getElementById('edit-rating').value = meta.ratings || "NR";
                 document.getElementById('edit-content').value = content;
 
-                console.log('[EDITOR] Form populated successfully');
             } catch (err) {
-                console.error('[EDITOR] Exception:', err);
-                alert("Error: " + err.message);
+                console.error('[EDITOR] Error:', err);
+                alert("Error loading article: " + err.message);
             }
 
             AppUtils.showLoading(false);
@@ -180,49 +153,47 @@
 
             const title = document.getElementById('edit-title').value;
             const category = document.getElementById('edit-category').value;
-            const tags = document.getElementById('edit-tags').value.split(',').map(t => t.trim());
+            const tags = document.getElementById('edit-tags').value.split(',').map(t => t.trim()).filter(Boolean);
             const ratings = document.getElementById('edit-rating').value;
             const content = document.getElementById('edit-content').value;
 
-            // Upload File
-            const fileName = `${Date.now()}_${title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.html`;
-            const fileBlob = new Blob([content], { type: 'text/html' });
+            try {
+                // Generate filename
+                const fileName = `${Date.now()}_${title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.html`;
 
-            const { data: uploadData, error: uploadError } = await sbClient.storage
-                .from('wiki-content')
-                .upload(fileName, fileBlob, { upsert: false });
+                // Upload content using StorageService
+                await StorageService.upload(fileName, content);
 
-            if (uploadError) {
-                alert("Upload failed: " + uploadError.message);
-                AppUtils.showLoading(false);
-                return;
-            }
+                // Build payload
+                const payload = {
+                    title,
+                    category,
+                    tags,
+                    ratings,
+                    bucket_path: fileName,
+                    updated_at: new Date().toISOString()
+                };
 
-            // Save DB
-            const payload = {
-                title,
-                category,
-                tags,
-                ratings,
-                bucket_path: uploadData.path,
-                updated_at: new Date()
-            };
+                if (editingId) {
+                    // Update existing
+                    await ArticleService.update(editingId, payload);
+                    // Optionally delete old file if path changed
+                    if (existingBucketPath && existingBucketPath !== fileName) {
+                        try { await StorageService.delete(existingBucketPath); } catch (e) { }
+                    }
+                } else {
+                    // Create new
+                    await ArticleService.create(payload);
+                }
 
-            let error;
-            if (editingId) {
-                const { error: dbError } = await sbClient.from('wiki_articles').update(payload).eq('id', editingId);
-                error = dbError;
-            } else {
-                const { error: dbError } = await sbClient.from('wiki_articles').insert([payload]);
-                error = dbError;
-            }
-
-            if (error) {
-                alert("DB Error: " + error.message);
-            } else {
                 alert("Success!");
-                window.location.href = '../index.html';
+                window.location.href = '../../index.html';
+
+            } catch (error) {
+                console.error('[EDITOR] Save error:', error);
+                alert("Error: " + error.message);
             }
+
             AppUtils.showLoading(false);
         }
 

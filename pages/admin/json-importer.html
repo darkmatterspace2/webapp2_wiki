@@ -5,11 +5,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JSON Importer - RetroWiki</title>
-    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="../../style.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="../config.js"></script>
-    <script src="../assets/js/utils.js"></script>
-    <script src="../assets/js/layout.js"></script>
+    <!-- Config -->
+    <script src="../../src/config/app.config.js"></script>
+    <script src="../../src/config/supabase.config.js"></script>
+    <!-- Services -->
+    <script src="../../src/services/article.service.js"></script>
+    <script src="../../src/services/storage.service.js"></script>
+    <script src="../../src/services/category.service.js"></script>
+    <!-- Shared -->
+    <script src="../../src/shared/utils.js"></script>
+    <script src="../../src/themes/theme-loader.js"></script>
+    <script src="../../src/shared/layout.js"></script>
 </head>
 
 <body>
@@ -28,62 +36,24 @@
                         ChatGPT/Gemini</b></summary>
                 <div
                     style="background: #111; padding: 10px; margin-top: 5px; border: 1px dashed #555; white-space: pre-wrap; font-family: monospace;">
-                    OPTION 1:
-                    You are an expert wiki writer
-                    Write a concise and complete wiki-style article about: "${topic}", modeled after Wikipedia
-                    structure.
-                    OUTPUT
-                    Output strictly valid JSON with the following keys:
-                    - title: The article title.
-                    - category: A single broad category.
-                    - tags: A comma-separated string of tags.
-                    - content: The full article content in HTML format.
-                    - Output ONLY valid JSON with this EXACT schema:
+                    Write a wiki article about: "[TOPIC]"
+                    Output strictly valid JSON with these keys:
+                    - title: The article title
+                    - category: A single category
+                    - tags: Comma-separated string of tags
+                    - content_html: Full article in HTML format
+
+                    JSON schema:
                     {
                     "title": "Article Title",
-                    "category": "Architecture",
+                    "category": "Category",
                     "tags": "tag1, tag2, tag3",
-                    "content_html": "&ltp&gt;HTML content here&lt/p&gt;"
+                    "content_html": "&lt;p&gt;HTML content&lt;/p&gt;"
                     }
 
-                    Response must be JSON only. No markdown fence.
-
-                    STRUCTURE REQUIREMENTS for content_html:
-                    - Page title in &lttitle&gt; and main heading &lth1&gt;
-                    - Short summary paragraph under the title (like Wikipedia lead section)
-                    - A small info table infobox-style section aligned to the right
-                    - Name
-                    - Category
-                    - Key facts (2–4 rows relevant to topic for example location, length, opened, type, designer,
-                    coordinates)
-                    - Place a representative image above (use &ltimg&gt; with width max 200px)
-                    - Horizontal rule &lthr&gt;
-                    - Table of Contents using a simple unordered list with anchor links
-                    - Main sections using &lth2&gt; and &lth3&gt;, such as:
-                    - Overview
-                    - History / Background
-                    - Key Concepts or Features
-                    - Applications / Usage
-                    - Reception / Impact
-                    - Notes/Trivia/Bonus info
-                    - See Also
-                    - “See Also” section must contain internal-style links (# anchors or placeholder links)
-                    - External links can be included for references must open in a new tab
-                    - all the links mentioned in the page must open in new tab
-                    MEDIA & LINKS
-                    - Use &ltimg&gt; for images/GIFs and &ltvideo controls&gt; for videos.
-                    - Use &lta&gt; for links; all must open in new tabs.
-                    - Keep media centered and responsive with inline styles.
-                    RULES
-                    - Use only valid HTML inside &ltcontent_html&gt;.
-                    - No markdown, no explanations, no extra text.
-
-                    Do not use markdown formatting. Just raw JSON.
-                    IMPORTANT : put this exact json output in a code snippet format when I can see html "content_html":
-                    with hmtl tags and code
+                    Response must be JSON only.
                 </div>
             </details>
-
 
             <br>
             <input type="file" id="json-file-input" accept=".json" onchange="handleFileUpload(this)">
@@ -146,7 +116,6 @@
                 <b>Article Preview</b>
                 <button type="button" onclick="closePreview()">Close Preview</button>
             </div>
-
             <h1 id="preview-title"></h1>
             <div class="article-meta" id="preview-meta"></div>
             <div id="preview-body" class="article-content"></div>
@@ -154,9 +123,8 @@
     </div>
 
     <script>
-        const sbClient = AppUtils.initSupabase();
-
         async function init() {
+            const sbClient = AppUtils.initSupabase();
             const user = await AppUtils.checkAuth(sbClient);
             if (!user) {
                 alert("Restricted Area.");
@@ -191,20 +159,15 @@
             document.getElementById('edit-category').value = data.category || 'General';
             document.getElementById('edit-tags').value = Array.isArray(data.tags) ? data.tags.join(', ') : (data.tags || "");
             document.getElementById('edit-rating').value = data.ratings || "NR";
-            document.getElementById('edit-content').value = data.content_html; // HTML Input for now, simple textarea
+            document.getElementById('edit-content').value = data.content_html;
 
             document.getElementById('import-form').style.display = 'block';
         }
 
         function showPreview() {
-            const title = document.getElementById('edit-title').value;
-            const content = document.getElementById('edit-content').value;
-            const category = document.getElementById('edit-category').value;
-            const rating = document.getElementById('edit-rating').value;
-
-            document.getElementById('preview-title').textContent = title || "Untitled";
-            document.getElementById('preview-meta').textContent = `Category: ${category} | Rating: ${rating} | (Preview)`;
-            document.getElementById('preview-body').innerHTML = content;
+            document.getElementById('preview-title').textContent = document.getElementById('edit-title').value || "Untitled";
+            document.getElementById('preview-meta').textContent = `Category: ${document.getElementById('edit-category').value} | Rating: ${document.getElementById('edit-rating').value} | (Preview)`;
+            document.getElementById('preview-body').innerHTML = document.getElementById('edit-content').value;
             document.getElementById('preview-overlay').style.display = 'block';
         }
 
@@ -218,41 +181,27 @@
 
             const title = document.getElementById('edit-title').value;
             const category = document.getElementById('edit-category').value;
-            const tags = document.getElementById('edit-tags').value.split(',').map(t => t.trim());
+            const tags = document.getElementById('edit-tags').value.split(',').map(t => t.trim()).filter(Boolean);
             const ratings = document.getElementById('edit-rating').value;
             const content = document.getElementById('edit-content').value;
 
-            // Upload File
-            const fileName = `${Date.now()}_${title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.html`;
-            const fileBlob = new Blob([content], { type: 'text/html' });
+            try {
+                const fileName = `${Date.now()}_${title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.html`;
 
-            const { data: uploadData, error: uploadError } = await sbClient.storage
-                .from('wiki-content')
-                .upload(fileName, fileBlob, { upsert: false });
+                // Use StorageService
+                await StorageService.upload(fileName, content);
 
-            if (uploadError) {
-                alert("Upload failed: " + uploadError.message);
-                AppUtils.showLoading(false);
-                return;
-            }
+                // Use ArticleService
+                const payload = { title, category, tags, ratings, bucket_path: fileName };
+                await ArticleService.create(payload);
 
-            // Save DB
-            const payload = {
-                title,
-                category,
-                tags,
-                ratings,
-                bucket_path: uploadData.path
-            };
-
-            const { error: dbError } = await sbClient.from('wiki_articles').insert([payload]);
-
-            if (dbError) {
-                alert("DB Error: " + dbError.message);
-            } else {
                 alert("Imported Article Published!");
-                window.location.href = '../index.html';
+                window.location.href = '../../index.html';
+
+            } catch (error) {
+                alert("Error: " + error.message);
             }
+
             AppUtils.showLoading(false);
         }
 

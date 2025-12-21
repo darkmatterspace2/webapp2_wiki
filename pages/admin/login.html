@@ -5,11 +5,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Access - RetroWiki</title>
-    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="../../style.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="../config.js"></script>
-    <script src="../assets/js/utils.js"></script>
-    <script src="../assets/js/layout.js"></script>
+    <!-- Config -->
+    <script src="../../src/config/app.config.js"></script>
+    <script src="../../src/config/supabase.config.js"></script>
+    <!-- Shared -->
+    <script src="../../src/shared/utils.js"></script>
+    <script src="../../src/services/category.service.js"></script>
+    <script src="../../src/themes/theme-loader.js"></script>
+    <script src="../../src/shared/layout.js"></script>
 </head>
 
 <body>
@@ -24,17 +29,15 @@
             <button type="submit">Login</button>
             <button type="button" onclick="handleSignUp(event)">Sign Up (Create Admin)</button>
             <br><br>
-            <a href="../index.html">Cancel / Return Home</a>
+            <a href="../../index.html">Cancel / Return Home</a>
         </form>
     </div>
 
     <script>
-        // Debug helper (console only)
         function log(msg) {
             console.log('[LOGIN]', msg);
         }
 
-        // Create a fresh Supabase client each time to avoid stale state on Android
         function getSupabase() {
             if (!window.supabase || !window.SUPABASE_URL) {
                 log('ERROR: Supabase not loaded');
@@ -59,42 +62,32 @@
             const password = document.getElementById('login-password').value;
 
             if (!email || !password) {
-                log('Missing credentials');
                 alert('Please enter email and password');
                 return;
             }
 
-            log('Email: ' + email);
             AppUtils.showLoading(true);
 
             try {
-                // Get fresh client
                 const sb = getSupabase();
-                if (!sb) {
-                    throw new Error('Could not initialize Supabase');
-                }
+                if (!sb) throw new Error('Could not initialize Supabase');
 
-                // First, explicitly sign out any existing session
-                log('Clearing any existing session...');
+                // Clear any existing session
                 await sb.auth.signOut({ scope: 'local' });
 
-                // Now attempt login
-                log('Attempting signInWithPassword...');
+                // Attempt login
                 const { data, error } = await sb.auth.signInWithPassword({
                     email: email,
                     password: password
                 });
 
-                log('Response received');
-
                 if (error) {
                     log('ERROR: ' + error.message);
                     alert("LOGIN FAILED: " + error.message);
                 } else if (data && data.session) {
-                    log('SUCCESS! Session obtained. Redirecting...');
-                    window.location.href = '../index.html';
+                    log('SUCCESS! Redirecting...');
+                    window.location.href = '../../index.html';
                 } else {
-                    log('WARN: No error but no session either');
                     alert("Login issue: No session returned. Try again.");
                 }
             } catch (err) {
@@ -107,7 +100,6 @@
 
         async function handleSignUp(e) {
             e.preventDefault();
-            log('SignUp button clicked');
 
             const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-password').value;
@@ -123,26 +115,21 @@
                 const sb = getSupabase();
                 if (!sb) throw new Error('Could not initialize Supabase');
 
-                log('Attempting signUp...');
                 const { data, error } = await sb.auth.signUp({ email, password });
 
                 if (error) {
-                    log('SignUp ERROR: ' + error.message);
                     alert("SIGN UP FAILED: " + error.message);
                 } else {
-                    log('SignUp success');
                     alert("Sign Up Successful! Check email or login.");
-                    if (data.session) window.location.href = '../index.html';
+                    if (data.session) window.location.href = '../../index.html';
                 }
             } catch (err) {
-                log('SignUp EXCEPTION: ' + err.message);
                 alert("Error: " + err.message);
             }
 
             AppUtils.showLoading(false);
         }
 
-        // Page load
         log('Login page loaded');
     </script>
 

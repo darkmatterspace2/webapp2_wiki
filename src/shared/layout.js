@@ -1,10 +1,5 @@
 // Shared Layout Injector
-// Injects the table structure into a specific container or wraps the body content.
-// Ideally, the page should have a <div id="page-content"></div> inside the content cell, 
-// OR we construct the wrapper around the existing body content.
-
-// Strategy: The HTML pages will contain ONLY the content of the "content-cell". 
-// This script will wipe `document.body` and rebuild the Table Layout, inserting the original info.
+// Injects the table structure, uses centralized services
 
 document.addEventListener("DOMContentLoaded", () => {
     initLayout();
@@ -13,8 +8,6 @@ document.addEventListener("DOMContentLoaded", () => {
 function initLayout() {
     // 1. Preserve Content
     const originalContent = document.body.innerHTML;
-    const bodyClass = document.body.className; // preserve classes like zen-mode
-    const onLoadFn = document.body.onload; // preserve logic? better to use events.
 
     // 2. Setup Base Theme
     if (localStorage.getItem('theme') === 'light') {
@@ -29,15 +22,10 @@ function initLayout() {
         document.body.classList.add('zen-mode');
     }
 
-    // 3. Define Layout HTML
-    // Note: We use absolute paths for links to ensure they work from subdirs (like /admin/)
-    // Assuming app is at root. If sub-path, we might need a base_url.
-    // For local file usage, relative paths are tricky if depth varies. 
-    // We will attempt to detect depth or just use relatively robust paths.
-    // Hack: Check if we are in 'admin' folder.
-    const isInAdmin = window.location.pathname.includes('/admin/');
-    const rootPath = isInAdmin ? '../' : './';
+    // 3. Get root path using APP_CONFIG
+    const rootPath = window.APP_CONFIG ? APP_CONFIG.getDepth() : './';
 
+    // 4. Define Layout HTML
     const layoutHTML = `
     <table class="main-layout" border="1" cellpadding="0" cellspacing="0">
         <!-- HEADER ROW -->
@@ -45,8 +33,10 @@ function initLayout() {
             <td colspan="2" class="header-cell">
                 <div class="header-content">
                     <div>
-                        <span style="font-size: 24px; font-weight: bold;">RetroWiki</span>
-                        <span style="font-size: 10px; vertical-align: super;">v2.0</span>
+                        <a href="${rootPath}index.html" style="text-decoration: none; color: inherit;">
+                            <span style="font-size: 24px; font-weight: bold;">RetroWiki</span>
+                            <span style="font-size: 10px; vertical-align: super;">v2.0</span>
+                        </a>
                     </div>
                     <div>
                         <button onclick="Layout.toggleZenMode()">[ Zen Mode ]</button>
@@ -68,10 +58,10 @@ function initLayout() {
                 <b>Navigation</b>
                 <ul>
                     <li><a href="${rootPath}index.html">Home / Search</a></li>
-                    <li><a href="${rootPath}admin/editor.html">Create New</a></li>
-                    <li><a href="${rootPath}admin/ai-creator.html">AI Creator (Basic)</a></li>
-                    <li><a href="${rootPath}admin/advanced-ai-creator.html">Advanced Creator (Pro)</a></li>
-                    <li><a href="${rootPath}admin/json-importer.html">JSON Importer</a></li>
+                    <li><a href="${rootPath}pages/admin/editor.html">Create New</a></li>
+                    <li><a href="${rootPath}pages/admin/ai-creator.html">AI Creator (Basic)</a></li>
+                    <li><a href="${rootPath}pages/admin/advanced-ai-creator.html">Advanced Creator (Pro)</a></li>
+                    <li><a href="${rootPath}pages/admin/json-importer.html">JSON Importer</a></li>
                     <li><a href="#" id="auth-link">Admin Login</a></li>
                 </ul>
 
@@ -80,7 +70,7 @@ function initLayout() {
                 <b>Categories</b>
                 <ul id="category-list">
                     <li><a href="${rootPath}index.html">All</a></li>
-                    <!-- We will populate this via JS if we can, or static -->
+                    <!-- Populated via JS -->
                 </ul>
 
                 <hr>
@@ -88,22 +78,21 @@ function initLayout() {
                 <div style="margin-bottom: 20px;">
                     <details>
                         <summary style="font-size: 12px; cursor: pointer; font-weight: bold; margin-bottom: 5px;">Settings</summary>
-                            <div style="font-size: 12px; font-weight: bold;">Theme:</div>
-                            <label style="font-size: 12px; cursor: pointer;">
-                                <input type="radio" name="theme-radio" value="light" id="theme-light"> Light
-                            </label>
-                            <label style="font-size: 12px; cursor: pointer;">
-                                <input type="radio" name="theme-radio" value="dark" id="theme-dark"> Dark
-                            </label>
-                        <br>                        
+                        
+                        <div style="font-size: 12px; font-weight: bold; margin-top: 10px;">Theme:</div>
+                        <select id="theme-selector" style="width: 100%; font-size: 11px; margin-top: 5px;">
+                            <option value="default">Retro Classic</option>
+                            <option value="retro-green">Matrix Green</option>
+                            <option value="light-mode">Light Mode</option>
+                        </select>
+                        
+                        <br><br>
+                        
                         <div style="margin-left: 5px;">
                             <label style="font-size: 12px; cursor: pointer;">
                                 <input type="checkbox" id="show-r-rated-checkbox">
                                 Show R Rated content
                             </label>
-                            <br><br>
-                            
-
                         </div>
                     </details>
                 </div>
@@ -131,20 +120,33 @@ function initLayout() {
             </td>
         </tr>
     </table>
+
+    <!-- Back to Top Button -->
+    <button id="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" 
+        style="display: none; position: fixed; bottom: 20px; right: 20px; z-index: 999; 
+               padding: 10px 15px; background: #333; color: #fff; border: 2px solid #666; 
+               cursor: pointer; font-family: inherit; font-size: 12px;">
+        ▲ Top
+    </button>
     `;
 
-    // 4. Inject
+    // 5. Inject
     document.body.innerHTML = layoutHTML;
     document.getElementById('main-content-cell').innerHTML = originalContent;
 
-    // 5. Post-Inject Logic
-    updateAuthLink(rootPath);
-    // 5. Post-Inject Logic
+    // 6. Post-Inject Logic
     updateAuthLink(rootPath);
     setupRRatedCheckbox();
-    setupThemeRadios();
+    setupThemeSelector();
     loadCategories(rootPath);
-    loadCategories(rootPath);
+
+    // Initialize theme loader if available
+    if (window.ThemeLoader) {
+        ThemeLoader.init();
+    }
+
+    // Setup Back to Top button
+    setupBackToTop();
 
     // Expose layout functions
     window.Layout = {
@@ -153,7 +155,7 @@ function initLayout() {
     };
 }
 
-// Helper: Toggle Theme
+// Helper: Toggle Theme (legacy button)
 function toggleTheme() {
     if (document.body.classList.contains('dark-mode')) {
         document.body.classList.remove('dark-mode');
@@ -175,8 +177,7 @@ function toggleZenMode() {
 
 // Helper: Update Login/Logout Link
 async function updateAuthLink(rootPath) {
-    // Wait for utils to be ready? We assume utils.js is loaded BEFORE layout.js
-    if (!window.AppUtils) return; // verification fail safety
+    if (!window.AppUtils) return;
 
     const sbClient = window.AppUtils.initSupabase();
     if (!sbClient) return;
@@ -194,7 +195,7 @@ async function updateAuthLink(rootPath) {
         };
     } else {
         link.textContent = "Admin Login";
-        link.href = rootPath + "admin/login.html";
+        link.href = rootPath + "pages/admin/login.html";
         link.onclick = null;
     }
 }
@@ -204,76 +205,84 @@ function setupRRatedCheckbox() {
     const cb = document.getElementById('show-r-rated-checkbox');
     if (!cb) return;
 
-    // Load state
     const isChecked = localStorage.getItem('show_r_rated') === 'true';
     cb.checked = isChecked;
 
-    // Save state and reload on change
     cb.addEventListener('change', () => {
         localStorage.setItem('show_r_rated', cb.checked);
         window.location.reload();
     });
 }
 
-// Helper: Setup Theme Radios
-function setupThemeRadios() {
-    const lightRadio = document.getElementById('theme-light');
-    const darkRadio = document.getElementById('theme-dark');
+// Helper: Setup Theme Selector (new dropdown)
+function setupThemeSelector() {
+    const selector = document.getElementById('theme-selector');
+    if (!selector) return;
 
-    if (!lightRadio || !darkRadio) return;
+    // Load current theme
+    const currentTheme = localStorage.getItem('selected-theme') || 'default';
+    selector.value = currentTheme;
 
-    // Load initial state
-    const currentTheme = localStorage.getItem('theme') || 'dark'; // Default to dark if not set? Or check body class
-    if (document.body.classList.contains('dark-mode')) {
-        darkRadio.checked = true;
-    } else {
-        lightRadio.checked = true;
-    }
-
-    // Add listeners
-    const handleThemeChange = (e) => {
-        const val = e.target.value;
-        if (val === 'light') {
-            document.body.classList.remove('dark-mode');
-            document.body.dataset.theme = 'light';
-            localStorage.setItem('theme', 'light');
-        } else {
-            document.body.classList.add('dark-mode');
-            delete document.body.dataset.theme;
-            localStorage.setItem('theme', 'dark');
+    selector.addEventListener('change', async () => {
+        const themeId = selector.value;
+        if (window.ThemeLoader) {
+            await ThemeLoader.applyTheme(themeId);
         }
-    };
-
-    lightRadio.addEventListener('change', handleThemeChange);
-    darkRadio.addEventListener('change', handleThemeChange);
+        localStorage.setItem('selected-theme', themeId);
+        window.location.reload(); // Reload to fully apply theme
+    });
 }
 
-// Helper: Load Categories (Simple fetch)
+// Helper: Load Categories (uses CategoryService if available)
 async function loadCategories(rootPath) {
-    if (!window.AppUtils) return;
-    const sbClient = window.AppUtils.initSupabase();
-    if (!sbClient) return;
-
     const showR = localStorage.getItem('show_r_rated') === 'true';
+    let categories = [];
 
-    let query = sbClient.from('wiki_articles').select('category');
+    // Use CategoryService if available, fallback to direct query
+    if (window.CategoryService) {
+        try {
+            categories = await CategoryService.getAll(showR);
+        } catch (e) {
+            console.error('Failed to load categories:', e);
+            return;
+        }
+    } else if (window.AppUtils) {
+        // Fallback for backward compatibility
+        const sbClient = window.AppUtils.initSupabase();
+        if (!sbClient) return;
 
-    // Apply filter if "Show R Rated" is NOT checked
-    if (!showR) {
-        query = query.not("ratings", "in", '("M","P","X")');
+        let query = sbClient.from('wiki_articles').select('category');
+        if (!showR) {
+            query = query.not("ratings", "in", '("M","P","X")');
+        }
+
+        const { data } = await query;
+        if (data) {
+            categories = [...new Set(data.map(i => i.category))].filter(Boolean).sort();
+        }
     }
 
-    const { data } = await query;
-    if (data) {
-        const categories = [...new Set(data.map(i => i.category))].sort();
-        const list = document.getElementById('category-list');
-        list.innerHTML = `<li><a href="${rootPath}index.html">All</a></li>`;
+    const list = document.getElementById('category-list');
+    list.innerHTML = `<li><a href="${rootPath}index.html">All</a></li>`;
 
-        categories.forEach(cat => {
-            if (!cat) return;
-            const li = document.createElement('li');
-            li.innerHTML = `<a href="${rootPath}index.html?cat=${cat}">${cat}</a>`;
-            list.appendChild(li);
-        });
-    }
+    categories.forEach(cat => {
+        const li = document.createElement('li');
+        li.innerHTML = `<a href="${rootPath}index.html?cat=${encodeURIComponent(cat)}">${cat}</a>`;
+        list.appendChild(li);
+    });
+}
+
+// Helper: Setup Back to Top button
+function setupBackToTop() {
+    const btn = document.getElementById('back-to-top');
+    if (!btn) return;
+
+    // Show/hide based on scroll position
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 300) {
+            btn.style.display = 'block';
+        } else {
+            btn.style.display = 'none';
+        }
+    });
 }
