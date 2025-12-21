@@ -29,6 +29,42 @@
             "name": "Minecraft",
             "description": "Pixelated block-style UI inspired by Minecraft",
             "css": "minecraft/theme.css"
+        },
+        {
+            "id": "cyberpunk",
+            "name": "Neon Cyber-Grid",
+            "description": "Future interface with neon glow and sci-fi aesthetics",
+            "css": "cyberpunk/theme.css"
+        },
+        {
+            "id": "luxury",
+            "name": "Luxury Vogue",
+            "description": "Premium dark elegant theme",
+            "css": "luxury/theme.css"
+        },
+        {
+            "id": "luxury-2",
+            "name": "Luxury Vogue II",
+            "description": "Alternative luxury aesthetic",
+            "css": "luxury-2/theme.css"
+        },
+        {
+            "id": "medieval",
+            "name": "Medieval Scroll",
+            "description": "Ancient parchment look for RPG vibes",
+            "css": "medieval/theme.css"
+        },
+        {
+            "id": "raunchy",
+            "name": "Raunchy",
+            "description": "Bold and edgy aesthetic",
+            "css": "raunchy/theme.css"
+        },
+        {
+            "id": "raunchy-2",
+            "name": "Raunchy II",
+            "description": "Alternative edgy aesthetic",
+            "css": "raunchy-2/theme.css"
         }
     ],
     "default": "default"
