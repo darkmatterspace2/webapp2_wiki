@@ -178,11 +178,22 @@
                 const images = Array.from(gallery.children).filter(el => el.tagName === 'IMG');
                 if (images.length === 0) return;
 
-                const cols = [document.createElement('div'), document.createElement('div'), document.createElement('div')];
-                cols.forEach(c => c.className = 'retro-gallery-col');
+                // Determine Column Count
+                let colCount = 3; // Default
+                if (gallery.classList.contains('cols-2')) colCount = 2;
+                if (gallery.classList.contains('cols-4')) colCount = 4;
+                if (gallery.classList.contains('cols-5')) colCount = 5;
+
+                // Create columns
+                const cols = [];
+                for (let i = 0; i < colCount; i++) {
+                    const div = document.createElement('div');
+                    div.className = 'retro-gallery-col';
+                    cols.push(div);
+                }
 
                 images.forEach((img, index) => {
-                    cols[index % 3].appendChild(img);
+                    cols[index % colCount].appendChild(img);
                 });
 
                 gallery.innerHTML = '';

@@ -105,30 +105,72 @@
         }
 
         // MASONRY GALLERY LOGIC
-        function formatGalleries() {
+        let currentGalleryCols = 3;
+
+        window.changeGalleryColumns = function (delta) {
+            currentGalleryCols += delta;
+            if (currentGalleryCols < 1) currentGalleryCols = 1;
+            if (currentGalleryCols > 6) currentGalleryCols = 6;
+
+            // Re-format all galleries
+            formatGalleries(currentGalleryCols);
+        }
+
+        function formatGalleries(forceCols = null) {
             const galleries = document.querySelectorAll('.retro-gallery');
             galleries.forEach(gallery => {
-                // If already formatted, skip
-                if (gallery.querySelector('.retro-gallery-col')) return;
+                // 1. Collect all images (either from raw gallery or existing columns)
+                let images = [];
+                if (gallery.querySelector('.retro-gallery-col')) {
+                    // Already formatted? Unwrap.
+                    const cols = gallery.querySelectorAll('.retro-gallery-col');
+                    cols.forEach(col => {
+                        images.push(...Array.from(col.children));
+                    });
 
-                const images = Array.from(gallery.children).filter(el => el.tagName === 'IMG');
+                    // SORT BY ORIGINAL INDEX to restore sequence
+                    images.sort((a, b) => {
+                        return parseInt(a.getAttribute('data-index')) - parseInt(b.getAttribute('data-index'));
+                    });
+                } else {
+                    // First time formatting: Collect and Tag
+                    images = Array.from(gallery.children).filter(el => el.tagName === 'IMG');
+                    images.forEach((img, idx) => {
+                        img.setAttribute('data-index', idx);
+                    });
+                }
+
                 if (images.length === 0) return;
 
-                // Create columns
-                const cols = [
-                    document.createElement('div'),
-                    document.createElement('div'),
-                    document.createElement('div')
-                ];
-                cols.forEach(c => c.className = 'retro-gallery-col');
+                // 2. Determine Column Count ( Force > Class > Default )
+                let colCount = forceCols || 3;
+                if (!forceCols) {
+                    if (gallery.classList.contains('cols-2')) colCount = 2;
+                    if (gallery.classList.contains('cols-4')) colCount = 4;
+                    if (gallery.classList.contains('cols-5')) colCount = 5;
+                }
 
-                // Distribute images: 0->Col1, 1->Col2, 2->Col3, 3->Col1...
+                // 3. Create columns
+                const cols = [];
+                for (let i = 0; i < colCount; i++) {
+                    const div = document.createElement('div');
+                    div.className = 'retro-gallery-col';
+                    // Dynamic width for flexible resizing
+                    div.style.flex = (100 / colCount) + '%';
+                    div.style.maxWidth = (100 / colCount) + '%';
+                    cols.push(div);
+                }
+
+                // 4. Distribute images (preserve order)
+                // Filter out non-image elements just in case
+                images = images.filter(el => el.tagName === 'IMG');
+
                 images.forEach((img, index) => {
-                    const colIndex = index % 3;
+                    const colIndex = index % colCount;
                     cols[colIndex].appendChild(img);
                 });
 
-                // Clear and Append
+                // 5. Clear and Append
                 gallery.innerHTML = '';
                 cols.forEach(c => gallery.appendChild(c));
             });
