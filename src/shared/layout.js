@@ -130,12 +130,19 @@ function initLayout() {
     </table>
 
     <!-- Back to Top Button -->
-    <button id="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" 
-        style="display: none; position: fixed; bottom: 20px; right: 20px; z-index: 999; 
-               padding: 10px 15px; background: #333; color: #fff; border: 2px solid #666; 
-               cursor: pointer; font-family: inherit; font-size: 12px;">
-        ▲ Top
+    <button id="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+        ▲
+
     </button>
+
+    <!-- Floating Gallery Controls (Fade on Hover) -->
+    <div class="gallery-float-controls">
+        <button onclick="Layout.toggleZenMode()" title="Toggle Zen Mode">Z</button>
+        <div style="height: 5px;"></div>
+        <button onclick="Layout.changeGalleryCols(-1)" title="Fewer Columns (Larger)">-</button>
+        <div style="color:#eee; font-size:10px; margin:2px 0; font-weight:bold;">G</div>
+        <button onclick="Layout.changeGalleryCols(1)" title="More Columns (Smaller)">+</button>
+    </div>
     `;
 
     // 5. Inject
@@ -164,7 +171,8 @@ function initLayout() {
     window.Layout = {
         toggleZenMode,
         toggleTheme,
-        zoom // Expose zoom
+        zoom,
+        changeGalleryCols
     };
 }
 
@@ -181,6 +189,13 @@ function zoom(delta) {
     currentZoom = Math.min(Math.max(currentZoom, 0.5), 2.0);
     document.body.style.zoom = currentZoom;
     localStorage.setItem('pageZoom', currentZoom);
+}
+
+// GALLERY COLS LOGIC
+function changeGalleryCols(delta) {
+    if (window.changeGalleryColumns) {
+        window.changeGalleryColumns(delta);
+    }
 }
 
 // UPDATE BTN STATES

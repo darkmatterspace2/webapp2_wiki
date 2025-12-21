@@ -384,8 +384,12 @@ textarea.editor {
     display: block;
     max-width: 90%;
     max-height: 90vh;
-    border: 2px solid #fff;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    cursor: grab;
+}
+
+.lightbox-content:active {
+    cursor: grabbing;
 }
 
 .lightbox-caption {
@@ -401,20 +405,60 @@ textarea.editor {
     position: absolute;
     top: 15px;
     right: 35px;
-    color: #f1f1f1;
+    color: red;
+    opacity: 0.3;
+    /* Low opacity by default */
+    z-index: 1005;
     font-size: 40px;
     font-weight: bold;
     cursor: pointer;
-    transition: 0.3s;
+    transition: opacity 0.4s ease-in-out;
     font-family: Arial, sans-serif;
     line-height: 0.5;
 }
 
 .lightbox-close:hover,
 .lightbox-close:focus {
-    color: #bbb;
+    opacity: 1.0;
     text-decoration: none;
     cursor: pointer;
+}
+
+.lightbox-controls {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    z-index: 1001;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #444;
+    opacity: 0.1;
+    transition: opacity 0.4s ease-in-out;
+}
+
+.lightbox-controls:hover {
+    opacity: 1.0;
+}
+
+.lightbox-controls button {
+    background: transparent;
+    color: #eee;
+    border: 1px solid #888;
+    cursor: pointer;
+    font-size: 11px;
+    text-transform: uppercase;
+    font-weight: bold;
+    padding: 5px 10px;
+}
+
+.lightbox-controls button:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+    border-color: #fff;
 }
 
 /* RETRO MASONRY GALLERY (Ultra Light Weight) */
@@ -453,4 +497,109 @@ textarea.editor {
         flex: 100%;
         max-width: 100%;
     }
+}
+
+/* Gallery Column Overrides */
+.retro-gallery.cols-2 .retro-gallery-col {
+    flex: 50%;
+    max-width: 50%;
+}
+
+.retro-gallery.cols-4 .retro-gallery-col {
+    flex: 25%;
+    max-width: 25%;
+}
+
+.retro-gallery.cols-5 .retro-gallery-col {
+    flex: 20%;
+    max-width: 20%;
+}
+
+/* FLOATING GALLERY CONTROLS (Bottom Right) */
+.gallery-float-controls {
+    position: fixed;
+    bottom: 70px;
+    right: 70px;
+    z-index: 998;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 3px;
+    border-radius: 4px;
+    border: 1px solid #666;
+    height: auto;
+
+    /* Vertical Slim Layout */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 24px;
+    /* Narrower */
+
+    /* Fade Effect: low opacity by default */
+    opacity: 0.3;
+    transition: opacity 0.4s ease-in-out;
+}
+
+.gallery-float-controls:hover {
+    opacity: 1.0;
+}
+
+.gallery-float-controls button {
+    background: #ccc;
+    color: #000;
+    border: 1px solid #fff;
+    border-right: 1px solid #555;
+    border-bottom: 1px solid #555;
+    cursor: pointer;
+    font-size: 14px;
+    /* Larger font for icon */
+    font-weight: bold;
+    font-family: inherit;
+    padding: 8px 0;
+    /* Taller */
+    margin: 2px 0;
+    width: 100%;
+    text-align: center;
+    line-height: 10px;
+}
+
+.gallery-float-controls button:active {
+    border: 1px solid #555;
+    border-right: 1px solid #fff;
+    border-bottom: 1px solid #fff;
+    background: #aaa;
+}
+
+/* BACK TO TOP BUTTON */
+#back-to-top {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 70px;
+    z-index: 999;
+
+    /* Match gallery-float-controls aesthetic */
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    border: 1px solid #666;
+    border-radius: 4px;
+    padding: 8px 0;
+
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 12px;
+
+    /* Fade Effect */
+    opacity: 0.3;
+    transition: opacity 0.4s ease-in-out;
+    /* Vertical Slim Layout */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 30px;
+    /* Narrower */
+}
+
+#back-to-top:hover {
+    opacity: 1.0;
+    background: rgba(0, 0, 0, 0.8);
 }
