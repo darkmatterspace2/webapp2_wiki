@@ -1,0 +1,90 @@
+/* LIGHT MODE THEME
+   Clean, readable light theme */
+
+body,
+body[data-theme="light"] {
+    background: #f5f5f5 !important;
+    color: #333333 !important;
+}
+
+.dark-mode {
+    background: #f5f5f5 !important;
+    color: #333333 !important;
+}
+
+a:link {
+    color: #0000cc !important;
+}
+
+a:visited {
+    color: #660099 !important;
+}
+
+a:hover {
+    color: #0000ff !important;
+}
+
+/* Header */
+.header-cell {
+    background: #dddddd !important;
+    border-color: #999999 !important;
+    color: #333333 !important;
+}
+
+/* Sidebar */
+.sidebar-cell {
+    background: #eeeeee !important;
+    border-color: #999999 !important;
+}
+
+/* Footer */
+.footer-cell {
+    background: #dddddd !important;
+    border-color: #999999 !important;
+    color: #333333 !important;
+}
+
+/* Content */
+.content-cell {
+    background: #ffffff !important;
+}
+
+/* Tables */
+table {
+    border-color: #999999 !important;
+}
+
+th {
+    background: #cccccc !important;
+    color: #333333 !important;
+}
+
+tr:nth-child(even) {
+    background: #f0f0f0 !important;
+}
+
+/* Buttons */
+button {
+    background: #e0e0e0 !important;
+    color: #333333 !important;
+    border: 1px solid #999999 !important;
+}
+
+button:hover {
+    background: #d0d0d0 !important;
+}
+
+/* Inputs */
+input,
+textarea,
+select {
+    background: #ffffff !important;
+    color: #333333 !important;
+    border: 1px solid #999999 !important;
+}
+
+/* Visitor counter */
+.visitor-counter {
+    background: #dddddd !important;
+    color: #333333 !important;
+}

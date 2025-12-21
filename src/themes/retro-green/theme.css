@@ -1,0 +1,77 @@
+/* MATRIX GREEN THEME
+   Green-on-black terminal/matrix aesthetic */
+
+body {
+    background: #0a0a0a !important;
+    color: #00ff00 !important;
+}
+
+.dark-mode {
+    background: #0a0a0a !important;
+    color: #00ff00 !important;
+}
+
+a:link {
+    color: #00cc00 !important;
+}
+
+a:visited {
+    color: #009900 !important;
+}
+
+a:hover {
+    color: #33ff33 !important;
+}
+
+/* Header */
+.header-cell {
+    background: #001100 !important;
+    border-color: #00ff00 !important;
+}
+
+/* Sidebar */
+.sidebar-cell {
+    background: #001100 !important;
+    border-color: #00ff00 !important;
+}
+
+/* Footer */
+.footer-cell {
+    background: #001100 !important;
+    border-color: #00ff00 !important;
+}
+
+/* Tables */
+table {
+    border-color: #00ff00 !important;
+}
+
+th {
+    background: #002200 !important;
+}
+
+/* Buttons */
+button {
+    background: #002200 !important;
+    color: #00ff00 !important;
+    border: 1px solid #00ff00 !important;
+}
+
+button:hover {
+    background: #003300 !important;
+}
+
+/* Inputs */
+input,
+textarea,
+select {
+    background: #001100 !important;
+    color: #00ff00 !important;
+    border: 1px solid #00ff00 !important;
+}
+
+/* Loading indicator */
+#loading-indicator {
+    color: #00ff00 !important;
+    background: #002200 !important;
+}
