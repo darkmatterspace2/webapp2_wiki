@@ -6,13 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Article View - RetroWiki 2k25</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="assets/css/gallery.css">
     <!-- Dependencies -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
     <script src="assets/js/utils.js"></script>
     <script src="assets/js/layout.js"></script>
-    <script src="assets/js/gallery.js"></script>
 </head>
 
 <body>
@@ -74,27 +72,18 @@
             }
 
             // 2. Fetch Content
-            // Use signed URL to bypass cache and ensure fresh content
-            const { data: signedData, error: signedError } = await sbClient
+            const { data: fileData, error: fileError } = await sbClient
                 .storage
                 .from('wiki-content')
-                .createSignedUrl(meta.bucket_path, 60);
+                .download(meta.bucket_path);
 
-            if (signedError) {
-                console.error("Error creating signed URL:", signedError);
+            if (fileError) {
                 alert("Error loading content file.");
                 AppUtils.showLoading(false);
                 return;
             }
 
-            const response = await fetch(signedData.signedUrl);
-            if (!response.ok) {
-                alert("Error fetching content.");
-                AppUtils.showLoading(false);
-                return;
-            }
-
-            const content = await response.text();
+            const content = await fileData.text();
 
             // 3. Render
             document.title = meta.title + " - RetroWiki";
@@ -119,17 +108,6 @@
             // 5. TOC
             generateTOC();
 
-            // 5b. Initialize any galleries in the article content
-            if (typeof initGalleries === 'function') {
-                initGalleries(document.getElementById('article-body'));
-                // Delayed resize for late-loading images
-                if (typeof resizeGalleryImages === 'function') {
-                    setTimeout(resizeGalleryImages, 500);
-                    setTimeout(resizeGalleryImages, 1500);
-                    setTimeout(resizeGalleryImages, 3000);
-                }
-            }
-
             // 6. Increment View
             sbClient.rpc('increment_view', { row_id: id }).then(({ error }) => {
                 if (error) {
@@ -146,9 +124,6 @@
             const headers = document.querySelectorAll('#article-body h1, #article-body h2, #article-body h3');
             const toc = document.getElementById('article-toc');
             const container = document.getElementById('toc-container');
-
-            // Skip if TOC elements don't exist
-            if (!toc || !container) return;
 
             if (headers.length < 2) {
                 container.style.display = 'none';

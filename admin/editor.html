@@ -77,7 +77,6 @@
     <script>
         const sbClient = AppUtils.initSupabase();
         let editingId = null;
-        let currentBucketPath = null;
 
         async function initEditor() {
             console.log('[EDITOR] initEditor called');
@@ -128,25 +127,19 @@
                 }
 
                 console.log('[EDITOR] Meta loaded:', meta.title);
-                currentBucketPath = meta.bucket_path;
 
                 // Fetch Content
                 console.log('[EDITOR] Downloading content from:', meta.bucket_path);
+                const { data: fileData, error: fileError } = await sbClient.storage.from('wiki-content').download(meta.bucket_path);
 
-                const { data: signedData, error: signedError } = await sbClient
-                    .storage
-                    .from('wiki-content')
-                    .createSignedUrl(meta.bucket_path, 60);
-
-                if (signedError) {
-                    console.error('[EDITOR] Signed URL Error:', signedError);
-                    throw new Error("Could not generate load URL");
+                if (fileError) {
+                    console.error('[EDITOR] File Error:', fileError);
+                    alert("Error loading content file: " + fileError.message);
+                    AppUtils.showLoading(false);
+                    return;
                 }
 
-                const response = await fetch(signedData.signedUrl);
-                const content = await response.text();
-
-                console.log('[EDITOR] Content loaded, length:', content.length);
+                const content = await fileData.text();
                 console.log('[EDITOR] Content loaded, length:', content.length);
 
                 // Populate Form
@@ -192,28 +185,12 @@
             const content = document.getElementById('edit-content').value;
 
             // Upload File
-            let fileName;
-            let upsertOption = false;
-
-            if (editingId && currentBucketPath) {
-                fileName = currentBucketPath;
-                upsertOption = true;
-            } else {
-                const now = new Date();
-                const year = now.getFullYear();
-                const month = String(now.getMonth() + 1).padStart(2, '0');
-                const day = String(now.getDate()).padStart(2, '0');
-                const hour = String(now.getHours()).padStart(2, '0');
-
-                const cleanTitle = title.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-                fileName = `data/posts/${year}/${month}/${day}/${hour}/${now.getTime()}_${cleanTitle}.html`;
-            }
-
+            const fileName = `${Date.now()}_${title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.html`;
             const fileBlob = new Blob([content], { type: 'text/html' });
 
             const { data: uploadData, error: uploadError } = await sbClient.storage
                 .from('wiki-content')
-                .upload(fileName, fileBlob, { upsert: upsertOption });
+                .upload(fileName, fileBlob, { upsert: false });
 
             if (uploadError) {
                 alert("Upload failed: " + uploadError.message);
@@ -251,7 +228,6 @@
 
         window.onload = initEditor;
     </script>
-    
 </body>
 
 </html>

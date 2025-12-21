@@ -285,15 +285,7 @@
             const ratings = document.getElementById('edit-rating').value;
             const content = document.getElementById('edit-content').value;
 
-            const now = new Date();
-            const year = now.getFullYear();
-            const month = String(now.getMonth() + 1).padStart(2, '0');
-            const day = String(now.getDate()).padStart(2, '0');
-            const hour = String(now.getHours()).padStart(2, '0');
-
-            const cleanTitle = title.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-            const fileName = `data/posts/${year}/${month}/${day}/${hour}/${now.getTime()}_${cleanTitle}.html`;
-
+            const fileName = `${Date.now()}_${title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.html`;
             const fileBlob = new Blob([content], { type: 'text/html' });
 
             const { data: uploadData, error: uploadError } = await sbClient.storage

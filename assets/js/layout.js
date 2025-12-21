@@ -72,7 +72,6 @@ function initLayout() {
                     <li><a href="${rootPath}admin/ai-creator.html">AI Creator (Basic)</a></li>
                     <li><a href="${rootPath}admin/advanced-ai-creator.html">Advanced Creator (Pro)</a></li>
                     <li><a href="${rootPath}admin/json-importer.html">JSON Importer</a></li>
-                    <li><a href="${rootPath}other_misc/useful_links.html">Useful Links</a></li>
                     <li><a href="#" id="auth-link">Admin Login</a></li>
                 </ul>
 
@@ -172,9 +171,6 @@ function toggleZenMode() {
     document.body.classList.toggle('zen-mode');
     const isZen = document.body.classList.contains('zen-mode');
     localStorage.setItem('zenMode', isZen);
-    // Trigger resize for gallery layout recalculation
-    window.dispatchEvent(new Event('resize'));
-    setTimeout(function () { window.dispatchEvent(new Event('resize')); }, 300);
 }
 
 // Helper: Update Login/Logout Link
