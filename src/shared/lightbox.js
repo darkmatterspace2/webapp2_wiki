@@ -36,6 +36,7 @@ const Lightbox = {
 
         // 2. Attach Global Listeners
         this.setupDragLogic();
+        this.setupKeyboardLogic();
     },
 
     attach(selector) {
@@ -182,6 +183,17 @@ const Lightbox = {
             this.translateX = e.clientX - this.startX;
             this.translateY = e.clientY - this.startY;
             lightboxImg.style.transform = `translate(${this.translateX}px, ${this.translateY}px)`;
+        });
+    },
+
+    setupKeyboardLogic() {
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const modal = document.getElementById('lightbox');
+                if (modal && modal.classList.contains('active')) {
+                    this.close();
+                }
+            }
         });
     }
 };
