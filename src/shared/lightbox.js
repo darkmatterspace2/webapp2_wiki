@@ -22,10 +22,10 @@ const Lightbox = {
                 
                 <!-- Controls -->
                 <div class="lightbox-controls" onclick="event.stopPropagation()">
-                    <button onclick="Lightbox.resize('fit')">F</button>
-                    <button onclick="Lightbox.resize('100')">D</button>
-                    <button onclick="Lightbox.resize('crop')">W</button>
-                    <button onclick="Lightbox.resize('stretch')">S</button>
+                    <button onclick="Lightbox.resize('fit')">Default</button>
+                    <button onclick="Lightbox.resize('100')">Original</button>
+                    <button onclick="Lightbox.resize('crop')">Crop</button>
+                    <button onclick="Lightbox.resize('stretch')">Stretch</button>
                     <button onclick="Lightbox.toggleFullScreen()">[ ]</button>
                 </div>
 

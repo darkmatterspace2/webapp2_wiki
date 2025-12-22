@@ -406,10 +406,10 @@ textarea.editor {
     top: 15px;
     right: 35px;
     color: red;
-    opacity: 0.3;
+    opacity: 0.5;
     /* Low opacity by default */
     z-index: 1005;
-    font-size: 40px;
+    font-size: 60px;
     font-weight: bold;
     cursor: pointer;
     transition: opacity 0.4s ease-in-out;
@@ -449,7 +449,7 @@ textarea.editor {
     color: #eee;
     border: 1px solid #888;
     cursor: pointer;
-    font-size: 11px;
+    font-size: 15px;
     text-transform: uppercase;
     font-weight: bold;
     padding: 5px 10px;

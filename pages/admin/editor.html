@@ -20,10 +20,59 @@
     <script src="../../src/shared/layout.js"></script>
 
     <!-- EDITOR MODULES -->
-    <!-- Refactored into separate modules for better maintainability and future expansion -->
     <script src="modules/editor.toolbar.js"></script>
     <script src="modules/editor.preview.js"></script>
     <script src="modules/editor.core.js"></script>
+    <script src="modules/editor.tabs.js"></script>
+    <script src="modules/editor.fetch.js"></script>
+
+    <style>
+        /* Tab Styles */
+        .tab-nav {
+            display: flex;
+            border-bottom: 2px solid var(--border-color);
+            margin-bottom: 15px;
+            /* Spacing between tabs and content */
+            padding-left: 5px;
+        }
+
+        .tab-btn {
+            padding: 8px 16px;
+            cursor: pointer;
+            border: 1px solid transparent;
+            border-bottom: none;
+            background: transparent;
+            margin-right: 2px;
+            font-family: inherit;
+            font-size: 13px;
+        }
+
+        .tab-btn:hover {
+            background-color: var(--header-bg);
+            opacity: 1 !important;
+        }
+
+        .tab-content {
+            display: none;
+            /* Hidden by default */
+            animation: fadeIn 0.2s;
+        }
+
+        #tab-content-editor {
+            display: block;
+            /* Default visible */
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -68,40 +117,97 @@
                 </table>
             </fieldset>
 
-            <!-- Content Section -->
+            <!-- Content Section with Tabs -->
             <fieldset
-                style="margin-bottom: 20px; border: 2px solid var(--border-color); padding: 15px; background: var(--bg-color);">
+                style="margin-bottom: 20px; border: 2px solid var(--border-color); padding: 0; background: var(--bg-color);">
                 <legend
-                    style="padding: 0 10px; font-weight: bold; border: 2px solid var(--border-color); background: var(--header-bg);">
+                    style="padding: 0 10px; font-weight: bold; border: 2px solid var(--border-color); background: var(--header-bg); margin-left: 10px;">
                     Content</legend>
 
-                <!-- Toolbar -->
-                <div
-                    style="background: var(--header-bg); border: 2px solid var(--border-color); padding: 8px; margin-bottom: 10px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
-                    <button type="button" onclick="format('bold')" title="Bold"
-                        style="min-width: 30px;"><b>B</b></button>
-                    <button type="button" onclick="format('italic')" title="Italic"
-                        style="min-width: 30px;"><i>I</i></button>
-                    <button type="button" onclick="format('h2')" title="Header 2">H2</button>
-                    <button type="button" onclick="format('h3')" title="Header 3">H3</button>
+                <div style="padding: 15px;">
+                    <!-- Tab Navigation -->
+                    <div class="tab-nav">
+                        <button type="button" id="tab-btn-editor" class="tab-btn" onclick="switchTab('editor')">Write
+                            Article</button>
+                        <button type="button" id="tab-btn-fetch" class="tab-btn" onclick="switchTab('fetch')">Fetch
+                            URLs</button>
+                        <button type="button" id="tab-btn-ai" class="tab-btn" onclick="switchTab('ai')">AI
+                            Assist</button>
+                        <button type="button" id="tab-btn-other" class="tab-btn"
+                            onclick="switchTab('other')">Other</button>
+                    </div>
 
-                    <span style="border-left: 2px solid var(--border-color); height: 20px; margin: 0 5px;"></span>
+                    <!-- Tab: Editor (Main) -->
+                    <div id="tab-content-editor" class="tab-content">
+                        <!-- Toolbar -->
+                        <div
+                            style="background: var(--header-bg); border: 2px solid var(--border-color); padding: 8px; margin-bottom: 10px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+                            <button type="button" onclick="format('bold')" title="Bold"
+                                style="min-width: 30px;"><b>B</b></button>
+                            <button type="button" onclick="format('italic')" title="Italic"
+                                style="min-width: 30px;"><i>I</i></button>
+                            <button type="button" onclick="format('h2')" title="Header 2">H2</button>
+                            <button type="button" onclick="format('h3')" title="Header 3">H3</button>
 
-                    <button type="button" onclick="format('link')" title="Link">Link</button>
-                    <button type="button" onclick="format('code')" title="Code Block">Code</button>
-                    <button type="button" onclick="format('quote')" title="Blockquote">Quote</button>
+                            <span
+                                style="border-left: 2px solid var(--border-color); height: 20px; margin: 0 5px;"></span>
 
-                    <span style="border-left: 2px solid var(--border-color); height: 20px; margin: 0 5px;"></span>
+                            <button type="button" onclick="format('link')" title="Link">Link</button>
+                            <button type="button" onclick="format('code')" title="Code Block">Code</button>
+                            <button type="button" onclick="format('quote')" title="Blockquote">Quote</button>
 
-                    <button type="button" onclick="insertImage()" title="Insert Image Tag">Image</button>
-                    <button type="button" onclick="insertGallery()" title="Insert Gallery Snippet">Gallery</button>
-                    <button type="button" onclick="insertVideo()" title="Insert Video Snippet">Video</button>
+                            <span
+                                style="border-left: 2px solid var(--border-color); height: 20px; margin: 0 5px;"></span>
+
+                            <button type="button" onclick="insertImage()" title="Insert Image Tag">Image</button>
+                            <button type="button" onclick="insertGallery()"
+                                title="Insert Gallery Snippet">Gallery</button>
+                            <button type="button" onclick="insertVideo()" title="Insert Video Snippet">Video</button>
+                        </div>
+
+                        <textarea id="edit-content" class="editor" required
+                            style="width: 100%; height: 500px; box-sizing: border-box; font-family: 'Courier New', monospace; padding: 10px; border: 2px solid var(--border-color); resize: vertical;"></textarea>
+                        <div style="text-align: right; font-size: 11px; margin-top: 5px; opacity: 0.7;">Supports HTML5.
+                            Ensure tags are closed.</div>
+                    </div>
+
+                    <!-- Tab: Fetch URL -->
+                    <div id="tab-content-fetch" class="tab-content">
+                        <h3>HTML Image Extractor</h3>
+                        <p>Paste HTML code below to extract all image tags.</p>
+                        <textarea id="fetch-html-source" placeholder="Paste HTML Source Code Here..."
+                            style="width: 100%; height: 150px; font-family: monospace; padding: 10px; margin-bottom: 10px;"></textarea>
+                        <button type="button" onclick="extractImagesFromHtml()">Extract Images</button>
+                        <hr>
+                        <textarea id="fetch-output" placeholder="Extracted <img> tags will appear here..."
+                            style="width: 100%; height: 150px; font-family: monospace; padding: 10px;"></textarea>
+                        <br>
+                        <button type="button" onclick="copyFetchOutput(this)" style="margin-top:5px;">Copy
+                            Output</button>
+                    </div>
+
+                    <!-- Tab: AI Assist -->
+                    <div id="tab-content-ai" class="tab-content">
+                        <h3>AI Assistant</h3>
+                        <p>Ask AI to generate content (Placeholder).</p>
+                        <textarea placeholder="Describe what you want to write..."
+                            style="width: 100%; height: 100px; padding: 10px;"></textarea>
+                        <br><br>
+                        <button type="button" onclick="alert('AI Feature coming soon!')">Generate</button>
+                        <hr>
+                        <textarea placeholder="Generated content..."
+                            style="width: 100%; height: 250px; font-family: monospace; padding: 10px;"></textarea>
+                    </div>
+
+                    <!-- Tab: Other -->
+                    <div id="tab-content-other" class="tab-content">
+                        <h3>Other Tools</h3>
+                        <p>Scratchpad / Notes</p>
+                        <textarea placeholder="Use this space for temporary notes, clipboard, etc."
+                            style="width: 100%; height: 400px; padding: 10px; font-family: monospace;"></textarea>
+                    </div>
                 </div>
 
-                <textarea id="edit-content" class="editor" required
-                    style="width: 100%; height: 500px; box-sizing: border-box; font-family: 'Courier New', monospace; padding: 10px; border: 2px solid var(--border-color); resize: vertical;"></textarea>
-                <div style="text-align: right; font-size: 11px; margin-top: 5px; opacity: 0.7;">Supports HTML5. Ensure
-                    tags are closed.</div>
             </fieldset>
 
             <!-- Actions -->
