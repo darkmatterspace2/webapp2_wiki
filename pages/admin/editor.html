@@ -25,6 +25,7 @@
     <script src="modules/editor.core.js"></script>
     <script src="modules/editor.tabs.js"></script>
     <script src="modules/editor.fetch.js"></script>
+    <script src="modules/editor.wysiwyg.js"></script>
 
     <style>
         /* Tab Styles */
@@ -129,6 +130,8 @@
                     <div class="tab-nav">
                         <button type="button" id="tab-btn-editor" class="tab-btn" onclick="switchTab('editor')">Write
                             Article</button>
+                        <button type="button" id="tab-btn-wysiwyg" class="tab-btn"
+                            onclick="switchTab('wysiwyg')">WYSIWYG</button>
                         <button type="button" id="tab-btn-fetch" class="tab-btn" onclick="switchTab('fetch')">Fetch
                             URLs</button>
                         <button type="button" id="tab-btn-ai" class="tab-btn" onclick="switchTab('ai')">AI
@@ -169,6 +172,42 @@
                             style="width: 100%; height: 500px; box-sizing: border-box; font-family: 'Courier New', monospace; padding: 10px; border: 2px solid var(--border-color); resize: vertical;"></textarea>
                         <div style="text-align: right; font-size: 11px; margin-top: 5px; opacity: 0.7;">Supports HTML5.
                             Ensure tags are closed.</div>
+                    </div>
+
+                    <!-- Tab: WYSIWYG -->
+                    <div id="tab-content-wysiwyg" class="tab-content">
+                        <!-- WYSIWYG Toolbar -->
+                        <div
+                            style="background: var(--header-bg); border: 2px solid var(--border-color); padding: 8px; margin-bottom: 10px; display: flex; gap: 8px; align-items: center;">
+                            <button type="button" onclick="execWysiwygCmd('bold')" title="Bold"><b>B</b></button>
+                            <button type="button" onclick="execWysiwygCmd('italic')" title="Italic"><i>I</i></button>
+                            <button type="button" onclick="execWysiwygCmd('underline')"
+                                title="Underline"><u>U</u></button>
+                            <span
+                                style="border-left: 2px solid var(--border-color); height: 20px; margin: 0 5px;"></span>
+                            <button type="button" onclick="execWysiwygCmd('formatBlock', '<h2>')"
+                                title="Header 2">H2</button>
+                            <button type="button" onclick="execWysiwygCmd('formatBlock', '<h3>')"
+                                title="Header 3">H3</button>
+                            <button type="button" onclick="execWysiwygCmd('formatBlock', '<p>')"
+                                title="Paragraph">P</button>
+                            <span
+                                style="border-left: 2px solid var(--border-color); height: 20px; margin: 0 5px;"></span>
+                            <button type="button" onclick="execWysiwygCmd('insertOrderedList')"
+                                title="Ordered List">1.</button>
+                            <button type="button" onclick="execWysiwygCmd('insertUnorderedList')"
+                                title="Unordered List">•</button>
+                            <span style="flex-grow: 1;"></span>
+                            <button type="button" onclick="toggleSourceView()" title="Switch to Source View">Source
+                                View</button>
+                        </div>
+
+                        <div id="wysiwyg-editor" contenteditable="true"
+                            style="width: 860px; height: 500px; box-sizing: border-box; padding: 15px; border: 2px solid var(--border-color); overflow-y: auto; background: white; color: black;">
+                            <!-- Content Syncs Here -->
+                        </div>
+                        <div style="text-align: right; font-size: 11px; margin-top: 5px; opacity: 0.7;">Visual Editor
+                            Mode</div>
                     </div>
 
                     <!-- Tab: Fetch URL -->

@@ -5,7 +5,7 @@
 
 window.switchTab = function (tabName) {
     // Define all tab names
-    const tabs = ['editor', 'fetch', 'ai', 'other'];
+    const tabs = ['editor', 'fetch', 'ai', 'other', 'wysiwyg'];
 
     // Hide all tab content areas
     tabs.forEach(t => {
@@ -29,6 +29,19 @@ window.switchTab = function (tabName) {
     const targetContent = document.getElementById('tab-content-' + tabName);
     if (targetContent) {
         targetContent.style.display = 'block';
+    }
+
+    // Logic for specific tabs
+    if (tabName === 'wysiwyg') {
+        if (window.syncToWysiwyg) window.syncToWysiwyg();
+    } else if (tabName === 'editor') {
+        // If coming FROM Wysiwyg, we might want to ensure sync, 
+        // but wysiwyg implementation syncs on 'input' event so it should be fine.
+        // We can force a sync from wysiwyg just in case if the previous active tab was wysiwyg.
+        const wysiwygBtn = document.getElementById('tab-btn-wysiwyg');
+        if (wysiwygBtn && wysiwygBtn.style.opacity === '1') {
+            if (window.syncFromWysiwyg) window.syncFromWysiwyg();
+        }
     }
 
     // Highlight active button
