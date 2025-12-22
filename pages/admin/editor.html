@@ -18,242 +18,118 @@
     <script src="../../src/shared/utils.js"></script>
     <script src="../../src/themes/theme-loader.js"></script>
     <script src="../../src/shared/layout.js"></script>
+
+    <!-- EDITOR MODULES -->
+    <!-- Refactored into separate modules for better maintainability and future expansion -->
+    <script src="modules/editor.toolbar.js"></script>
+    <script src="modules/editor.preview.js"></script>
+    <script src="modules/editor.core.js"></script>
 </head>
 
 <body>
 
-    <div id="view-editor">
-        <h2 id="editor-title">Create New Article</h2>
+    <div id="view-editor" style="max-width: 900px; margin: 0 auto; padding: 10px;">
+        <h2 id="editor-title"
+            style="border-bottom: 2px solid var(--border-color); padding-bottom: 5px; margin-bottom: 20px;">Create New
+            Article</h2>
+
         <form onsubmit="handleSave(event)">
-            <table width="100%" cellpadding="5">
-                <tr>
-                    <td width="100">Title:</td>
-                    <td><input type="text" id="edit-title" required style="width: 100%;"></td>
-                </tr>
-                <tr>
-                    <td>Category:</td>
-                    <td>
-                        <input type="text" id="edit-category" required style="width: 150px;">
-                        &nbsp;&nbsp;Rating:
-                        <select id="edit-rating">
-                            <option value="NR">NR (Not Rated)</option>
-                            <option value="M">M (Mature)</option>
-                            <option value="P">P (Prohibited)</option>
-                            <option value="X">X (Restricted)</option>
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Tags:</td>
-                    <td><input type="text" id="edit-tags" placeholder="comma, separated" style="width: 100%;"></td>
-                </tr>
-                <tr>
-                    <td valign="top">Content:</td>
-                    <td>
-                        <small>Supports HTML. Make sure to close your tags!</small>
-                        <button type="button" onclick="insertGallery()" style="font-size: 10px; cursor:pointer;">[+
-                            Gallery]</button>
-                        <br>
-                        <textarea id="edit-content" class="editor" required></textarea>
-                    </td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>
-                        <button type="submit">Publish to Net</button>
-                        <button type="button" onclick="showPreview()">Preview</button>
-                        <button type="button" onclick="window.history.back()">Cancel</button>
-                    </td>
-                </tr>
-            </table>
+            <!-- Metadata Section -->
+            <fieldset
+                style="margin-bottom: 20px; border: 2px solid var(--border-color); padding: 15px; background: var(--bg-color);">
+                <legend
+                    style="padding: 0 10px; font-weight: bold; border: 2px solid var(--border-color); background: var(--header-bg);">
+                    Metadata</legend>
+                <table width="100%" cellpadding="5" cellspacing="0">
+                    <tr>
+                        <td width="120" style="font-weight: bold;">Title:</td>
+                        <td><input type="text" id="edit-title" required
+                                style="width: 100%; box-sizing: border-box; padding: 5px;"></td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold;">Category:</td>
+                        <td>
+                            <input type="text" id="edit-category" required style="width: 200px; padding: 5px;">
+                            &nbsp;&nbsp;
+                            <span style="font-weight: bold;">Rating:</span>
+                            <select id="edit-rating" style="padding: 5px;">
+                                <option value="NR">NR (Not Rated)</option>
+                                <option value="M">M (Mature)</option>
+                                <option value="P">P (Prohibited)</option>
+                                <option value="X">X (Restricted)</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold;">Tags:</td>
+                        <td><input type="text" id="edit-tags" placeholder="comma, separated"
+                                style="width: 100%; box-sizing: border-box; padding: 5px;"></td>
+                    </tr>
+                </table>
+            </fieldset>
+
+            <!-- Content Section -->
+            <fieldset
+                style="margin-bottom: 20px; border: 2px solid var(--border-color); padding: 15px; background: var(--bg-color);">
+                <legend
+                    style="padding: 0 10px; font-weight: bold; border: 2px solid var(--border-color); background: var(--header-bg);">
+                    Content</legend>
+
+                <!-- Toolbar -->
+                <div
+                    style="background: var(--header-bg); border: 2px solid var(--border-color); padding: 8px; margin-bottom: 10px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+                    <button type="button" onclick="format('bold')" title="Bold"
+                        style="min-width: 30px;"><b>B</b></button>
+                    <button type="button" onclick="format('italic')" title="Italic"
+                        style="min-width: 30px;"><i>I</i></button>
+                    <button type="button" onclick="format('h2')" title="Header 2">H2</button>
+                    <button type="button" onclick="format('h3')" title="Header 3">H3</button>
+
+                    <span style="border-left: 2px solid var(--border-color); height: 20px; margin: 0 5px;"></span>
+
+                    <button type="button" onclick="format('link')" title="Link">Link</button>
+                    <button type="button" onclick="format('code')" title="Code Block">Code</button>
+                    <button type="button" onclick="format('quote')" title="Blockquote">Quote</button>
+
+                    <span style="border-left: 2px solid var(--border-color); height: 20px; margin: 0 5px;"></span>
+
+                    <button type="button" onclick="insertImage()" title="Insert Image Tag">Image</button>
+                    <button type="button" onclick="insertGallery()" title="Insert Gallery Snippet">Gallery</button>
+                    <button type="button" onclick="insertVideo()" title="Insert Video Snippet">Video</button>
+                </div>
+
+                <textarea id="edit-content" class="editor" required
+                    style="width: 100%; height: 500px; box-sizing: border-box; font-family: 'Courier New', monospace; padding: 10px; border: 2px solid var(--border-color); resize: vertical;"></textarea>
+                <div style="text-align: right; font-size: 11px; margin-top: 5px; opacity: 0.7;">Supports HTML5. Ensure
+                    tags are closed.</div>
+            </fieldset>
+
+            <!-- Actions -->
+            <div
+                style="text-align: right; padding: 15px; background: var(--header-bg); border: 2px solid var(--border-color); margin-top: 20px;">
+                <button type="button" onclick="window.history.back()" style="float: left;">&laquo; Cancel</button>
+                <button type="button" onclick="showPreview()" style="margin-right: 15px;">Preview Article</button>
+                <button type="submit" style="font-weight: bold; padding: 5px 20px;">PUBLISH TO NET</button>
+            </div>
         </form>
 
         <!-- PREVIEW MODAL -->
         <div id="preview-overlay"
-            style="display:none; position:fixed; top:20px; left:20px; right:20px; bottom:20px; background:var(--bg-color); border:2px solid var(--border-color); padding:20px; z-index:1000; overflow:auto;">
+            style="display:none; position:fixed; top:20px; left:20px; right:20px; bottom:20px; background:var(--bg-color); border:4px outset var(--border-color); padding:0; z-index:1000; overflow:hidden; box-shadow: 10px 10px 20px rgba(0,0,0,0.5);">
             <div
-                style="background:var(--header-bg); padding:10px; margin-bottom:20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between;">
-                <b>Article Preview</b>
-                <button type="button" onclick="closePreview()">Close Preview</button>
+                style="background:var(--header-bg); padding:10px; border-bottom:2px solid var(--border-color); display:flex; justify-content:space-between; align-items: center;">
+                <b style="font-size: 1.2em;">Article Preview</b>
+                <button type="button" onclick="closePreview()">X Close</button>
             </div>
-
-            <h1 id="preview-title"></h1>
-            <div class="article-meta" id="preview-meta"></div>
-            <div id="preview-body" class="article-content"></div>
+            <div style="padding: 20px; overflow-y: auto; height: calc(100% - 60px);">
+                <h1 id="preview-title" style="margin-top: 0;"></h1>
+                <div class="article-meta" id="preview-meta"
+                    style="border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px;">
+                </div>
+                <div id="preview-body" class="article-content"></div>
+            </div>
         </div>
     </div>
-
-    <script>
-        let editingId = null;
-        let existingBucketPath = null;
-
-        async function initEditor() {
-            const sbClient = AppUtils.initSupabase();
-
-            // Auth Check
-            const user = await AppUtils.checkAuth(sbClient);
-            if (!user) {
-                alert("Restricted Area. Please Login.");
-                window.location.href = 'login.html';
-                return;
-            }
-
-            // Check Edit Mode
-            editingId = AppUtils.getParam('edit') || AppUtils.getParam('id');
-            if (editingId) {
-                await loadArticleForEdit(editingId);
-            }
-        }
-
-        async function loadArticleForEdit(id) {
-            document.getElementById('editor-title').innerText = "Edit Article";
-            AppUtils.showLoading(true);
-
-            try {
-                // Use ArticleService to get metadata
-                const meta = await ArticleService.getById(id);
-                existingBucketPath = meta.bucket_path;
-
-                // Use StorageService to get content
-                const content = await StorageService.downloadAsText(meta.bucket_path);
-
-                // Populate Form
-                document.getElementById('edit-title').value = meta.title;
-                document.getElementById('edit-category').value = meta.category;
-                document.getElementById('edit-tags').value = (meta.tags || []).join(', ');
-                document.getElementById('edit-rating').value = meta.ratings || "NR";
-                document.getElementById('edit-content').value = content;
-
-            } catch (err) {
-                console.error('[EDITOR] Error:', err);
-                alert("Error loading article: " + err.message);
-            }
-
-            AppUtils.showLoading(false);
-        }
-
-        function insertGallery() {
-            const textarea = document.getElementById('edit-content');
-            const snippet = `\n<div class="retro-gallery">
-    <img src="YOUR_IMAGE_HERE.jpg">
-    <img src="YOUR_IMAGE_HERE.jpg">
-    <img src="YOUR_IMAGE_HERE.jpg">
-</div>\n`;
-
-            if (textarea.selectionStart || textarea.selectionStart == '0') {
-                var startPos = textarea.selectionStart;
-                var endPos = textarea.selectionEnd;
-                textarea.value = textarea.value.substring(0, startPos)
-                    + snippet
-                    + textarea.value.substring(endPos, textarea.value.length);
-                textarea.selectionStart = textarea.selectionEnd = startPos + snippet.length;
-            } else {
-                textarea.value += snippet;
-            }
-            textarea.focus();
-        }
-
-        function showPreview() {
-            const title = document.getElementById('edit-title').value;
-            const content = document.getElementById('edit-content').value;
-            const category = document.getElementById('edit-category').value;
-            const rating = document.getElementById('edit-rating').value;
-
-            document.getElementById('preview-title').textContent = title || "Untitled";
-            document.getElementById('preview-meta').textContent = `Category: ${category} | Rating: ${rating} | (Preview)`;
-
-            const body = document.getElementById('preview-body');
-            body.innerHTML = content;
-
-            // Apply Gallery Logic to Preview
-            formatGalleries(body);
-
-            document.getElementById('preview-overlay').style.display = 'block';
-        }
-
-        function formatGalleries(container) {
-            const galleries = container.querySelectorAll('.retro-gallery');
-            galleries.forEach(gallery => {
-                if (gallery.querySelector('.retro-gallery-col')) return;
-                const images = Array.from(gallery.children).filter(el => el.tagName === 'IMG');
-                if (images.length === 0) return;
-
-                // Determine Column Count
-                let colCount = 3; // Default
-                if (gallery.classList.contains('cols-2')) colCount = 2;
-                if (gallery.classList.contains('cols-4')) colCount = 4;
-                if (gallery.classList.contains('cols-5')) colCount = 5;
-
-                // Create columns
-                const cols = [];
-                for (let i = 0; i < colCount; i++) {
-                    const div = document.createElement('div');
-                    div.className = 'retro-gallery-col';
-                    cols.push(div);
-                }
-
-                images.forEach((img, index) => {
-                    cols[index % colCount].appendChild(img);
-                });
-
-                gallery.innerHTML = '';
-                cols.forEach(c => gallery.appendChild(c));
-            });
-        }
-
-        function closePreview() {
-            document.getElementById('preview-overlay').style.display = 'none';
-        }
-
-        async function handleSave(e) {
-            e.preventDefault();
-            AppUtils.showLoading(true);
-
-            const title = document.getElementById('edit-title').value;
-            const category = document.getElementById('edit-category').value;
-            const tags = document.getElementById('edit-tags').value.split(',').map(t => t.trim()).filter(Boolean);
-            const ratings = document.getElementById('edit-rating').value;
-            const content = document.getElementById('edit-content').value;
-
-            try {
-                // Upload content using date-based folder structure
-                const bucketPath = await StorageService.uploadArticle(title, content);
-
-                // Build payload
-                const payload = {
-                    title,
-                    category,
-                    tags,
-                    ratings,
-                    bucket_path: bucketPath,
-                    updated_at: new Date().toISOString()
-                };
-
-                if (editingId) {
-                    // Update existing
-                    await ArticleService.update(editingId, payload);
-                    // Delete old file if path changed
-                    if (existingBucketPath && existingBucketPath !== bucketPath) {
-                        try { await StorageService.delete(existingBucketPath); } catch (e) { }
-                    }
-                } else {
-                    // Create new
-                    await ArticleService.create(payload);
-                }
-
-                alert("Success!");
-                window.location.href = '../../index.html';
-
-            } catch (error) {
-                console.error('[EDITOR] Save error:', error);
-                alert("Error: " + error.message);
-            }
-
-            AppUtils.showLoading(false);
-        }
-
-        window.onload = initEditor;
-    </script>
 </body>
 
 </html>

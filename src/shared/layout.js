@@ -85,7 +85,7 @@ function initLayout() {
                     <details>
                         <summary style="font-size: 12px; cursor: pointer; font-weight: bold; margin-bottom: 5px;">Settings</summary>
                         
-                        <div style="font-size: 12px; font-weight: bold; margin-top: 10px;">Theme:</div>
+                        <div style="font-size: 12px; font-weight: bold; margin-top: 10px;">Theme:<br>L - Lightweight<br>H - Heavy</div>
                         <select id="theme-selector" style="width: 100%; font-size: 11px; margin-top: 5px;">
                             <option value="default">Retro Classic</option>
                             <option value="retro-green">Cyberpunk Terminal</option>
