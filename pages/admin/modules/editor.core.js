@@ -86,11 +86,29 @@ window.handleSave = async function (e) {
             }
         } else {
             // Create new
-            await ArticleService.create(payload);
+            const newArticle = await ArticleService.create(payload);
+            // If we created a new article, we need its ID to continue editing
+            if (newArticle && newArticle.length > 0) {
+                window.editingId = newArticle[0].id; // Supabase returns array
+                window.existingBucketPath = bucketPath;
+            }
         }
 
         alert("Success!");
-        window.location.href = '../../index.html';
+
+        // Check if we should redirect or stay
+        const submitter = e.submitter;
+        if (submitter && submitter.name === 'save-continue') {
+            console.log("Keeping editor open...");
+            // If it was a new article, update URL without reload so refresh works
+            if (window.editingId && !window.location.search.includes('edit=')) {
+                const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?edit=' + window.editingId;
+                window.history.pushState({ path: newUrl }, '', newUrl);
+                document.getElementById('editor-title').innerText = "Edit Article";
+            }
+        } else {
+            window.location.href = '../../index.html';
+        }
 
     } catch (error) {
         console.error('[EDITOR] Save error:', error);

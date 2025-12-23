@@ -138,7 +138,7 @@
                     });
                 } else {
                     // First time formatting: Collect and Tag
-                    images = Array.from(gallery.children).filter(el => el.tagName === 'IMG');
+                    images = Array.from(gallery.children).filter(el => el.tagName === 'IMG' || el.tagName === 'VIDEO' || el.tagName === 'IFRAME');
                     images.forEach((img, idx) => {
                         img.setAttribute('data-index', idx);
                     });
@@ -166,8 +166,8 @@
                 }
 
                 // 4. Distribute images (preserve order)
-                // Filter out non-image elements just in case
-                images = images.filter(el => el.tagName === 'IMG');
+                // Filter out non-media elements just in case
+                images = images.filter(el => el.tagName === 'IMG' || el.tagName === 'VIDEO' || el.tagName === 'IFRAME');
 
                 images.forEach((img, index) => {
                     const colIndex = index % colCount;

@@ -263,7 +263,10 @@ button:active {
 }
 
 /* Ensure images don't overflow */
-.article-content img {
+/* Ensure images/videos don't overflow */
+.article-content img,
+.article-content video,
+.article-content iframe {
     max-width: 100%;
     height: auto;
     display: block;
@@ -602,4 +605,21 @@ textarea.editor {
 #back-to-top:hover {
     opacity: 1.0;
     background: rgba(0, 0, 0, 0.8);
+}
+
+/* VIEW MODE SIMULATION */
+body.mobile-view {
+    background-color: #111;
+    /* Dark background for the 'void' around the device */
+}
+
+body.mobile-view table.main-layout {
+    width: 420px;
+    /* Typical mobile width */
+    margin: 20px auto;
+    border: 5px solid #333;
+    border-radius: 10px;
+    box-shadow: 0 0 0 10px #000, 0 0 50px rgba(0, 0, 0, 0.8);
+    background-color: var(--bg-color);
+    /* Ensure content bg is correct */
 }
