@@ -25,7 +25,7 @@ window.formatGalleries = function (container) {
     const galleries = container.querySelectorAll('.retro-gallery');
     galleries.forEach(gallery => {
         if (gallery.querySelector('.retro-gallery-col')) return;
-        const images = Array.from(gallery.children).filter(el => el.tagName === 'IMG');
+        const images = Array.from(gallery.children).filter(el => el.tagName === 'IMG' || el.tagName === 'VIDEO' || el.tagName === 'IFRAME');
         if (images.length === 0) return;
 
         // Determine Column Count

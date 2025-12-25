@@ -22,6 +22,11 @@ function initLayout() {
         document.body.classList.add('zen-mode');
     }
 
+    // View Mode (Mobile/Desktop)
+    if (localStorage.getItem('viewMode') === 'mobile') {
+        document.body.classList.add('mobile-view');
+    }
+
     // 3. Get root path using APP_CONFIG
     const rootPath = window.APP_CONFIG ? APP_CONFIG.getDepth() : './';
 
@@ -46,6 +51,7 @@ function initLayout() {
                         <button onclick="Layout.zoom(-0.1)" class="btn-header" title="Zoom Out">[-]</button>
                         <button onclick="Layout.zoom(0.1)" class="btn-header" title="Zoom In">[+]</button>
                         <button id="btn-zen" onclick="Layout.toggleZenMode()" class="btn-header">[ Zen Mode ]</button>
+                        <button id="btn-view" onclick="Layout.toggleViewMode()" class="btn-header">[ Mobile View ]</button>
                         <button id="btn-theme" onclick="Layout.toggleTheme()" class="btn-header">[ Light Mode ]</button>
                     </div>
                 </div>
@@ -76,6 +82,14 @@ function initLayout() {
                 <b>Categories</b>
                 <ul id="category-list">
                     <li><a href="${rootPath}index.html">All</a></li>
+                    <!-- Populated via JS -->
+                </ul>
+
+                <hr>
+
+                <b>Tags</b>
+                <ul id="tag-list">
+                    <li><a href="${rootPath}/pages/other/tags.html">All</a></li>
                     <!-- Populated via JS -->
                 </ul>
 
@@ -170,6 +184,7 @@ function initLayout() {
     // Expose layout functions
     window.Layout = {
         toggleZenMode,
+        toggleViewMode,
         toggleTheme,
         zoom,
         changeGalleryCols
@@ -220,6 +235,18 @@ function updateToggleButtons() {
             btnTheme.classList.remove('active');
         }
     }
+
+    // View Mode
+    const btnView = document.getElementById('btn-view');
+    if (btnView) {
+        if (document.body.classList.contains('mobile-view')) {
+            btnView.classList.add('active');
+            btnView.textContent = "[ Desktop View ]"; // Option to switch back
+        } else {
+            btnView.classList.remove('active');
+            btnView.textContent = "[ Mobile View ]";
+        }
+    }
 }
 
 // Helper: Toggle Theme
@@ -253,6 +280,14 @@ function toggleZenMode() {
     document.body.classList.toggle('zen-mode');
     const isZen = document.body.classList.contains('zen-mode');
     localStorage.setItem('zenMode', isZen);
+    updateToggleButtons();
+}
+
+// Helper: Toggle View Mode (Desktop/Mobile)
+function toggleViewMode() {
+    document.body.classList.toggle('mobile-view');
+    const isMobile = document.body.classList.contains('mobile-view');
+    localStorage.setItem('viewMode', isMobile ? 'mobile' : 'desktop');
     updateToggleButtons();
 }
 
