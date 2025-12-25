@@ -21,6 +21,7 @@ const APP_CONFIG = {
     getDepth: function () {
         const path = window.location.pathname;
         if (path.includes('/pages/admin/')) return '../../';
+        if (path.includes('/pages/other/')) return '../../';
         if (path.includes('/pages/')) return '../';
         if (path.includes('/admin/')) return '../';
         return './';

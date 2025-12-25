@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tag Cloud - RetroWiki 2k25</title>
+    <link rel="stylesheet" href="../../style.css">
+    <!-- Dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../../src/config/app.config.js"></script>
+    <script src="../../src/config/supabase.config.js"></script>
+    <script src="../../src/shared/utils.js"></script>
+    <script src="../../src/themes/theme-loader.js"></script>
+    <script src="../../src/shared/layout.js"></script>
+    <style>
+        #tag-cloud-container {
+            padding: 20px;
+            text-align: center;
+            line-height: 2.5em;
+            /* Spacing between lines */
+        }
+
+        .cloud-tag {
+            margin: 5px;
+            text-decoration: none;
+            display: inline-block;
+            transition: color 0.2s, transform 0.2s;
+        }
+
+        .cloud-tag:hover {
+            color: var(--link-hover) !important;
+            transform: scale(1.1);
+            text-decoration: underline;
+        }
+
+        /* Size Classes based on frequency */
+        .tag-size-1 {
+            font-size: 0.9em;
+            opacity: 0.7;
+        }
+
+        .tag-size-2 {
+            font-size: 1.1em;
+            opacity: 0.8;
+        }
+
+        .tag-size-3 {
+            font-size: 1.3em;
+            opacity: 0.9;
+            font-weight: bold;
+        }
+
+        .tag-size-4 {
+            font-size: 1.6em;
+            opacity: 1.0;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .tag-size-5 {
+            font-size: 2.0em;
+            opacity: 1.0;
+            font-weight: bolder;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .loading-text {
+            color: var(--text-muted);
+            font-style: italic;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="main-content">
+        <h1>All Tags</h1>
+        <hr>
+        <div id="tag-cloud-container">
+            <p class="loading-text">Extracting tags from the matrix...</p>
+        </div>
+        <hr>
+        <p><a href="../../index.html">&lt;&lt; Back to Index</a></p>
+    </div>
+
+    <script>
+        async function initTagCloud() {
+            const container = document.getElementById('tag-cloud-container');
+
+            try {
+                const sbClient = AppUtils.initSupabase();
+
+                // Fetch all articles, selecting only tags
+                // Limit to 1000 to be safe, though ideally we'd paginate if needed
+                // Check R-rated setting
+                const showR = localStorage.getItem('show_r_rated') === 'true';
+
+                // Fetch all articles, selecting only tags
+                // Limit to 1000 to be safe, though ideally we'd paginate if needed
+                let query = sbClient
+                    .from('wiki_articles')
+                    .select('tags');
+
+                if (!showR) {
+                    query = query.not('ratings', 'in', '("M","P","X")');
+                }
+
+                const { data, error } = await query.limit(1000);
+
+                if (error) throw error;
+
+                if (!data || data.length === 0) {
+                    container.innerHTML = '<p>No tags found.</p>';
+                    return;
+                }
+
+                // Aggregate tags
+                const tagCounts = {};
+                data.forEach(article => {
+                    if (article.tags && Array.isArray(article.tags)) {
+                        article.tags.forEach(tag => {
+                            // Normalize slightly just in case
+                            const normTag = tag.trim();
+                            if (normTag) {
+                                tagCounts[normTag] = (tagCounts[normTag] || 0) + 1;
+                            }
+                        });
+                    }
+                });
+
+                const tags = Object.keys(tagCounts);
+                if (tags.length === 0) {
+                    container.innerHTML = '<p>No tags found.</p>';
+                    return;
+                }
+
+                // Calculate Min/Max for sizing
+                const counts = Object.values(tagCounts);
+                const minCount = Math.min(...counts);
+                const maxCount = Math.max(...counts);
+                const range = maxCount - minCount;
+
+                // Sort alphabetically
+                tags.sort();
+
+                // Build HTML
+                let html = '';
+                tags.forEach(tag => {
+                    const count = tagCounts[tag];
+
+                    // Determine Size Class (1-5)
+                    let sizeClass = 'tag-size-1';
+                    if (range > 0) {
+                        const score = Math.floor(((count - minCount) / range) * 4) + 1; // 1 to 5
+                        sizeClass = `tag-size-${score}`;
+                    } else {
+                        // If all have same count
+                        sizeClass = 'tag-size-3';
+                    }
+
+                    // Create Link
+                    // Assuming relative path to index is ../../index.html
+                    const url = `../../index.html?q=${encodeURIComponent(tag)}`;
+
+                    // Color customization logic could go here, but using default links for retro feel or computed CSS
+                    html += `<a href="${url}" class="cloud-tag ${sizeClass}" title="${count} articles">${tag}</a>\n`;
+                });
+
+                container.innerHTML = html;
+
+            } catch (err) {
+                console.error("Tag Cloud Error:", err);
+                container.innerHTML = `<p style="color:red">Error loading tags: ${err.message}</p>`;
+            }
+        }
+
+        // Initialize Layout (Header/Sidebar etc)
+        // initLayout is from shared/layout.js, typically runs on DOM content loaded, but we need to inject our content into the main layout table if using standard layout
+        // However, standard layout.js injects BODY content into a table structure. 
+        // Let's verify how layout.js works. If it replaces body, we need to be careful.
+        // Looking at layout.js earlier: "Preserve Content" -> it wraps existing body content.
+        // So we are safe to just run initLayout();
+
+        window.onload = function () {
+
+
+            initTagCloud();
+        };
+
+    </script>
+</body>
+
+</html>

@@ -86,6 +86,14 @@ function initLayout() {
                 </ul>
 
                 <hr>
+
+                <b>Tags</b>
+                <ul id="tag-list">
+                    <li><a href="${rootPath}/pages/other/tags.html">All</a></li>
+                    <!-- Populated via JS -->
+                </ul>
+
+                <hr>
                 
                 <div style="margin-bottom: 20px;">
                     <details>
