@@ -49,16 +49,22 @@
             "css": "raunchy-3/theme.css"
         },
         {
+            "id": "raunchy-4",
+            "name": "Raunchy 4",
+            "description": "Ultra-light neon pink edition - works everywhere",
+            "css": "raunchy-4/theme.css"
+        },
+        {
             "id": "nes-classic",
             "name": "NES Classic",
             "description": "8-bit Nintendo inspired with authentic NES colors and pixel art style",
             "css": "nes-classic/theme.css"
         },
         {
-            "id": "dark-souls",
-            "name": "Dark Souls",
-            "description": "Gothic fantasy with ash grey and blood red - minimal and lightweight",
-            "css": "dark-souls/theme.css"
+            "id": "dark-theme",
+            "name": "Dark Theme",
+            "description": "Premium glassmorphism dark theme with Inter font and cyan accents",
+            "css": "dark-theme/theme.css"
         }
     ],
     "default": "default"

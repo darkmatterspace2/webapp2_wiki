@@ -1,0 +1,400 @@
+/* THEME: RAUNCHY III - Ultra-Lightweight Edition 💖 */
+/* Mobile-first, optimized for cheap devices & slow connections */
+
+:root {
+    --bg-dark: #0d001a;
+    --bg-mid: #1c0028;
+    --bg-light: #2a0040;
+    --text-main: #ff00ff;
+    --text-light: #ffb6c1;
+    --link-pink: #ff69b4;
+    --link-deep: #ff1493;
+    --gold: #ffd700;
+    --blood-red: #ff4500;
+    --header-bg: #4b0082;
+    --border-pink: #ff1493;
+    --font-main: 'Segoe UI', Tahoma, sans-serif;
+    --font-display: Impact, 'Arial Black', sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background: var(--bg-dark) url('https://thumbs.dreamstime.com/z/colorful-pattern-hearts-emojis-various-expressions-pink-background-perfect-cheerful-designs-crafts-bright-376307750.jpg');
+    background-size: cover;
+    background-attachment: fixed;
+    color: var(--text-main);
+    font-family: var(--font-main);
+    margin: 0;
+    padding: 8px;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+/* Links */
+a {
+    color: var(--link-pink);
+    text-decoration: underline dotted var(--gold);
+    font-weight: bold;
+}
+
+a:hover {
+    color: #fff;
+    text-shadow: 0 0 8px var(--text-main);
+}
+
+a:visited {
+    color: var(--text-light);
+}
+
+/* Headings */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: var(--font-display);
+    color: #fff;
+    text-align: center;
+    text-shadow: 2px 2px 4px #000, 0 0 10px var(--text-main);
+    border-bottom: 3px dashed var(--border-pink);
+    margin: 1em 0 0.5em;
+    padding: 12px;
+    background: url('https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Ahegao_Belle_Delphine.gif/250px-Ahegao_Belle_Delphine.gif') center no-repeat;
+    background-size: contain;
+}
+
+h1 {
+    font-size: 1.5em;
+}
+
+h2 {
+    font-size: 1.3em;
+}
+
+h3 {
+    font-size: 1.1em;
+}
+
+/* Layout */
+table.main-layout {
+    width: 100%;
+    min-height: 100vh;
+    border-collapse: separate;
+    border-spacing: 4px;
+    border: 4px ridge var(--border-pink);
+    box-shadow: 0 0 20px var(--text-main);
+    background: rgba(0, 0, 0, 0.5) url('https://media.istockphoto.com/id/1091144208/vector/heart-shape-icons.jpg') repeat;
+}
+
+td {
+    vertical-align: top;
+    padding: 10px;
+    border: 2px groove var(--gold);
+    background: rgba(255, 20, 147, 0.15);
+}
+
+/* Header */
+.header-cell {
+    background: var(--header-bg) url('https://i.ytimg.com/vi/pd8ll8HHTM0/mqdefault.jpg') center/cover no-repeat;
+    border-bottom: 4px solid var(--gold);
+    padding: 12px;
+    text-align: center;
+    color: #fff;
+    text-shadow: 2px 2px 4px #000;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.header-content>div:first-child {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.header-content>div:last-child {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+/* Sidebar */
+.sidebar-cell {
+    width: 180px;
+    background: var(--bg-mid) url('https://myteenwebcam.com/fapp/gifs/8b06f5b1e00237ab0016f809c52a14e5.gif') top/cover;
+    background-position: 0% -10%;
+    background-size: 300%;
+    border-right: 4px double var(--border-pink);
+    font-size: 13px;
+}
+
+body.zen-mode .sidebar-cell {
+    display: none;
+}
+
+/* Content */
+.content-cell {
+    padding: 12px;
+    background: var(--bg-dark);
+}
+
+/* Inputs */
+input,
+textarea,
+select {
+    background: var(--bg-light);
+    color: var(--gold);
+    border: 3px ridge var(--text-main);
+    padding: 8px;
+    font-family: var(--font-main);
+    border-radius: 12px;
+    width: 100%;
+}
+
+input:focus,
+textarea:focus {
+    border-color: var(--gold);
+    outline: none;
+    box-shadow: 0 0 10px var(--border-pink);
+}
+
+/* Buttons */
+button,
+.btn-header {
+    background: linear-gradient(to bottom, var(--link-deep), #8b008b);
+    color: #fff;
+    border: 3px outset var(--gold);
+    padding: 6px 12px;
+    cursor: pointer;
+    font-family: var(--font-display);
+    font-size: 1em;
+    border-radius: 20px;
+}
+
+button:hover,
+.btn-header:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px var(--link-pink);
+}
+
+button:active {
+    border-style: inset;
+}
+
+/* Article Cards */
+.article-card {
+    border: 4px groove var(--text-main);
+    margin-bottom: 12px;
+    background: url('https://media.istockphoto.com/id/1091144208/vector/heart-shape-icons.jpg') center/cover;
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.article-card .card-main {
+    padding: 12px;
+    background: rgba(0, 0, 0, 0.6);
+}
+
+.article-card .card-title {
+    font-size: 1.3em;
+    font-family: var(--font-display);
+    text-shadow: 1px 1px 3px #000;
+}
+
+.article-card .card-title a {
+    color: var(--link-pink);
+}
+
+.article-card .card-title a:hover {
+    color: #fff;
+}
+
+.article-card .card-right {
+    border-left: 3px dashed var(--gold);
+    background: rgba(255, 20, 147, 0.2);
+}
+
+.article-card .card-meta {
+    color: var(--text-light);
+    font-size: 12px;
+}
+
+/* Tags */
+.article-tags a {
+    border: 2px solid var(--gold);
+    padding: 4px 10px;
+    margin: 3px;
+    background: linear-gradient(to right, var(--link-deep), var(--link-pink));
+    border-radius: 30px;
+    color: #fff;
+    font-size: 11px;
+    display: inline-block;
+}
+
+.article-tags a:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 10px var(--text-main);
+}
+
+/* Jump Links */
+.jump-links {
+    border: 3px dashed var(--gold);
+    padding: 10px;
+    background: rgba(255, 105, 180, 0.3);
+    text-align: center;
+    border-radius: 12px;
+    margin-bottom: 12px;
+}
+
+/* Article List */
+.article-list-item {
+    margin-bottom: 10px;
+    padding: 8px;
+    border-bottom: 2px dotted var(--text-main);
+}
+
+.article-list-item:hover {
+    background: rgba(255, 215, 0, 0.15);
+}
+
+/* Footer */
+.footer-cell {
+    background: var(--bg-mid);
+    border-top: 4px ridge var(--blood-red);
+    text-align: center;
+    padding: 12px;
+    font-size: 12px;
+}
+
+/* Visitor Counter */
+.visitor-counter {
+    border: 2px solid var(--gold);
+    background: #000;
+    color: var(--text-main);
+    padding: 8px;
+    font-family: var(--font-display);
+}
+
+/* Search */
+.search-box {
+    width: 100%;
+}
+
+/* Code */
+pre,
+code {
+    background: var(--bg-mid);
+    color: var(--gold);
+    font-family: Consolas, monospace;
+    font-size: 13px;
+}
+
+pre {
+    padding: 10px;
+    border-left: 3px solid var(--border-pink);
+    overflow-x: auto;
+}
+
+/* HR */
+hr {
+    border: none;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--text-main), transparent);
+    margin: 16px 0;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-dark);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--header-bg);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--border-pink);
+}
+
+/* Selection */
+::selection {
+    background: var(--link-pink);
+    color: #fff;
+}
+
+/* Gallery */
+.gallery-float-controls {
+    background: var(--bg-mid);
+    border: 2px solid var(--border-pink);
+}
+
+#back-to-top {
+    background: var(--header-bg);
+    color: #fff;
+    border: 2px solid var(--text-main);
+}
+
+/* Utilities */
+.hidden {
+    display: none !important;
+}
+
+/* Editor */
+textarea.editor {
+    height: 400px;
+    background: var(--bg-light) url('https://thumbs.dreamstime.com/z/colorful-pattern-hearts-emojis-various-expressions-pink-background-perfect-cheerful-designs-crafts-bright-376307750.jpg');
+    background-size: cover;
+}
+
+/* MOBILE FIRST - Base styles above, desktop overrides below */
+@media screen and (min-width: 481px) {
+    body {
+        padding: 12px;
+        font-size: 16px;
+    }
+
+    .sidebar-cell {
+        width: 200px;
+    }
+
+    h1 {
+        font-size: 1.7em;
+    }
+
+    .article-card .card-title {
+        font-size: 1.5em;
+    }
+}
+
+@media screen and (min-width: 769px) {
+    body {
+        padding: 16px;
+        font-size: 17px;
+    }
+
+    .sidebar-cell {
+        width: 240px;
+    }
+
+    h1 {
+        font-size: 1.9em;
+    }
+
+    .content-cell {
+        padding: 20px;
+    }
+}

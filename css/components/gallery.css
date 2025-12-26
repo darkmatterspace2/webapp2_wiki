@@ -21,6 +21,64 @@
     display: block;
 }
 
+/* GALLERY ITEM WRAPPER (for caption support) */
+.gallery-item {
+    position: relative;
+    overflow: hidden;
+    display: block;
+}
+
+.gallery-item img,
+.gallery-item video {
+    width: 100%;
+    display: block;
+    margin: 0 !important;
+}
+
+/* FIGURE ELEMENT SUPPORT IN GALLERY */
+.retro-gallery-col figure,
+.gallery-item figure {
+    margin: 0;
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.retro-gallery-col figure img,
+.retro-gallery-col figure video {
+    width: 100%;
+    display: block;
+    margin: 0 !important;
+}
+
+/* CAPTION OVERLAY (appears on hover - positioned at top to avoid video controls) */
+.gallery-caption,
+.retro-gallery-col figure figcaption,
+.gallery-item figcaption {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    padding: 8px 10px;
+    font-size: 12px;
+    line-height: 1.4;
+    text-align: center;
+
+    /* Hidden by default, slide down on hover */
+    transform: translateY(-100%);
+    opacity: 0;
+    transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+.gallery-item:hover .gallery-caption,
+.retro-gallery-col figure:hover figcaption,
+.gallery-item:hover figcaption {
+    transform: translateY(0);
+    opacity: 1;
+}
+
 /* Responsive Gallery */
 @media screen and (max-width: 400px) {
     .retro-gallery-col {
