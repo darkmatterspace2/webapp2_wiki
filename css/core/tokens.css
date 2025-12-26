@@ -1,0 +1,41 @@
+/* CSS TOKENS (Variables) */
+:root {
+    --bg-color: #000000;
+    --text-color: #cccccc;
+    --link-color: #0000FF;
+    /* Classic blue, will be overridden for dark mode readability usually, but keeping retro */
+    --visited-color: #800080;
+    --header-bg: #808080;
+    --sidebar-bg: #202020;
+    --border-color: #404040;
+    --input-bg: #333;
+    --input-text: #fff;
+    --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-mono: "Courier New", Courier, monospace;
+
+    /* Sizing & Spacing */
+    --space-xs: 4px;
+    --space-sm: 8px;
+    --space-md: 16px;
+    --space-lg: 24px;
+    --font-size-base: 16px;
+    --touch-target-min: 44px;
+}
+
+[data-theme="light"] {
+    --bg-color: #ffffff;
+    --text-color: #000000;
+    --link-color: #0000FF;
+    --visited-color: #800080;
+    --header-bg: #e0e0e0;
+    --sidebar-bg: #f0f0f0;
+    --border-color: #808080;
+    --input-bg: #fff;
+    --input-text: #000;
+}
+
+/* HIGH CONTRAST DARK MODE ADJUSTMENTS FOR READABILITY */
+body.dark-mode {
+    --link-color: #66b3ff;
+    --visited-color: #d98cb3;
+}

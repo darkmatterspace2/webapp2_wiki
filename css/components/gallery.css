@@ -1,0 +1,161 @@
+/* RETRO MASONRY GALLERY (Ultra Light Weight) */
+.retro-gallery {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+}
+
+.retro-gallery-col {
+    flex: 33.33%;
+    max-width: 33.33%;
+    padding: 0;
+}
+
+.retro-gallery-col img,
+.retro-gallery-col video {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    width: 100%;
+    display: block;
+}
+
+/* Responsive Gallery */
+@media screen and (max-width: 400px) {
+    .retro-gallery-col {
+        flex: 50%;
+        max-width: 50%;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .retro-gallery-col {
+        flex: 100%;
+        max-width: 100%;
+    }
+}
+
+/* Gallery Column Overrides */
+.retro-gallery.cols-2 .retro-gallery-col {
+    flex: 50%;
+    max-width: 50%;
+}
+
+.retro-gallery.cols-4 .retro-gallery-col {
+    flex: 25%;
+    max-width: 25%;
+}
+
+.retro-gallery.cols-5 .retro-gallery-col {
+    flex: 20%;
+    max-width: 20%;
+}
+
+/* FLOATING GALLERY CONTROLS (Bottom Right) */
+.gallery-float-controls {
+    position: fixed;
+    bottom: 70px;
+    right: 70px;
+    z-index: 1100;
+    /* Above hamburger (1000) */
+    background: rgba(0, 0, 0, 0.6);
+    padding: 3px;
+    border-radius: 4px;
+    border: 1px solid #666;
+    height: auto;
+
+    /* Vertical Slim Layout */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 24px;
+    /* Narrower */
+
+    /* Fade Effect: low opacity by default */
+    opacity: 0.3;
+    transition: opacity 0.4s ease-in-out;
+}
+
+.gallery-float-controls:hover {
+    opacity: 1.0;
+}
+
+.gallery-float-controls button {
+    background: #ccc;
+    color: #000;
+    border: 1px solid #fff;
+    border-right: 1px solid #555;
+    border-bottom: 1px solid #555;
+    cursor: pointer;
+    font-size: 14px;
+    /* Larger font for icon */
+    font-weight: bold;
+    font-family: inherit;
+    padding: 8px 0;
+    /* Taller */
+    margin: 2px 0;
+    width: 100%;
+    text-align: center;
+    line-height: 10px;
+}
+
+.gallery-float-controls button:active {
+    border: 1px solid #555;
+    border-right: 1px solid #fff;
+    border-bottom: 1px solid #fff;
+    background: #aaa;
+}
+
+/* BACK TO TOP BUTTON */
+/* Including here as it's often used with gallery, but could be separate */
+#back-to-top {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 70px;
+    z-index: 1100;
+    /* Above hamburger */
+
+    /* Match gallery-float-controls aesthetic */
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    border: 1px solid #666;
+    border-radius: 4px;
+    padding: 8px 0;
+
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 12px;
+
+    /* Fade Effect */
+    opacity: 0.3;
+    transition: opacity 0.4s ease-in-out;
+    /* Vertical Slim Layout */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 30px;
+    /* Narrower */
+}
+
+#back-to-top:hover {
+    opacity: 1.0;
+    background: rgba(0, 0, 0, 0.8);
+}
+
+/* MOBILE VIEW POSITIONING FIX */
+body.mobile-view .gallery-float-controls {
+    position: absolute;
+    bottom: 20px;
+    right: 10px;
+    z-index: 1100;
+}
+
+body.mobile-view #back-to-top {
+    position: absolute;
+    bottom: 120px;
+    /* Above gallery controls */
+    right: 10px;
+    z-index: 1100;
+}

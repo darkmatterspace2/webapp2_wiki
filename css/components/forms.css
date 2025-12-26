@@ -1,0 +1,24 @@
+/* INPUTS */
+input,
+textarea,
+select {
+    background: var(--input-bg);
+    color: var(--input-text);
+    border: 2px inset var(--border-color);
+    padding: 3px 5px;
+    /* Compact padding */
+    min-height: auto;
+    /* Remove large touch target enforcement */
+    font-size: 13px;
+    /* Match button size */
+    font-family: var(--font-main);
+    box-sizing: border-box;
+    /* Ensure padding doesn't affect width calculations oddly */
+}
+
+/* EDITOR SPECIFIC */
+textarea.editor {
+    width: 100%;
+    height: 400px;
+    font-family: "Courier New", monospace;
+}

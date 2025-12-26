@@ -1,0 +1,21 @@
+/* FOOTER */
+.footer-cell {
+    height: 40px;
+    background-color: var(--sidebar-bg);
+    border-top: 2px solid var(--border-color);
+    text-align: center;
+    font-size: 12px;
+    font-family: var(--font-main);
+}
+
+/* VISITOR COUNTER */
+.visitor-counter {
+    border: 1px solid red;
+    background: black;
+    color: red;
+    padding: 2px 5px;
+    font-family: "Courier New", monospace;
+    font-weight: bold;
+    letter-spacing: 2px;
+    display: inline-block;
+}

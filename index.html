@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RetroWiki 2k25</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/main.css">
     <!-- Dependencies -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <!-- Config -->
@@ -16,7 +16,7 @@
     <script src="src/services/category.service.js"></script>
     <!-- Shared -->
     <script src="src/shared/utils.js"></script>
-    <script src="src/themes/theme-loader.js"></script>
+    <script src="src/shared/theme-loader.js"></script>
     <script src="src/shared/layout.js"></script>
 </head>
 
@@ -130,15 +130,14 @@
                 card.className = 'article-card';
                 card.innerHTML = `
                     <div class="article-card-inner">
-                        <div class="article-card-main">
-                            <a href="pages/article.html?id=${art.id}" class="article-card-title">${art.title}</a>
-                            <div class="article-card-meta">
-                                <a href="index.html?cat=${encodeURIComponent(art.category)}"><b>${art.category}</b></a>: ${tagLinks || '<i>no tags</i>'}
-                            </div>
-                        </div>
+                        <a href="pages/article.html?id=${art.id}" class="article-card-title">${art.title}</a>
+                        
                         <div class="article-card-stats">
-                            ${AppUtils.formatDate(art.created_at)}<br>
-                            ${art.views || 0} views
+                            Created on: ${AppUtils.formatDate(art.created_at)}, views ${art.views || 0}
+                        </div>
+
+                        <div class="article-card-meta">
+                            <a href="index.html?cat=${encodeURIComponent(art.category)}"><b>${art.category}</b></a>: ${tagLinks || '<i>no tags</i>'}
                         </div>
                     </div>
                 `;

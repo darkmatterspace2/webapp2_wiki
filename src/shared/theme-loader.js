@@ -6,7 +6,7 @@ const ThemeLoader = {
     // Get themes path relative to current page
     getThemesPath: function () {
         const rootPath = APP_CONFIG.getDepth();
-        return rootPath + 'src/themes';
+        return rootPath + 'css/themes';
     },
 
     // Load theme registry from JSON

@@ -1,0 +1,188 @@
+/* LAYOUT TABLE */
+table.main-layout {
+    width: 100%;
+    height: 100vh;
+    border-collapse: collapse;
+    border: 1px solid var(--border-color);
+    table-layout: fixed;
+    /* STRICTLY ENFORCE WIDTH to prevent content overflowing */
+}
+
+td {
+    vertical-align: top;
+    padding: 10px;
+}
+
+/* TABLE COLUMNS */
+.col-sidebar {
+    width: 200px;
+}
+
+.col-content {
+    width: auto;
+}
+
+/* HIDE SIDEBAR (ZEN MODE) */
+body.zen-mode .sidebar-cell {
+    display: none;
+}
+
+/* ZEN MODE: Sidebar column becomes 100% width because content cell moves into it (sidebar hidden) */
+body.zen-mode .col-sidebar {
+    width: 100% !important;
+}
+
+body.zen-mode .col-content {
+    width: 0 !important;
+}
+
+/* VIEW MODE SIMULATION */
+body.mobile-view {
+    background-color: #111;
+    /* Dark background for the 'void' around the device */
+}
+
+body.mobile-view #layout-wrapper {
+    width: 420px;
+    height: 85vh;
+    /* Fixed height for scroll frame */
+    display: flex;
+    /* To contain scroll div */
+    flex-direction: column;
+    /* Typical mobile width */
+    margin: 20px auto;
+    border: 5px solid #333;
+    border-radius: 10px;
+    box-shadow: 0 0 0 10px #000, 0 0 50px rgba(0, 0, 0, 0.8);
+    background-color: var(--bg-color);
+    /* Ensure content bg is correct */
+    position: relative;
+    /* For absolute positioning of children */
+    overflow: hidden;
+}
+
+/* Scroll Container for Mobile */
+body.mobile-view .layout-scroll {
+    flex: 1;
+    overflow-y: auto;
+    width: 100%;
+}
+
+/* RESPONSIVE LAYOUT (Mobile & Tablet) */
+@media screen and (max-width: 768px) {
+
+    table.main-layout,
+    table.main-layout tbody,
+    table.main-layout tr,
+    table.main-layout td {
+        display: block;
+        width: 100% !important;
+        box-sizing: border-box;
+    }
+
+    .col-sidebar,
+    .col-content {
+        width: 100% !important;
+    }
+
+    .sidebar-cell {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 250px !important;
+        background-color: var(--sidebar-bg);
+        border-right: 2px solid var(--border-color);
+        z-index: 1000;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease-in-out;
+        overflow-y: auto;
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
+        padding: 20px;
+        opacity: 0.95;
+        /* Slight transparency */
+        backdrop-filter: blur(2px);
+    }
+
+    /* Show sidebar when open */
+    body.sidebar-open .sidebar-cell {
+        transform: translateX(0);
+    }
+
+    .sidebar-mobile-header {
+        display: block !important;
+    }
+}
+
+/* OVERLAY for Mobile Sidebar */
+#sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    backdrop-filter: blur(2px);
+}
+
+/* HAMBURGER BUTTON */
+.btn-hamburger {
+    display: none;
+    /* Hidden on Desktop */
+}
+
+@media screen and (max-width: 768px) {
+    .btn-hamburger {
+        display: inline-block;
+        /* Visible on Mobile */
+    }
+}
+
+/* Reset table in mobile view if needed */
+body.mobile-view table.main-layout {
+    width: 100%;
+    margin: 0;
+    border: none;
+    box-shadow: none;
+    height: auto;
+    /* Allow scrolling */
+}
+
+/* Ensure stacks in mobile view simulation match real responsive behavior */
+body.mobile-view table.main-layout,
+body.mobile-view table.main-layout tbody,
+body.mobile-view table.main-layout tr,
+body.mobile-view table.main-layout td {
+    display: block;
+    width: 100% !important;
+    box-sizing: border-box;
+}
+
+body.mobile-view .sidebar-cell {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 250px !important;
+    background-color: var(--sidebar-bg);
+    border-right: 2px solid var(--border-color);
+    z-index: 1000;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+    overflow-y: auto;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
+    padding: 20px;
+    opacity: 0.95;
+    /* Slight transparency */
+    backdrop-filter: blur(2px);
+}
+
+body.mobile-view.sidebar-open .sidebar-cell {
+    transform: translateX(0);
+}
+
+/* Show close button in mobile view simulation */
+body.mobile-view .sidebar-mobile-header {
+    display: block !important;
+}

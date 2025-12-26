@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WYSIWYG HTML Editor Pro</title>
+    <style>
+        /* --- 1. LAYOUT & THEME --- */
+        :root {
+            --bg-dark: #1e1e1e;
+            --bg-panel: #252526;
+            --accent: #007acc;
+            --text-main: #cccccc;
+            --border: #3c3c3c;
+        }
+
+        body {
+            margin: 0;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* --- 2. TOOLBAR --- */
+        .toolbar {
+            height: 45px;
+            background-color: var(--bg-panel);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            gap: 10px;
+            user-select: none;
+        }
+
+        .btn {
+            background: #333;
+            color: white;
+            border: 1px solid var(--border);
+            padding: 6px 12px;
+            cursor: pointer;
+            border-radius: 3px;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+
+        .btn:hover { background: #444; border-color: #666; }
+        .btn:active { transform: translateY(1px); }
+        .btn-primary { background: var(--accent); border-color: var(--accent); }
+        .btn-primary:hover { background: #0062a3; }
+        
+        .separator { width: 1px; height: 20px; background: #555; margin: 0 5px; }
+
+        /* --- 3. MAIN SPLIT VIEW --- */
+        .main-container {
+            flex-grow: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* Left: Visual Canvas */
+        .canvas-area {
+            flex: 1; /* Takes remaining space */
+            background-color: #111;
+            overflow: auto;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        #slide-canvas {
+            width: 800px;
+            height: 450px;
+            background-color: white;
+            color: black;
+            position: relative;
+            box-shadow: 0 0 30px rgba(0,0,0,0.5);
+            flex-shrink: 0; /* Don't shrink below size */
+        }
+
+        /* Right: Code Editor */
+        .code-area {
+            width: 400px;
+            background-color: var(--bg-panel);
+            border-left: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .code-header {
+            padding: 10px;
+            background: #2d2d2d;
+            border-bottom: 1px solid var(--border);
+            font-size: 12px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #html-source {
+            flex-grow: 1;
+            background-color: #1e1e1e;
+            color: #a9b7c6;
+            border: none;
+            padding: 15px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 13px;
+            resize: none;
+            outline: none;
+            line-height: 1.5;
+            white-space: pre;
+        }
+
+        /* --- 4. CANVAS ELEMENTS --- */
+        .editor-el {
+            position: absolute;
+            box-sizing: border-box;
+            user-select: none;
+        }
+        
+        /* Content wrappers */
+        .content-box {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            /* Allow clicks to pass through for dragging, except text */
+            pointer-events: none; 
+        }
+
+        .text-box .content-box { pointer-events: auto; padding: 5px; cursor: text; outline: none; }
+        
+        img, video { width: 100%; height: 100%; object-fit: fill; display: block; }
+        table { width: 100%; height: 100%; border-collapse: collapse; border: 1px solid #ccc; }
+        td { border: 1px solid #ccc; padding: 4px; pointer-events: auto; }
+
+        /* Selection & Handles */
+        .selected { outline: 2px solid var(--accent); z-index: 1000; }
+        
+        .resize-handle {
+            width: 8px; height: 8px;
+            background: white; border: 1px solid var(--accent);
+            position: absolute; display: none; z-index: 1001;
+        }
+        .selected .resize-handle { display: block; }
+        .nw { top: -5px; left: -5px; cursor: nw-resize; }
+        .ne { top: -5px; right: -5px; cursor: ne-resize; }
+        .sw { bottom: -5px; left: -5px; cursor: sw-resize; }
+        .se { bottom: -5px; right: -5px; cursor: se-resize; }
+
+    </style>
+</head>
+<body>
+
+    <!-- TOOLBAR -->
+    <div class="toolbar">
+        <button class="btn" onclick="addComponent('text')">+ Text</button>
+        <button class="btn" onclick="addComponent('image')">+ Image</button>
+        <button class="btn" onclick="addComponent('video')">+ Video</button>
+        <button class="btn" onclick="addComponent('table')">+ Table</button>
+        <div class="separator"></div>
+        <button class="btn" style="color:#ff6b6b" onclick="deleteSelected()">Delete</button>
+        <div style="flex-grow:1"></div>
+        <button class="btn" onclick="togglePreview()">Preview / Edit Mode</button>
+    </div>
+
+    <!-- MAIN AREA -->
+    <div class="main-container">
+        
+        <!-- LEFT: VISUAL -->
+        <div class="canvas-area">
+            <div id="slide-canvas"></div>
+        </div>
+
+        <!-- RIGHT: CODE -->
+        <div class="code-area">
+            <div class="code-header">
+                <span>HTML SOURCE (Editable)</span>
+                <div>
+                    <button class="btn" onclick="applyCodeToCanvas()">Apply Changes</button>
+                    <button class="btn" onclick="copyToClipboard()">Copy</button>
+                </div>
+            </div>
+            <textarea id="html-source" spellcheck="false"></textarea>
+        </div>
+
+    </div>
+
+    <script>
+        // --- 1. STATE & INIT ---
+        const canvas = document.getElementById('slide-canvas');
+        const codeView = document.getElementById('html-source');
+        let selectedEl = null;
+
+        // --- 2. COMPONENT FACTORY ---
+        function createElStructure(x, y, w, h, contentHTML, type) {
+            return `
+            <div class="editor-el ${type}-box" style="left: ${x}px; top: ${y}px; width: ${w}px; height: ${h}px;">
+                <div class="resize-handle nw" data-h="nw"></div>
+                <div class="resize-handle ne" data-h="ne"></div>
+                <div class="resize-handle sw" data-h="sw"></div>
+                <div class="resize-handle se" data-h="se"></div>
+                <div class="content-box" ${type === 'text' ? 'contenteditable="true"' : ''}>
+                    ${contentHTML}
+                </div>
+            </div>`.trim();
+        }
+
+        function addComponent(type) {
+            let html = '';
+            if (type === 'text') {
+                html = createElStructure(50, 50, 200, 100, 'Double click to edit...', 'text');
+            } else if (type === 'image') {
+                const url = prompt("Image URL:", "https://picsum.photos/300/200");
+                if (!url) return;
+                html = createElStructure(100, 100, 300, 200, `<img src="${url}" draggable="false">`, 'img');
+            } else if (type === 'video') {
+                const url = prompt("Video URL:", "https://www.w3schools.com/html/mov_bbb.mp4");
+                if (!url) return;
+                html = createElStructure(150, 150, 320, 180, `<video src="${url}" controls style="pointer-events:none; width:100%; height:100%"></video>`, 'vid');
+            } else if (type === 'table') {
+                html = createElStructure(50, 50, 300, 150, `
+                    <table style="width:100%; height:100%;">
+                        <tr><td contenteditable="true">Head 1</td><td contenteditable="true">Head 2</td></tr>
+                        <tr><td contenteditable="true">Cell 1</td><td contenteditable="true">Cell 2</td></tr>
+                    </table>
+                `, 'table');
+            }
+
+            // Insert HTML string directly
+            canvas.insertAdjacentHTML('beforeend', html);
+            
+            // Select the newly added element (it's the last child)
+            const newEl = canvas.lastElementChild;
+            selectElement(newEl);
+            syncToCode();
+        }
+
+        function deleteSelected() {
+            if (selectedEl) {
+                selectedEl.remove();
+                selectedEl = null;
+                syncToCode();
+            }
+        }
+
+        // --- 3. SELECTION & DELEGATION ---
+        
+        // This is the core magic. We listen on the Canvas, not individual elements.
+        // This allows innerHTML replacement from the code view without breaking listeners.
+        canvas.addEventListener('mousedown', (e) => {
+            // If in Preview Mode (canvas has disabled pointer events or similar), ignore
+            if (canvas.classList.contains('preview-mode')) return;
+
+            const target = e.target;
+            
+            // 1. Handle Resize Start
+            if (target.classList.contains('resize-handle')) {
+                e.preventDefault();
+                startResize(e, target.parentElement, target.dataset.h);
+                return;
+            }
+
+            // 2. Find clicked Editor Element
+            const el = target.closest('.editor-el');
+
+            // 3. Handle Text Editing vs Dragging
+            if (el) {
+                // If clicking directly into editable text/table, do not drag
+                if (target.isContentEditable) {
+                    selectElement(el);
+                    return; 
+                }
+                
+                // Otherwise, drag
+                selectElement(el);
+                startDrag(e, el);
+            } else {
+                // Clicked empty space
+                deselectAll();
+            }
+        });
+
+        // Sync code when typing in text boxes
+        canvas.addEventListener('input', () => {
+             // Debounce slightly for performance if needed, but direct is fine for small DOMs
+             syncToCode();
+        });
+
+        function selectElement(el) {
+            if (selectedEl) selectedEl.classList.remove('selected');
+            selectedEl = el;
+            if(selectedEl) selectedEl.classList.add('selected');
+        }
+
+        function deselectAll() {
+            if (selectedEl) selectedEl.classList.remove('selected');
+            selectedEl = null;
+        }
+
+        // --- 4. DRAG & RESIZE ENGINE ---
+        
+        function startDrag(e, el) {
+            e.preventDefault();
+            const startX = e.clientX;
+            const startY = e.clientY;
+            const startLeft = parseInt(el.style.left || 0);
+            const startTop = parseInt(el.style.top || 0);
+
+            function onMove(ev) {
+                const dx = ev.clientX - startX;
+                const dy = ev.clientY - startY;
+                el.style.left = (startLeft + dx) + 'px';
+                el.style.top = (startTop + dy) + 'px';
+            }
+
+            function onUp() {
+                window.removeEventListener('mousemove', onMove);
+                window.removeEventListener('mouseup', onUp);
+                syncToCode(); // Update code view after move
+            }
+
+            window.addEventListener('mousemove', onMove);
+            window.addEventListener('mouseup', onUp);
+        }
+
+        function startResize(e, el, handleType) {
+            const startX = e.clientX;
+            const startY = e.clientY;
+            const startW = el.offsetWidth;
+            const startH = el.offsetHeight;
+            const startL = parseInt(el.style.left || 0);
+            const startT = parseInt(el.style.top || 0);
+
+            function onMove(ev) {
+                const dx = ev.clientX - startX;
+                const dy = ev.clientY - startY;
+
+                if (handleType.includes('e')) el.style.width = (startW + dx) + 'px';
+                if (handleType.includes('s')) el.style.height = (startH + dy) + 'px';
+                if (handleType.includes('w')) {
+                    el.style.width = (startW - dx) + 'px';
+                    el.style.left = (startL + dx) + 'px';
+                }
+                if (handleType.includes('n')) {
+                    el.style.height = (startH - dy) + 'px';
+                    el.style.top = (startT + dy) + 'px';
+                }
+            }
+
+            function onUp() {
+                window.removeEventListener('mousemove', onMove);
+                window.removeEventListener('mouseup', onUp);
+                syncToCode(); // Update code view after resize
+            }
+
+            window.addEventListener('mousemove', onMove);
+            window.addEventListener('mouseup', onUp);
+        }
+
+        // --- 5. CODE SYNC LOGIC ---
+
+        function formatHTML(html) {
+            // Simple prettify helper
+            let formatted = '';
+            let pad = 0;
+            html.split(/>\s*</).forEach(function(node) {
+                if (node.match( /^\/\w/ )) pad -= 1;
+                formatted += new Array(pad * 4 + 1).join(' ') + '<' + node + '>\r\n';
+                if (node.match( /^<?\w[^>]*[^\/]$/ )) pad += 1;
+            });
+            return formatted.substring(1, formatted.length - 3);
+        }
+
+        function syncToCode() {
+            // We want to save the HTML state.
+            // We use a regex to strip the "selected" class so it doesn't get saved permanently
+            let html = canvas.innerHTML;
+            html = html.replace(/ class="([^"]*)\bselected\b([^"]*)"/g, ' class="$1$2"'); // Remove selected class
+            html = html.replace(/ class=""/g, ''); // Clean empty class attributes
+            
+            // Simple formatting for readability
+            codeView.value = html.replace(/</div><div/g, '</div>\n<div').trim();
+        }
+
+        function applyCodeToCanvas() {
+            // Take code from textarea and put it back into canvas
+            canvas.innerHTML = codeView.value;
+            // State reset
+            selectedEl = null; 
+        }
+
+        function copyToClipboard() {
+            codeView.select();
+            document.execCommand('copy');
+            const btn = document.querySelector('button[onclick="copyToClipboard()"]');
+            const original = btn.innerText;
+            btn.innerText = "Copied!";
+            setTimeout(() => btn.innerText = original, 1000);
+        }
+
+        // --- 6. EXTRAS ---
+
+        function togglePreview() {
+            canvas.classList.toggle('preview-mode');
+            if (canvas.classList.contains('preview-mode')) {
+                // Remove handles visual
+                deselectAll();
+                document.body.style.setProperty('--accent', 'transparent'); // Hide outlines
+                // Make non-editable
+                const editables = canvas.querySelectorAll('[contenteditable]');
+                editables.forEach(el => el.contentEditable = "false");
+            } else {
+                document.body.style.setProperty('--accent', '#007acc');
+                // Restore editable
+                const textComponents = canvas.querySelectorAll('.text-box .content-box');
+                textComponents.forEach(el => el.contentEditable = "true");
+                const tables = canvas.querySelectorAll('td');
+                tables.forEach(el => el.contentEditable = "true");
+            }
+        }
+
+    </script>
+</body>
+</html>
