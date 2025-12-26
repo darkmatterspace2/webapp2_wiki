@@ -1,0 +1,939 @@
+/* THEME: NES CLASSIC - 8-bit Nintendo Entertainment System Inspired */
+
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+/* NES Color Palette - Authentic 2C02 PPU Colors */
+:root {
+    /* Core NES Palette */
+    --nes-black: #0d0d0d;
+    --nes-dark-grey: #6d6d6d;
+    --nes-light-grey: #b8b8b8;
+    --nes-white: #fcfcfc;
+
+    /* NES Blues */
+    --nes-blue-dark: #0000bc;
+    --nes-blue: #0078f8;
+    --nes-blue-light: #3cbcfc;
+
+    /* NES Reds */
+    --nes-red-dark: #a81000;
+    --nes-red: #f83800;
+    --nes-red-light: #f87858;
+
+    /* NES Greens */
+    --nes-green-dark: #005800;
+    --nes-green: #00a800;
+    --nes-green-light: #58d854;
+
+    /* NES Yellows/Golds */
+    --nes-gold: #f8b800;
+    --nes-yellow: #fcfc00;
+
+    /* NES Browns */
+    --nes-brown-dark: #503000;
+    --nes-brown: #ac7c00;
+    --nes-tan: #f8b878;
+
+    /* Mapped Variables */
+    --bg-color: var(--nes-black);
+    --text-color: var(--nes-white);
+    --header-bg: var(--nes-blue-dark);
+    --sidebar-bg: #1a1a40;
+    --border-color: var(--nes-white);
+    --link-color: var(--nes-blue-light);
+    --visited-color: var(--nes-red-light);
+    --input-bg: var(--nes-black);
+    --input-text: var(--nes-white);
+
+    /* Typography */
+    --font-main: 'Press Start 2P', cursive;
+}
+
+/* Light Mode */
+[data-theme="light"] {
+    --bg-color: var(--nes-light-grey);
+    --text-color: var(--nes-black);
+    --sidebar-bg: #d8d8e8;
+    --header-bg: var(--nes-blue);
+}
+
+/* Pixelation Enforcement */
+* {
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-color);
+    /* CRT Scanline Effect */
+    background-image:
+        repeating-linear-gradient(0deg,
+            transparent,
+            transparent 2px,
+            rgba(0, 0, 0, 0.15) 2px,
+            rgba(0, 0, 0, 0.15) 4px);
+    color: var(--text-color);
+    font-family: var(--font-main);
+    margin: 0;
+    padding: 0;
+    font-size: 12px;
+    line-height: 2;
+}
+
+/* Links - Classic 8-bit style */
+a {
+    color: var(--link-color);
+    text-decoration: none;
+}
+
+a:hover {
+    color: var(--nes-yellow);
+    text-shadow: 2px 2px 0 var(--nes-red);
+}
+
+a:visited {
+    color: var(--visited-color);
+}
+
+/* Headers - NES Title Card Style */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: var(--font-main);
+    font-weight: normal;
+    margin-bottom: 1.5rem;
+    color: var(--nes-gold);
+    text-shadow:
+        3px 3px 0 var(--nes-brown-dark),
+        -1px -1px 0 var(--nes-brown);
+    border-bottom: 4px solid var(--nes-gold);
+    padding-bottom: 8px;
+    text-transform: uppercase;
+}
+
+h1 {
+    font-size: 18px;
+    text-align: center;
+}
+
+h2 {
+    font-size: 14px;
+}
+
+h3,
+h4,
+h5,
+h6 {
+    font-size: 12px;
+}
+
+/* LAYOUT TABLE - Game Frame */
+table.main-layout {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    height: 100vh;
+    border-collapse: separate;
+    border-spacing: 0;
+    /* NES Controller-style border pattern */
+    border: 8px solid var(--nes-dark-grey);
+    box-shadow:
+        inset 4px 4px 0 var(--nes-light-grey),
+        inset -4px -4px 0 var(--nes-black),
+        0 0 0 4px var(--nes-black);
+    background: var(--bg-color);
+}
+
+td {
+    vertical-align: top;
+    padding: 0;
+}
+
+/* HEADER - Title Screen */
+.header-cell {
+    background: var(--header-bg);
+    /* Starfield pattern */
+    background-image:
+        radial-gradient(var(--nes-white) 1px, transparent 1px),
+        radial-gradient(var(--nes-white) 1px, transparent 1px);
+    background-size: 40px 40px;
+    background-position: 0 0, 20px 20px;
+    border-bottom: 8px solid var(--nes-black);
+    height: 80px;
+    padding: 15px 20px;
+    position: relative;
+}
+
+/* Brick Pattern Overlay */
+.header-cell::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 16px;
+    background: repeating-linear-gradient(90deg,
+            var(--nes-brown) 0px,
+            var(--nes-brown) 30px,
+            var(--nes-brown-dark) 30px,
+            var(--nes-brown-dark) 32px);
+    border-top: 2px solid var(--nes-tan);
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+}
+
+.header-content h1,
+.header-content span {
+    font-family: var(--font-main);
+    color: var(--nes-white);
+    text-shadow:
+        3px 3px 0 var(--nes-red-dark),
+        -1px -1px 0 var(--nes-red);
+    font-size: 16px;
+    border: none;
+    margin: 0;
+}
+
+/* SIDEBAR - Menu Select */
+.sidebar-cell {
+    width: 220px;
+    background-color: var(--sidebar-bg);
+    border-right: 4px solid var(--nes-blue-dark);
+    font-size: 10px;
+    padding: 15px;
+    /* Grid pattern */
+    background-image:
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 16px 16px;
+}
+
+.sidebar-cell b {
+    color: var(--nes-gold);
+    display: block;
+    margin-bottom: 8px;
+    padding-bottom: 4px;
+    border-bottom: 2px solid var(--nes-gold);
+}
+
+.sidebar-cell ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 15px 0;
+}
+
+.sidebar-cell li {
+    margin-bottom: 4px;
+    padding: 4px 4px 4px 16px;
+    position: relative;
+}
+
+/* Menu Arrow Cursor */
+.sidebar-cell li:hover::before {
+    content: '▶';
+    position: absolute;
+    left: 0;
+    color: var(--nes-white);
+    animation: blink 0.5s infinite;
+}
+
+@keyframes blink {
+
+    0%,
+    49% {
+        opacity: 1;
+    }
+
+    50%,
+    100% {
+        opacity: 0;
+    }
+}
+
+.sidebar-cell a {
+    color: var(--nes-white);
+}
+
+.sidebar-cell a:hover {
+    color: var(--nes-yellow);
+    text-shadow: none;
+}
+
+/* MAIN CONTENT */
+.content-cell {
+    padding: 20px;
+    background-color: var(--bg-color);
+    /* Subtle tile pattern */
+    background-image:
+        linear-gradient(45deg, rgba(255, 255, 255, 0.02) 25%, transparent 25%),
+        linear-gradient(-45deg, rgba(255, 255, 255, 0.02) 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, rgba(255, 255, 255, 0.02) 75%),
+        linear-gradient(-45deg, transparent 75%, rgba(255, 255, 255, 0.02) 75%);
+    background-size: 16px 16px;
+}
+
+/* HIDE SIDEBAR (ZEN MODE) */
+body.zen-mode .sidebar-cell {
+    display: none;
+}
+
+/* SEARCH BOX */
+.search-box {
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+/* INPUTS - Command Input */
+input,
+textarea,
+select {
+    background: var(--nes-black);
+    color: var(--nes-white);
+    border: 4px solid var(--nes-dark-grey);
+    border-top-color: var(--nes-black);
+    border-left-color: var(--nes-black);
+    border-right-color: var(--nes-light-grey);
+    border-bottom-color: var(--nes-light-grey);
+    padding: 8px 12px;
+    font-family: var(--font-main);
+    font-size: 10px;
+    width: 100%;
+    outline: none;
+}
+
+input:focus,
+textarea:focus {
+    border-color: var(--nes-blue-light);
+    box-shadow: 0 0 0 2px var(--nes-blue);
+}
+
+/* BUTTONS - NES Controller Button Style */
+button,
+.btn-header {
+    background: var(--nes-dark-grey);
+    color: var(--nes-white);
+    font-family: var(--font-main);
+    font-size: 10px;
+    padding: 8px 16px;
+    cursor: pointer;
+    text-shadow: 1px 1px 0 var(--nes-black);
+    border: 4px solid var(--nes-light-grey);
+    border-top-color: var(--nes-white);
+    border-left-color: var(--nes-white);
+    border-right-color: var(--nes-black);
+    border-bottom-color: var(--nes-black);
+    margin: 4px;
+    position: relative;
+    text-transform: uppercase;
+}
+
+button:hover,
+.btn-header:hover {
+    background: var(--nes-red);
+    color: var(--nes-white);
+}
+
+button:active,
+.btn-header:active {
+    border-top-color: var(--nes-black);
+    border-left-color: var(--nes-black);
+    border-right-color: var(--nes-white);
+    border-bottom-color: var(--nes-white);
+}
+
+button.active,
+.btn-header.active {
+    background: var(--nes-green);
+    color: var(--nes-white);
+}
+
+/* JUMP LINKS - Power-Up Blocks */
+.jump-links {
+    margin-bottom: 20px;
+    font-family: var(--font-main);
+    font-size: 10px;
+    text-align: center;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.jump-links a {
+    display: inline-flex;
+    width: 32px;
+    height: 32px;
+    background: var(--nes-brown);
+    border: 3px solid var(--nes-tan);
+    border-right-color: var(--nes-brown-dark);
+    border-bottom-color: var(--nes-brown-dark);
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: var(--nes-yellow);
+    font-weight: bold;
+}
+
+.jump-links a:hover {
+    background: var(--nes-gold);
+    color: var(--nes-white);
+    text-shadow: none;
+    animation: bounce 0.3s infinite alternate;
+}
+
+@keyframes bounce {
+    from {
+        transform: translateY(0);
+    }
+
+    to {
+        transform: translateY(-4px);
+    }
+}
+
+/* ARTICLE LIST */
+.article-list-item {
+    margin-bottom: 8px;
+    padding: 4px 0;
+    border-bottom: 2px dotted var(--nes-dark-grey);
+}
+
+/* ARTICLE VIEW */
+.article-meta {
+    font-size: 10px;
+    color: var(--nes-light-grey);
+    margin-bottom: 16px;
+    border-bottom: 4px solid var(--nes-dark-grey);
+    padding-bottom: 8px;
+}
+
+.article-content {
+    margin-top: 16px;
+    width: 100%;
+}
+
+/* Code blocks - Castle Wall Style */
+.article-content pre {
+    background: var(--nes-dark-grey);
+    border: 4px solid var(--nes-light-grey);
+    border-left: 8px solid var(--nes-blue);
+    padding: 16px;
+    color: var(--nes-white);
+    font-family: var(--font-main);
+    font-size: 10px;
+    overflow-x: auto;
+}
+
+.article-content code {
+    background: var(--nes-black);
+    color: var(--nes-green-light);
+    padding: 2px 6px;
+    font-family: var(--font-main);
+    font-size: 10px;
+}
+
+/* FOOTER - Game Over Screen */
+.footer-cell {
+    height: 60px;
+    background: var(--nes-black);
+    color: var(--nes-white);
+    border-top: 8px solid var(--nes-dark-grey);
+    text-align: center;
+    font-family: var(--font-main);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    /* Brick pattern */
+    background-image: repeating-linear-gradient(90deg,
+            var(--nes-brown-dark) 0px,
+            var(--nes-brown-dark) 30px,
+            var(--nes-black) 30px,
+            var(--nes-black) 32px);
+}
+
+/* VISITOR COUNTER - Score Display */
+.visitor-counter {
+    background: transparent;
+    color: var(--nes-yellow);
+    padding: 0 12px;
+    font-family: var(--font-main);
+    font-size: 14px;
+    text-shadow: 2px 2px 0 var(--nes-brown-dark);
+    border: none;
+    display: inline-block;
+    letter-spacing: 4px;
+}
+
+/* LOADING - PRESS START */
+#loading-indicator {
+    background: var(--nes-black);
+    color: var(--nes-white);
+    padding: 16px;
+    font-family: var(--font-main);
+    border: 4px solid var(--nes-white);
+    animation: blink 1s infinite;
+}
+
+/* EDITOR */
+textarea.editor {
+    width: 100%;
+    height: 400px;
+    font-family: var(--font-main);
+    background: var(--nes-black);
+    color: var(--nes-green-light);
+    border: 4px solid var(--nes-dark-grey);
+    padding: 16px;
+    font-size: 10px;
+}
+
+/* TAGS - Power-Up Items (Colorful!) */
+.article-tags {
+    margin-bottom: 16px;
+    font-size: 10px;
+}
+
+.article-tags a {
+    display: inline-block;
+    border: 3px solid;
+    padding: 4px 8px;
+    margin: 2px;
+    text-decoration: none;
+    font-family: var(--font-main);
+    transition: transform 0.1s;
+}
+
+/* Colorful tag variations */
+.article-tags a:nth-child(6n+1) {
+    background: var(--nes-red);
+    border-color: var(--nes-red-light);
+    color: var(--nes-white);
+}
+
+.article-tags a:nth-child(6n+2) {
+    background: var(--nes-green);
+    border-color: var(--nes-green-light);
+    color: var(--nes-white);
+}
+
+.article-tags a:nth-child(6n+3) {
+    background: var(--nes-blue);
+    border-color: var(--nes-blue-light);
+    color: var(--nes-white);
+}
+
+.article-tags a:nth-child(6n+4) {
+    background: var(--nes-gold);
+    border-color: var(--nes-yellow);
+    color: var(--nes-black);
+}
+
+.article-tags a:nth-child(6n+5) {
+    background: #9878f8;
+    /* NES Purple */
+    border-color: #d8b8f8;
+    color: var(--nes-white);
+}
+
+.article-tags a:nth-child(6n+6) {
+    background: #00a844;
+    /* NES Teal */
+    border-color: #58f898;
+    color: var(--nes-white);
+}
+
+.article-tags a:hover {
+    transform: scale(1.1);
+    box-shadow: 2px 2px 0 var(--nes-black);
+}
+
+/* ARTICLE CARDS - Level Select (Colorful!) */
+.article-cards {
+    width: 100%;
+    border-spacing: 0 12px;
+}
+
+.article-card {
+    display: table;
+    width: 100%;
+    border: 4px solid var(--nes-white);
+    margin-bottom: 12px;
+    color: var(--nes-white);
+    box-shadow: 4px 4px 0 var(--nes-black);
+}
+
+/* Alternating card colors - like level worlds */
+.article-card:nth-child(6n+1) {
+    background: var(--nes-blue-dark);
+    border-left: 8px solid var(--nes-blue-light);
+}
+
+.article-card:nth-child(6n+2) {
+    background: #380050;
+    /* Purple world */
+    border-left: 8px solid #9878f8;
+}
+
+.article-card:nth-child(6n+3) {
+    background: var(--nes-green-dark);
+    border-left: 8px solid var(--nes-green-light);
+}
+
+.article-card:nth-child(6n+4) {
+    background: var(--nes-red-dark);
+    border-left: 8px solid var(--nes-red-light);
+}
+
+.article-card:nth-child(6n+5) {
+    background: #503000;
+    /* Brown/desert world */
+    border-left: 8px solid var(--nes-tan);
+}
+
+.article-card:nth-child(6n+6) {
+    background: #004058;
+    /* Teal/water world */
+    border-left: 8px solid var(--nes-blue-light);
+}
+
+.article-card .card-main {
+    display: table-cell;
+    padding: 12px;
+    vertical-align: top;
+}
+
+/* Card titles - Colorful per card type */
+.article-card .card-title {
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
+}
+
+.article-card:nth-child(6n+1) .card-title,
+.article-card:nth-child(6n+1) .card-title a {
+    color: var(--nes-yellow);
+}
+
+.article-card:nth-child(6n+2) .card-title,
+.article-card:nth-child(6n+2) .card-title a {
+    color: #d8b8f8;
+    /* Light purple */
+}
+
+.article-card:nth-child(6n+3) .card-title,
+.article-card:nth-child(6n+3) .card-title a {
+    color: var(--nes-green-light);
+}
+
+.article-card:nth-child(6n+4) .card-title,
+.article-card:nth-child(6n+4) .card-title a {
+    color: var(--nes-red-light);
+}
+
+.article-card:nth-child(6n+5) .card-title,
+.article-card:nth-child(6n+5) .card-title a {
+    color: var(--nes-gold);
+}
+
+.article-card:nth-child(6n+6) .card-title,
+.article-card:nth-child(6n+6) .card-title a {
+    color: var(--nes-blue-light);
+}
+
+.article-card .card-title a {
+    text-decoration: none;
+}
+
+.article-card .card-title a:hover {
+    color: var(--nes-white) !important;
+    text-shadow: 0 0 8px currentColor;
+}
+
+/* Category styling in meta */
+.article-card .card-meta {
+    font-size: 10px;
+    color: var(--nes-light-grey);
+}
+
+.article-card .card-meta strong {
+    color: var(--nes-yellow);
+    background: rgba(0, 0, 0, 0.3);
+    padding: 2px 6px;
+    border: 2px solid var(--nes-gold);
+}
+
+.article-card .card-meta a {
+    color: var(--nes-blue-light);
+}
+
+.article-card .card-meta a:hover {
+    color: var(--nes-yellow);
+}
+
+.article-card .card-right {
+    display: table-cell;
+    width: 80px;
+    padding: 8px;
+    vertical-align: middle;
+    text-align: center;
+    border-left: 4px solid rgba(255, 255, 255, 0.3);
+    background: rgba(0, 0, 0, 0.2);
+}
+
+/* Scrollbar - NES Cartridge Style */
+::-webkit-scrollbar {
+    width: 16px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--nes-dark-grey);
+    border-left: 4px solid var(--nes-black);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--nes-light-grey);
+    border: 2px solid var(--nes-white);
+    border-right-color: var(--nes-black);
+    border-bottom-color: var(--nes-black);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--nes-red);
+}
+
+/* UTILS */
+.hidden {
+    display: none !important;
+}
+
+/* Selection - Player Highlight */
+::selection {
+    background: var(--nes-red);
+    color: var(--nes-white);
+}
+
+/* Gallery Controls */
+.gallery-float-controls {
+    background: var(--nes-dark-grey);
+    border: 4px solid var(--nes-light-grey);
+    border-top-color: var(--nes-white);
+    border-left-color: var(--nes-white);
+    border-right-color: var(--nes-black);
+    border-bottom-color: var(--nes-black);
+}
+
+.gallery-float-controls button {
+    font-size: 14px;
+}
+
+/* Back to Top */
+#back-to-top {
+    background: var(--nes-red);
+    color: var(--nes-white);
+    border: 4px solid var(--nes-white);
+    font-family: var(--font-main);
+    font-size: 16px;
+}
+
+#back-to-top:hover {
+    background: var(--nes-gold);
+    color: var(--nes-black);
+}
+
+/* Mobile Hamburger */
+.btn-hamburger {
+    font-size: 16px;
+}
+
+/* HR - Pipe Style */
+hr {
+    border: none;
+    height: 8px;
+    background: var(--nes-green);
+    border-top: 2px solid var(--nes-green-light);
+    border-bottom: 2px solid var(--nes-green-dark);
+    margin: 16px 0;
+}
+
+/* ======================================== */
+/* HEADER LAYOUT & BUTTON ALIGNMENT FIXES  */
+/* ======================================== */
+
+/* Header Content - Improved Flexbox */
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding-bottom: 20px;
+    /* Space for brick overlay */
+    position: relative;
+    z-index: 1;
+}
+
+/* Left side - Logo and hamburger */
+.header-content>div:first-child {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    gap: 8px;
+}
+
+/* Right side - Button container */
+.header-content>div:last-child {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px;
+    justify-content: flex-end;
+}
+
+/* Header buttons - Smaller and tighter */
+.header-content .btn-header {
+    padding: 4px 8px;
+    font-size: 8px;
+    margin: 2px;
+    white-space: nowrap;
+}
+
+/* Header title font size */
+.header-content span[style*="font-size: 24px"] {
+    font-size: 14px !important;
+}
+
+.header-content span[style*="font-size: 10px"] {
+    font-size: 8px !important;
+}
+
+/* Header cell height adjustment */
+.header-cell {
+    height: auto;
+    min-height: 70px;
+    padding: 12px 15px 24px 15px;
+}
+
+/* ======================================== */
+/* MOBILE RESPONSIVE STYLES (NES THEME)    */
+/* ======================================== */
+
+@media screen and (max-width: 768px) {
+
+    /* Header - Stack layout on mobile */
+    .header-cell {
+        height: auto;
+        min-height: 60px;
+        padding: 10px 10px 28px 10px;
+    }
+
+    .header-content {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: nowrap;
+        gap: 6px;
+    }
+
+    /* Left side stays compact */
+    .header-content>div:first-child {
+        flex-shrink: 0;
+    }
+
+    /* Title - smaller on mobile */
+    .header-content span[style*="font-size: 24px"],
+    .header-content span[style*="font-size"] {
+        font-size: 10px !important;
+    }
+
+    .header-content span[style*="font-size: 10px"],
+    .header-content span[style*="vertical-align: super"] {
+        font-size: 6px !important;
+    }
+
+    /* Right side buttons - wrap nicely */
+    .header-content>div:last-child {
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 2px;
+    }
+
+    /* Smaller buttons on mobile */
+    .header-content .btn-header {
+        padding: 3px 6px;
+        font-size: 7px;
+        margin: 1px;
+    }
+
+    /* Hamburger button - visible and clear */
+    .btn-hamburger {
+        font-size: 14px !important;
+        padding: 6px 10px !important;
+        background: var(--nes-red) !important;
+    }
+
+    /* Table layout fix */
+    table.main-layout {
+        border-width: 4px;
+    }
+}
+
+/* Extra small screens */
+@media screen and (max-width: 480px) {
+    .header-cell {
+        padding: 8px 8px 24px 8px;
+    }
+
+    .header-content {
+        gap: 4px;
+    }
+
+    /* Tiny buttons on very small screens */
+    .header-content .btn-header {
+        padding: 2px 4px;
+        font-size: 6px;
+        border-width: 2px;
+    }
+
+    /* Even smaller title */
+    .header-content span[style*="font-size: 24px"],
+    .header-content span[style*="font-size"] {
+        font-size: 8px !important;
+    }
+
+    .header-content span[style*="vertical-align: super"] {
+        display: none;
+        /* Hide version number on tiny screens */
+    }
+
+    /* Hamburger stays visible */
+    .btn-hamburger {
+        font-size: 12px !important;
+        padding: 4px 8px !important;
+    }
+
+    /* Reduce border sizes */
+    table.main-layout {
+        border-width: 2px;
+        box-shadow:
+            inset 2px 2px 0 var(--nes-light-grey),
+            inset -2px -2px 0 var(--nes-black),
+            0 0 0 2px var(--nes-black);
+    }
+
+    .header-cell::before {
+        height: 12px;
+    }
+}

@@ -25,28 +25,10 @@
             "css": "windows-98/theme.css"
         },
         {
-            "id": "minecraft",
-            "name": "Minecraft",
-            "description": "Pixelated block-style UI inspired by Minecraft",
-            "css": "minecraft/theme.css"
-        },
-        {
-            "id": "cyberpunk",
-            "name": "Neon Cyber-Grid",
-            "description": "Future interface with neon glow and sci-fi aesthetics",
-            "css": "cyberpunk/theme.css"
-        },
-        {
             "id": "luxury",
             "name": "Luxury Vogue",
             "description": "Premium dark elegant theme",
             "css": "luxury/theme.css"
-        },
-        {
-            "id": "luxury-2",
-            "name": "Luxury Vogue II",
-            "description": "Alternative luxury aesthetic",
-            "css": "luxury-2/theme.css"
         },
         {
             "id": "medieval",
@@ -61,10 +43,22 @@
             "css": "raunchy/theme.css"
         },
         {
-            "id": "raunchy-2",
-            "name": "Raunchy II",
-            "description": "Alternative edgy aesthetic",
-            "css": "raunchy-2/theme.css"
+            "id": "raunchy-3",
+            "name": "Raunchy III",
+            "description": "Ultra-light neon pink edition - works everywhere",
+            "css": "raunchy-3/theme.css"
+        },
+        {
+            "id": "nes-classic",
+            "name": "NES Classic",
+            "description": "8-bit Nintendo inspired with authentic NES colors and pixel art style",
+            "css": "nes-classic/theme.css"
+        },
+        {
+            "id": "dark-souls",
+            "name": "Dark Souls",
+            "description": "Gothic fantasy with ash grey and blood red - minimal and lightweight",
+            "css": "dark-souls/theme.css"
         }
     ],
     "default": "default"

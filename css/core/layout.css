@@ -112,6 +112,11 @@ body.mobile-view .layout-scroll {
     .sidebar-mobile-header {
         display: block !important;
     }
+
+    /* Hide Zen mode button on mobile */
+    #btn-zen {
+        display: none !important;
+    }
 }
 
 /* OVERLAY for Mobile Sidebar */

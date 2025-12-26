@@ -1,0 +1,385 @@
+/* MATRIX THEME (Ultra Lightweight)
+   Pure CSS animations for digital rain and glitch effects.
+   No JS or heavy images used. */
+
+/* OVERRIDE CSS VARIABLES */
+:root {
+    --bg-color: #000000;
+    --text-color: #00ff00;
+    /* Classic Matrix Green */
+    --link-color: #00dd00;
+    --visited-color: #005500;
+    --header-bg: rgba(0, 20, 0, 0.9);
+    --sidebar-bg: rgba(0, 5, 0, 0.9);
+    --border-color: #003300;
+    --input-bg: rgba(0, 10, 0, 0.8);
+    --input-text: #00ff00;
+    --font-main: "Courier New", Courier, monospace;
+    --font-mono: "Courier New", Courier, monospace;
+    --font-size-base: 13px;
+}
+
+/* GLOBAL MONOSPACE & SHADOWS */
+body,
+button,
+input,
+textarea,
+select,
+table,
+td,
+th {
+    font-family: var(--font-mono) !important;
+    text-shadow: 0 0 4px rgba(0, 255, 0, 0.4);
+    /* Phosphor Glow */
+}
+
+/* 
+   THE MATRIX RAIN EFFECT (CSS ONLY) 
+   Uses a repeating gradient of random-looking characters (simulated by noise) 
+   scrolling vertically.
+*/
+@keyframes matrix-scroll {
+    0% {
+        background-position: 0% 0%;
+    }
+
+    100% {
+        background-position: 0% 1000%;
+    }
+}
+
+@keyframes flicker {
+    0% {
+        opacity: 0.97;
+    }
+
+    5% {
+        opacity: 0.95;
+    }
+
+    10% {
+        opacity: 0.9;
+    }
+
+    15% {
+        opacity: 0.95;
+    }
+
+    20% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.98;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+body {
+    /* The Rain Layer */
+    background-color: #000;
+    /* Simulate columns of code with repeating gradients */
+    background-image:
+        linear-gradient(0deg, rgba(0, 20, 0, 0.8) 20%, transparent 20%),
+        repeating-linear-gradient(90deg, transparent 0px, transparent 18px, rgba(0, 255, 0, 0.03) 19px, transparent 20px);
+    background-size: 100% 4px, 100% 100%;
+    animation: matrix-scroll 60s linear infinite;
+    /* Slow scroll */
+}
+
+/* CONTENT ZONES - Darker backgrounds to read text over rain */
+.content-cell,
+.sidebar-cell,
+.header-cell,
+.footer-cell {
+    background-color: rgba(0, 0, 0, 0.85) !important;
+    position: relative;
+    z-index: 2;
+}
+
+/* TEXT FLICKER on headings to simulate old CRT */
+h1,
+h2,
+h3 {
+    animation: flicker 4s infinite;
+}
+
+/* LINKS */
+a {
+    color: #00ff00 !important;
+    text-decoration: none !important;
+    border-bottom: 1px solid transparent !important;
+    transition: 0.2s;
+}
+
+a:hover {
+    background-color: #00ff00 !important;
+    color: #000 !important;
+    box-shadow: 0 0 10px #00ff00;
+    text-shadow: none;
+}
+
+/* BUTTONS - "Code Block" Style */
+button {
+    background: #000 !important;
+    color: #00ff00 !important;
+    border: 1px solid #005500 !important;
+    text-transform: uppercase !important;
+    border-radius: 0 !important;
+    letter-spacing: 1px;
+}
+
+button:hover {
+    background: #00ff00 !important;
+    color: #000 !important;
+    box-shadow: 0 0 15px #00ff00 !important;
+    border-color: #00ff00 !important;
+    font-weight: bold;
+    cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><rect width='10' height='16' fill='%2300ff00'/></svg>"), auto;
+    /* Custom Cursor */
+}
+
+/* INPUTS - Blinking Cursor Effect on Focus */
+input,
+textarea,
+select {
+    background-color: rgba(0, 10, 0, 0.9) !important;
+    border: 1px solid #004400 !important;
+    color: #00ff00 !important;
+    caret-color: #00ff00;
+    /* Green typing cursor */
+}
+
+input:focus,
+textarea:focus {
+    border-color: #00ff00 !important;
+    box-shadow: 0 0 8px rgba(0, 255, 0, 0.6) !important;
+    outline: none !important;
+}
+
+/* LAYOUT ELEMENTS */
+.header-cell {
+    border-bottom: 2px solid #00ff00 !important;
+}
+
+.footer-cell {
+    border-top: 2px solid #00ff00 !important;
+}
+
+.sidebar-cell {
+    border-right: 2px solid #00ff00 !important;
+    /* The vertical split */
+}
+
+/* Sidebar Section Dividers */
+.sidebar-cell hr {
+    border-bottom: 1px solid #00ff00 !important;
+    opacity: 0.7;
+}
+
+/* JUMP LINKS (A-Z) */
+.jump-links {
+    border: 1px solid #00ff00 !important;
+    background: #001100 !important;
+}
+
+/* ARTICLE CARDS */
+.article-card {
+    background: rgba(0, 10, 0, 0.7) !important;
+    border: 1px solid #003300 !important;
+    border-left: 3px solid #00aa00 !important;
+    transition: transform 0.2s;
+}
+
+.article-card:hover {
+    transform: translateX(5px);
+    /* Slide out slightly like a data drive */
+    border-left-color: #00ff00 !important;
+    box-shadow: -2px 0 10px rgba(0, 255, 0, 0.2);
+}
+
+.article-card-title {
+    color: #00ff00 !important;
+    font-weight: bold;
+}
+
+.article-card-stats {
+    color: #008800 !important;
+    font-size: 0.9em;
+}
+
+/* SCROLLBARS */
+::-webkit-scrollbar {
+    width: 8px;
+    background: #000;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #004400;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #00ff00;
+    box-shadow: 0 0 5px #00ff00;
+}
+
+/* 
+   ENHANCED ELEMENTS 
+*/
+
+/* PAGE FRAME borders */
+body {
+    border-top: 2px solid #00ff00 !important;
+}
+
+.main-layout {
+    border-left: 2px solid #00ff00 !important;
+    border-right: 2px solid #00ff00 !important;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* LINKS - Blinking Cursor Effect */
+a::after {
+    content: "_";
+    opacity: 0;
+    margin-left: 2px;
+    transition: opacity 0.1s;
+}
+
+a:hover::after {
+    opacity: 1;
+    animation: flicker 1s infinite;
+}
+
+/* TAGS - Box Style (Solid Green Border) */
+.tag-link {
+    display: inline-block;
+    color: #00ff00 !important;
+    border: 1px solid #00ff00 !important;
+    /* Full box border */
+    background: rgba(0, 20, 0, 0.5);
+    padding: 2px 8px;
+    margin-right: 5px;
+    font-size: 0.9em;
+    position: relative;
+    text-decoration: none !important;
+    border-bottom: 1px solid #00ff00 !important;
+}
+
+.tag-link:hover {
+    background: #00ff00 !important;
+    color: #000 !important;
+    box-shadow: 0 0 10px #00ff00;
+    cursor: pointer;
+}
+
+/* Remove old bracket pseudo-elements if they existed */
+.tag-link::before,
+.tag-link::after {
+    content: "" !important;
+    display: none !important;
+}
+
+/* CODE BLOCKS */
+pre,
+code {
+    background: rgba(0, 10, 0, 0.9);
+    border: 1px dashed #005500;
+    color: #00dd00;
+    padding: 2px 4px;
+}
+
+/* DIVIDERS & BLOCKS */
+hr {
+    border: 0;
+    border-bottom: 2px solid #00ff00 !important;
+    /* Solid Green Line */
+    margin: 20px 0;
+    opacity: 1 !important;
+    /* Full Visibility */
+}
+
+/* Article Meta Separator */
+.article-meta {
+    border-bottom: 1px solid #00ff00 !important;
+    opacity: 1 !important;
+}
+
+/* HEADINGS - Underline */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    border-bottom: 2px solid #004400;
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+    display: table;
+    width: 100%;
+}
+
+h1 {
+    border-color: #00ff00;
+}
+
+h2 {
+    border-color: #00cc00;
+}
+
+h3 {
+    border-color: #008800;
+    border-style: dashed;
+}
+
+/* QUOTES */
+blockquote {
+    border-left: 4px solid #00ff00;
+    margin: 10px 0;
+    padding-left: 10px;
+    background: rgba(0, 20, 0, 0.3);
+    font-style: italic;
+    color: #00dd00;
+}
+
+/* 
+   MOBILE & CONTROL FIXES (Matrix Specific) 
+   Fixes "blurry" look by removing text-shadow on small controls
+*/
+#mobile-menu-btn,
+.gallery-float-controls button,
+#back-to-top {
+    text-shadow: none !important;
+    /* Crisp text */
+    background: #000 !important;
+    border: 1px solid #00ff00 !important;
+    color: #00ff00 !important;
+    opacity: 1 !important;
+    /* Force visibility */
+    box-shadow: 0 0 5px rgba(0, 255, 0, 0.3) !important;
+}
+
+#mobile-menu-btn:hover,
+.gallery-float-controls button:hover,
+#back-to-top:hover {
+    background: #00ff00 !important;
+    color: #000 !important;
+    box-shadow: 0 0 10px #00ff00 !important;
+}
+
+/* Fix floating alignment */
+.gallery-float-controls {
+    border: 1px solid #00ff00 !important;
+    background: rgba(0, 0, 0, 0.9) !important;
+    border-radius: 0 !important;
+}
+
+/* Ensure mobile sidebar is solid/readable over rain */
+body.mobile-view .sidebar-cell {
+    background-color: #000 !important;
+    border-right: 2px solid #00ff00 !important;
+}

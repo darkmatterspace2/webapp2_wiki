@@ -1,0 +1,601 @@
+/* THEME: DARK SOULS / GOTHIC FANTASY */
+/* Ultra-lightweight, mobile-first */
+
+/* Self-hosted font alternative - system fonts for speed */
+:root {
+    /* Ash Grey & Blood Red Palette */
+    --ash-darkest: #0a0a0a;
+    --ash-dark: #1a1a1a;
+    --ash-mid: #2d2d2d;
+    --ash-light: #4a4a4a;
+    --ash-lighter: #6b6b6b;
+    --ash-pale: #8a8a8a;
+
+    --blood-dark: #4a0000;
+    --blood: #8b0000;
+    --blood-bright: #cc0000;
+    --blood-glow: #ff2222;
+
+    --bone: #d4c4a8;
+    --parchment: #c9b896;
+
+    /* Mapped Variables */
+    --bg-color: var(--ash-darkest);
+    --text-color: var(--ash-pale);
+    --header-bg: var(--ash-dark);
+    --sidebar-bg: var(--ash-dark);
+    --border-color: var(--ash-mid);
+    --link-color: var(--blood-bright);
+    --visited-color: var(--blood);
+    --input-bg: var(--ash-darkest);
+    --input-text: var(--bone);
+
+    /* Heavy Typography - System fonts for speed */
+    --font-main: Georgia, 'Times New Roman', serif;
+    --font-display: Georgia, serif;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background: var(--bg-color);
+    color: var(--text-color);
+    font-family: var(--font-main);
+    margin: 0;
+    padding: 0;
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+/* Subtle fog effect - CSS only, no images */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(ellipse at bottom, rgba(50, 50, 50, 0.3) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 9999;
+}
+
+/* Links - Blood red ONLY */
+a {
+    color: var(--link-color);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+a:hover {
+    color: var(--blood-glow);
+    text-shadow: 0 0 8px var(--blood);
+}
+
+/* Override visited - NO purple, use darker blood */
+a:visited {
+    color: var(--blood) !important;
+}
+
+/* ALL links in article cards - blood red theme */
+.article-card a,
+.article-card-inner a,
+.article-card-meta a,
+.article-card-title,
+.tag-link {
+    color: var(--blood-bright) !important;
+}
+
+.article-card a:hover,
+.article-card-inner a:hover,
+.article-card-meta a:hover,
+.article-card-title:hover,
+.tag-link:hover {
+    color: var(--blood-glow) !important;
+    text-shadow: 0 0 6px var(--blood);
+}
+
+.article-card a:visited,
+.article-card-inner a:visited,
+.article-card-meta a:visited,
+.tag-link:visited {
+    color: var(--blood) !important;
+}
+
+/* HEAVY TYPOGRAPHY */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: var(--font-display);
+    font-weight: normal;
+    color: var(--bone);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin: 1.5em 0 0.75em;
+    border-bottom: 1px solid var(--ash-light);
+    padding-bottom: 0.5em;
+}
+
+h1 {
+    font-size: 1.8em;
+    text-align: center;
+    border-bottom: 2px solid var(--blood);
+}
+
+h2 {
+    font-size: 1.4em;
+}
+
+h3 {
+    font-size: 1.2em;
+}
+
+h4,
+h5,
+h6 {
+    font-size: 1em;
+    color: var(--ash-pale);
+}
+
+/* LAYOUT - Minimal */
+table.main-layout {
+    width: 100%;
+    height: 100vh;
+    border-collapse: collapse;
+    border: none;
+    background: var(--bg-color);
+}
+
+td {
+    vertical-align: top;
+    padding: 0;
+}
+
+/* HEADER - Minimal */
+.header-cell {
+    background: var(--header-bg);
+    border-bottom: 1px solid var(--blood-dark);
+    padding: 12px 16px;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.header-content>div:first-child {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.header-content>div:last-child {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.header-content span {
+    font-family: var(--font-display);
+    color: var(--bone);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+/* SIDEBAR */
+.sidebar-cell {
+    width: 200px;
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--ash-mid);
+    padding: 16px;
+    font-size: 14px;
+}
+
+.sidebar-cell b {
+    color: var(--bone);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 12px;
+    display: block;
+    margin-bottom: 8px;
+    border-bottom: 1px solid var(--blood-dark);
+    padding-bottom: 4px;
+}
+
+.sidebar-cell ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 16px;
+}
+
+.sidebar-cell li {
+    margin: 4px 0;
+    padding: 4px 0;
+    border-bottom: 1px dotted var(--ash-mid);
+}
+
+.sidebar-cell a {
+    color: var(--ash-pale);
+}
+
+.sidebar-cell a:hover {
+    color: var(--blood-glow);
+}
+
+/* CONTENT */
+.content-cell {
+    padding: 20px;
+    background: var(--bg-color);
+}
+
+body.zen-mode .sidebar-cell {
+    display: none;
+}
+
+/* INPUTS - Minimal */
+input,
+textarea,
+select {
+    background: var(--input-bg);
+    color: var(--input-text);
+    border: 1px solid var(--ash-light);
+    padding: 10px;
+    font-family: var(--font-main);
+    font-size: 14px;
+    width: 100%;
+}
+
+input:focus,
+textarea:focus {
+    border-color: var(--blood);
+    outline: none;
+}
+
+/* BUTTONS - Gothic minimal */
+button,
+.btn-header {
+    background: var(--ash-mid);
+    color: var(--bone);
+    border: 1px solid var(--ash-light);
+    padding: 6px 12px;
+    font-family: var(--font-main);
+    font-size: 12px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: all 0.2s;
+}
+
+button:hover,
+.btn-header:hover {
+    background: var(--blood-dark);
+    border-color: var(--blood);
+}
+
+button.active,
+.btn-header.active {
+    background: var(--blood);
+    color: var(--bone);
+}
+
+/* ARTICLE CARDS - Dark Souls Lore Style */
+.article-card {
+    display: block;
+    background: linear-gradient(135deg, var(--ash-dark) 0%, rgba(20, 10, 10, 1) 100%);
+    border: 1px solid var(--ash-mid);
+    border-left: 4px solid var(--blood);
+    margin-bottom: 16px;
+    padding: 16px 16px 12px;
+    position: relative;
+}
+
+/* Decorative corner flourish */
+.article-card::before {
+    content: '†';
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    color: var(--blood-dark);
+    font-size: 16px;
+    opacity: 0.5;
+}
+
+.article-card:hover::before {
+    color: var(--blood-glow);
+    opacity: 1;
+    text-shadow: 0 0 8px var(--blood);
+}
+
+.article-card .card-title {
+    font-family: var(--font-display);
+    font-size: 1.3em;
+    font-weight: bold;
+    font-style: italic;
+    color: var(--bone);
+    margin-bottom: 8px;
+    letter-spacing: 0.08em;
+    line-height: 1.3;
+}
+
+/* First letter styling - drop cap effect */
+.article-card .card-title a::first-letter {
+    color: var(--blood-bright);
+    font-size: 1.2em;
+}
+
+.article-card .card-title a {
+    color: var(--bone);
+    transition: all 0.3s;
+}
+
+.article-card .card-title a:hover {
+    color: var(--blood-glow);
+    text-shadow: 0 0 12px var(--blood), 0 2px 4px rgba(0, 0, 0, 0.5);
+    letter-spacing: 0.12em;
+}
+
+/* Meta - Ancient chronicle style */
+.article-card .card-meta {
+    font-size: 13px;
+    font-style: italic;
+    color: var(--ash-lighter);
+    border-top: 1px solid var(--ash-mid);
+    padding-top: 8px;
+    margin-top: 4px;
+}
+
+.article-card .card-meta strong {
+    color: var(--parchment);
+    font-style: normal;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+}
+
+/* Category link in meta */
+.article-card .card-meta a {
+    color: var(--blood-bright) !important;
+    font-style: normal;
+}
+
+.article-card .card-meta a:hover {
+    color: var(--blood-glow) !important;
+    text-shadow: 0 0 6px var(--blood);
+}
+
+/* Tags inside cards */
+.article-card .article-tags a,
+.article-card a[href*="tag"] {
+    color: var(--ash-pale) !important;
+    background: var(--ash-mid);
+    border: 1px solid var(--ash-light);
+    padding: 2px 6px;
+    font-size: 10px;
+    text-transform: uppercase;
+    font-style: normal;
+}
+
+.article-card .article-tags a:hover,
+.article-card a[href*="tag"]:hover {
+    color: var(--bone) !important;
+    background: var(--blood-dark);
+    border-color: var(--blood);
+}
+
+/* Card right section */
+.article-card .card-right {
+    border-left: 1px solid var(--ash-mid);
+    background: rgba(0, 0, 0, 0.2);
+}
+
+/* TAGS - Ember style */
+.article-tags a {
+    display: inline-block;
+    background: var(--ash-mid);
+    color: var(--ash-pale);
+    border: 1px solid var(--ash-light);
+    padding: 3px 8px;
+    margin: 2px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.article-tags a:hover {
+    background: var(--blood-dark);
+    border-color: var(--blood);
+    color: var(--bone);
+}
+
+/* CODE - Parchment */
+pre,
+code {
+    background: var(--ash-dark);
+    color: var(--parchment);
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+}
+
+pre {
+    padding: 12px;
+    border-left: 2px solid var(--blood);
+    overflow-x: auto;
+}
+
+/* FOOTER */
+.footer-cell {
+    background: var(--ash-dark);
+    border-top: 1px solid var(--ash-mid);
+    padding: 12px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--ash-lighter);
+}
+
+.visitor-counter {
+    color: var(--blood-bright);
+    font-family: var(--font-display);
+}
+
+/* SCROLLBAR - Minimal */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--ash-darkest);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--ash-mid);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--blood-dark);
+}
+
+/* JUMP LINKS */
+.jump-links {
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+.jump-links a {
+    display: inline-block;
+    width: 28px;
+    height: 28px;
+    line-height: 28px;
+    text-align: center;
+    background: var(--ash-mid);
+    color: var(--ash-pale);
+    margin: 2px;
+    font-size: 12px;
+}
+
+.jump-links a:hover {
+    background: var(--blood);
+    color: var(--bone);
+}
+
+/* GALLERY */
+.gallery-float-controls {
+    background: var(--ash-dark);
+    border: 1px solid var(--ash-mid);
+}
+
+#back-to-top {
+    background: var(--blood-dark);
+    color: var(--bone);
+    border: 1px solid var(--blood);
+}
+
+/* HR - Ember line */
+hr {
+    border: none;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--blood), transparent);
+    margin: 24px 0;
+}
+
+/* Selection */
+::selection {
+    background: var(--blood);
+    color: var(--bone);
+}
+
+/* MOBILE - First approach */
+@media screen and (max-width: 768px) {
+    body {
+        font-size: 15px;
+    }
+
+    .header-cell {
+        padding: 10px 12px;
+    }
+
+    .header-content span[style*="font-size: 24px"] {
+        font-size: 14px !important;
+    }
+
+    .header-content .btn-header {
+        padding: 4px 8px;
+        font-size: 10px;
+    }
+
+    .sidebar-cell {
+        width: 220px;
+    }
+
+    .content-cell {
+        padding: 12px;
+    }
+
+    h1 {
+        font-size: 1.4em;
+    }
+
+    h2 {
+        font-size: 1.2em;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    body {
+        font-size: 14px;
+    }
+
+    .header-content span[style*="font-size: 24px"] {
+        font-size: 12px !important;
+    }
+
+    h1 {
+        font-size: 1.2em;
+    }
+
+    .article-card {
+        padding: 10px;
+    }
+}
+
+/* EMBER ANIMATION - Lightweight CSS only */
+@keyframes ember {
+
+    0%,
+    100% {
+        opacity: 0.3;
+    }
+
+    50% {
+        opacity: 0.6;
+    }
+}
+
+/* Single ember element using box-shadow */
+.header-cell::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    width: 4px;
+    height: 4px;
+    background: var(--blood-glow);
+    border-radius: 50%;
+    box-shadow:
+        -30px -10px 0 var(--blood-bright),
+        -60px 5px 0 var(--blood),
+        -90px -5px 0 var(--blood-bright);
+    animation: ember 3s ease-in-out infinite;
+    pointer-events: none;
+}
+
+.hidden {
+    display: none !important;
+}

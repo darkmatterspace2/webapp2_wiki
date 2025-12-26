@@ -10,8 +10,9 @@
 }
 
 .sidebar-cell ul li {
-    margin-bottom: var(--space-sm);
-    line-height: 1.5;
+    margin-bottom: var(--space-xs);
+    /* 2px via token */
+    line-height: 1.2;
 }
 
 /* SEARCH BOX */

@@ -5,11 +5,13 @@ select {
     background: var(--input-bg);
     color: var(--input-text);
     border: 2px inset var(--border-color);
-    padding: 3px 5px;
+    padding: 3px var(--space-sm);
+    /* Using variables */
     /* Compact padding */
     min-height: auto;
     /* Remove large touch target enforcement */
-    font-size: 13px;
+    font-size: var(--font-size-base);
+    /* 13px via token */
     /* Match button size */
     font-family: var(--font-main);
     box-sizing: border-box;

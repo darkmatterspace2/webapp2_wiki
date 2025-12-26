@@ -14,12 +14,18 @@
     --font-mono: "Courier New", Courier, monospace;
 
     /* Sizing & Spacing */
-    --space-xs: 4px;
-    --space-sm: 8px;
-    --space-md: 16px;
-    --space-lg: 24px;
-    --font-size-base: 16px;
-    --touch-target-min: 44px;
+    --space-xs: 2px;
+    /* Was 4px */
+    --space-sm: 4px;
+    /* Was 8px */
+    --space-md: 8px;
+    /* Was 16px */
+    --space-lg: 16px;
+    /* Was 24px */
+    --font-size-base: 13px;
+    /* Was 16px - Compact default */
+    --touch-target-min: 30px;
+    /* Was 44px - Smaller default */
 }
 
 [data-theme="light"] {
