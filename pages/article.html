@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Article - RetroWiki 2k25</title>
-    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="../css/main.css">
     <!-- Dependencies -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <!-- Config -->
@@ -17,7 +17,7 @@
     <script src="../src/services/category.service.js"></script>
     <!-- Shared -->
     <script src="../src/shared/utils.js"></script>
-    <script src="../src/themes/theme-loader.js"></script>
+    <script src="../src/shared/theme-loader.js"></script>
     <script src="../src/shared/layout.js"></script>
     <script src="../src/shared/lightbox.js"></script>
 </head>
@@ -123,28 +123,28 @@
         function formatGalleries(forceCols = null) {
             const galleries = document.querySelectorAll('.retro-gallery');
             galleries.forEach(gallery => {
-                // 1. Collect all images (either from raw gallery or existing columns)
-                let images = [];
+                // 1. Collect all items (either from raw gallery or existing columns)
+                let items = [];
                 if (gallery.querySelector('.retro-gallery-col')) {
-                    // Already formatted? Unwrap.
+                    // Already formatted? Unwrap - collect .gallery-item wrappers or raw media
                     const cols = gallery.querySelectorAll('.retro-gallery-col');
                     cols.forEach(col => {
-                        images.push(...Array.from(col.children));
+                        items.push(...Array.from(col.children));
                     });
 
                     // SORT BY ORIGINAL INDEX to restore sequence
-                    images.sort((a, b) => {
+                    items.sort((a, b) => {
                         return parseInt(a.getAttribute('data-index')) - parseInt(b.getAttribute('data-index'));
                     });
                 } else {
-                    // First time formatting: Collect and Tag
-                    images = Array.from(gallery.children).filter(el => el.tagName === 'IMG' || el.tagName === 'VIDEO' || el.tagName === 'IFRAME');
-                    images.forEach((img, idx) => {
+                    // First time formatting: Collect raw media/figure and Tag
+                    items = Array.from(gallery.children).filter(el => ['IMG', 'VIDEO', 'IFRAME', 'FIGURE'].includes(el.tagName));
+                    items.forEach((img, idx) => {
                         img.setAttribute('data-index', idx);
                     });
                 }
 
-                if (images.length === 0) return;
+                if (items.length === 0) return;
 
                 // 2. Determine Column Count ( Force > Class > Default )
                 let colCount = forceCols || 3;
@@ -165,13 +165,45 @@
                     cols.push(div);
                 }
 
-                // 4. Distribute images (preserve order)
-                // Filter out non-media elements just in case
-                images = images.filter(el => el.tagName === 'IMG' || el.tagName === 'VIDEO' || el.tagName === 'IFRAME');
-
-                images.forEach((img, index) => {
+                // 4. Distribute items (preserve order)
+                items.forEach((item, index) => {
                     const colIndex = index % colCount;
-                    cols[colIndex].appendChild(img);
+
+                    // If already a gallery-item wrapper, just append it
+                    if (item.classList && item.classList.contains('gallery-item')) {
+                        cols[colIndex].appendChild(item);
+                        return;
+                    }
+
+                    // FIGURE elements: append directly (they have their own figcaption)
+                    if (item.tagName === 'FIGURE') {
+                        item.setAttribute('data-index', item.getAttribute('data-index') || index);
+                        cols[colIndex].appendChild(item);
+                        return;
+                    }
+
+                    // Only process media elements
+                    if (!['IMG', 'VIDEO', 'IFRAME'].includes(item.tagName)) return;
+
+                    // Wrap in gallery-item
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'gallery-item';
+                    wrapper.appendChild(item.cloneNode(true));
+
+                    // Create caption from alt, title, or data-caption
+                    const caption = item.getAttribute('data-caption') ||
+                        item.getAttribute('alt') ||
+                        item.getAttribute('title') || '';
+                    if (caption) {
+                        const captionEl = document.createElement('div');
+                        captionEl.className = 'gallery-caption';
+                        captionEl.textContent = caption;
+                        wrapper.appendChild(captionEl);
+                    }
+
+                    // Preserve original data-index on wrapper
+                    wrapper.setAttribute('data-index', item.getAttribute('data-index'));
+                    cols[colIndex].appendChild(wrapper);
                 });
 
                 // 5. Clear and Append

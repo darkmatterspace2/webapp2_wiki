@@ -1,0 +1,12 @@
+/* UTILS */
+.hidden {
+    display: none !important;
+}
+
+/* LOADING */
+#loading-indicator {
+    font-weight: bold;
+    color: yellow;
+    background: blue;
+    padding: 2px;
+}

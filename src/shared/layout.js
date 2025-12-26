@@ -22,140 +22,153 @@ function initLayout() {
         document.body.classList.add('zen-mode');
     }
 
-    // View Mode (Mobile/Desktop)
-    if (localStorage.getItem('viewMode') === 'mobile') {
-        document.body.classList.add('mobile-view');
-    }
-
     // 3. Get root path using APP_CONFIG
     const rootPath = window.APP_CONFIG ? APP_CONFIG.getDepth() : './';
 
     // 4. Define Layout HTML
     const layoutHTML = `
-    <table class="main-layout" border="1" cellpadding="0" cellspacing="0">
-        <colgroup>
-            <col class="col-sidebar">
-            <col class="col-content">
-        </colgroup>
-        <!-- HEADER ROW -->
-        <tr>
-            <td colspan="2" class="header-cell">
-                <div class="header-content">
-                    <div>
-                        <a href="${rootPath}index.html" style="text-decoration: none; color: inherit;">
-                            <span style="font-size: 24px; font-weight: bold;">RetroWiki</span>
-                            <span style="font-size: 10px; vertical-align: super;">v3.0</span>
-                        </a>
-                    </div>
-                    <div>
-                        <button onclick="Layout.zoom(-0.1)" class="btn-header" title="Zoom Out">[-]</button>
-                        <button onclick="Layout.zoom(0.1)" class="btn-header" title="Zoom In">[+]</button>
-                        <button id="btn-zen" onclick="Layout.toggleZenMode()" class="btn-header">[ Zen Mode ]</button>
-                        <button id="btn-view" onclick="Layout.toggleViewMode()" class="btn-header">[ Mobile View ]</button>
-                        <button id="btn-theme" onclick="Layout.toggleTheme()" class="btn-header">[ Light Mode ]</button>
-                    </div>
-                </div>
-            </td>
-        </tr>
-
-        <!-- MAIN BODY ROW -->
-        <tr>
-            <!-- SIDEBAR -->
-            <td class="sidebar-cell" id="sidebar">
-                <div style="text-align: center; margin-bottom: 20px;">
-                     <!-- Loading Spinner Placeholder -->
-                     <span id="loading-indicator" style="display:none; color: yellow; background: blue; font-weight: bold;">LOADING...</span>
-                </div>
-
-                <b>Navigation</b>
-                <ul>
-                    <li><a href="${rootPath}index.html">Home / Search</a></li>
-                    <li><a href="${rootPath}pages/admin/editor.html">Create New</a></li>
-                    <li><a href="${rootPath}pages/admin/ai-creator.html">AI Creator (Basic)</a></li>
-                    <li><a href="${rootPath}pages/admin/advanced-ai-creator.html">Advanced Creator (Pro)</a></li>
-                    <li><a href="${rootPath}pages/admin/json-importer.html">JSON Importer</a></li>
-                    <li><a href="#" id="auth-link">Admin Login</a></li>
-                </ul>
-
-                <hr>
-
-                <b>Categories</b>
-                <ul id="category-list">
-                    <li><a href="${rootPath}index.html">All</a></li>
-                    <!-- Populated via JS -->
-                </ul>
-
-                <hr>
-
-                <b>Tags</b>
-                <ul id="tag-list">
-                    <li><a href="${rootPath}/pages/other/tags.html">All</a></li>
-                    <!-- Populated via JS -->
-                </ul>
-
-                <hr>
-                
-                <div style="margin-bottom: 20px;">
-                    <details>
-                        <summary style="font-size: 12px; cursor: pointer; font-weight: bold; margin-bottom: 5px;">Settings</summary>
-                        
-                        <div style="font-size: 12px; font-weight: bold; margin-top: 10px;">Theme:<br>L - Lightweight<br>H - Heavy</div>
-                        <select id="theme-selector" style="width: 100%; font-size: 11px; margin-top: 5px;">
-                            <option value="default">Retro Classic</option>
-                            <option value="retro-green">Cyberpunk Terminal</option>
-                            <option value="light-mode">Light Mode</option>
-                            <option value="windows-98">Windows 98</option>
-                            <option value="minecraft">Minecraft</option>
-                        </select>
-                        
-                        <br><br>
-                        
-                        <div style="margin-left: 5px;">
-                            <label style="font-size: 12px; cursor: pointer;">
-                                <input type="checkbox" id="show-r-rated-checkbox">
-                                 Show R Rated content
-                            </label>
+    <div id="layout-wrapper">
+        <div class="layout-scroll">
+            <table class="main-layout" border="1" cellpadding="0" cellspacing="0">
+                <colgroup>
+                    <col class="col-sidebar">
+                    <col class="col-content">
+                </colgroup>
+                <!-- HEADER ROW -->
+                <tr>
+                    <td colspan="2" class="header-cell">
+                        <div class="header-content">
+                            <div style="display: flex; align-items: center;">
+                                <button onclick="Layout.toggleSidebar()" class="btn-header btn-hamburger" title="Toggle Menu" style="margin-right: 10px;">[≡]</button>
+                                <a href="${rootPath}index.html" style="text-decoration: none; color: inherit;">
+                                    <span style="font-size: 24px; font-weight: bold;">RetroWiki</span>
+                                    <span style="font-size: 10px; vertical-align: super;">v3.0</span>
+                                </a>
+                            </div>
+                            <div>
+                                <button onclick="Layout.zoom(-0.1)" class="btn-header" title="Zoom Out">[-]</button>
+                                <button onclick="Layout.resetZoom()" class="btn-header" title="Reset Default Size">[D]</button>
+                                <button onclick="Layout.zoom(0.1)" class="btn-header" title="Zoom In">[+]</button>
+                                <button id="btn-zen" onclick="Layout.toggleZenMode()" class="btn-header">[ Zen Mode ]</button>
+                                <button id="btn-theme" onclick="Layout.toggleTheme()" class="btn-header">[ Light Mode ]</button>
+                            </div>
                         </div>
-                    </details>
-                </div>
+                    </td>
+                </tr>
 
-                <div style="text-align: center;">
-                    <small>Optimized for<br>Netscape 4.0</small>
-                </div>
-            </td>
+                <!-- MAIN BODY ROW -->
+                <tr>
+                    <!-- SIDEBAR -->
+                    <td class="sidebar-cell" id="sidebar">
+                        <div class="sidebar-mobile-header" style="text-align: right; margin-bottom: 10px; display: none;">
+                            <button onclick="Layout.toggleSidebar()" class="btn-header" style="color: red;">[X] Close</button>
+                        </div>
 
-            <!-- CONTENT AREA -->
-            <td class="content-cell" id="main-content-cell">
-                <!-- ORIGINAL CONTENT GOES HERE -->
-            </td>
-        </tr>
+                        <div style="text-align: center; margin-bottom: 20px;">
+                             <!-- Loading Spinner Placeholder -->
+                             <span id="loading-indicator" style="display:none; color: yellow; background: blue; font-weight: bold;">LOADING...</span>
+                        </div>
 
-        <!-- FOOTER ROW -->
-        <tr>
-            <td colspan="2" class="footer-cell">
-                <center>
-                    You are visitor number: 
-                    <div class="visitor-counter" id="visitor-count">08472</div>
-                    <br>
-                    &copy; 1999-2025 RetroWiki Inc. All rights reserved. 
-                </center>
-            </td>
-        </tr>
-    </table>
+                        <b>Navigation</b>
+                        <ul>
+                            <li><a href="${rootPath}index.html">Home / Search</a></li>
+                            <li><a href="${rootPath}pages/admin/editor.html">Create New</a></li>
+                            <li><a href="${rootPath}pages/admin/ai-creator.html">AI Creator (Basic)</a></li>
+                            <li><a href="${rootPath}pages/admin/advanced-ai-creator.html">Advanced Creator (Pro)</a></li>
+                            <li><a href="${rootPath}pages/admin/json-importer.html">JSON Importer</a></li>
+                            <li><a href="#" id="auth-link">Admin Login</a></li>
+                        </ul>
 
-    <!-- Back to Top Button -->
-    <button id="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
-        ▲
+                        <hr>
 
-    </button>
+                        <b>Categories</b>
+                        <ul id="category-list">
+                            <li><a href="${rootPath}index.html">All</a></li>
+                            <!-- Populated via JS -->
+                        </ul>
 
-    <!-- Floating Gallery Controls (Fade on Hover) -->
-    <div class="gallery-float-controls">
-        <button onclick="Layout.toggleZenMode()" title="Toggle Zen Mode">Z</button>
-        <div style="height: 5px;"></div>
-        <button onclick="Layout.changeGalleryCols(-1)" title="Fewer Columns (Larger)">-</button>
-        <div style="color:#eee; font-size:10px; margin:2px 0; font-weight:bold;">G</div>
-        <button onclick="Layout.changeGalleryCols(1)" title="More Columns (Smaller)">+</button>
+                        <hr>
+
+                        <b>Tags</b>
+                        <ul id="tag-list">
+                            <li><a href="${rootPath}/pages/other/tags.html">All</a></li>
+                            <!-- Populated via JS -->
+                        </ul>
+
+                        <hr>
+                        
+                        <div style="margin-bottom: 20px;">
+                            <details>
+                                <summary style="font-size: 12px; cursor: pointer; font-weight: bold; margin-bottom: 5px;">Settings</summary>
+                                
+                                <div style="font-size: 12px; font-weight: bold; margin-top: 10px;">Theme:<br>L - Lightweight<br>H - Heavy</div>
+                                <select id="theme-selector" style="width: 100%; font-size: 11px; margin-top: 5px;">
+                                    <option value="default">Retro Classic</option>
+                                    <option value="retro-green">Cyberpunk Terminal</option>
+                                    <option value="light-mode">Light Mode</option>
+                                    <option value="windows-98">Windows 98</option>
+                                    <option value="minecraft">Minecraft</option>
+                                </select>
+                                
+                                <br><br>
+                                
+                                <div style="margin-left: 5px;">
+                                    <label style="font-size: 12px; cursor: pointer;">
+                                        <input type="checkbox" id="show-r-rated-checkbox">
+                                         Show R Rated content
+                                    </label>
+                                </div>
+                            </details>
+                        </div>
+
+                        <div style="text-align: center;">
+                            <small>Optimized for<br>Netscape 4.0</small>
+                        </div>
+                    </td>
+
+                    <!-- CONTENT AREA -->
+                    <td class="content-cell" id="main-content-cell">
+                        <!-- ORIGINAL CONTENT GOES HERE -->
+                    </td>
+                </tr>
+
+                <!-- FOOTER ROW -->
+                <tr>
+                    <td colspan="2" class="footer-cell">
+                        <center>
+                            You are visitor number: 
+                            <div class="visitor-counter" id="visitor-count">08472</div>
+                            <br>
+                            &copy; 1999-2025 RetroWiki Inc. All rights reserved. 
+                        </center>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- SIDEBAR OVERLAY -->
+        <div id="sidebar-overlay" onclick="Layout.toggleSidebar()" style="display: none;"></div>
+
+        <!-- Back to Top Button -->
+        <button id="back-to-top" onclick="
+            const scrollContainer = document.querySelector('.layout-scroll');
+            if (scrollContainer && getComputedStyle(scrollContainer).overflowY === 'auto') {
+                scrollContainer.scrollTo({top: 0, behavior: 'smooth'});
+            } else {
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            }
+        ">
+            ▲
+        </button>
+
+        <!-- Floating Gallery Controls (Fade on Hover) -->
+        <div class="gallery-float-controls">
+            <button onclick="Layout.toggleSidebar()" title="Toggle Menu">≡</button>
+            <div style="height: 5px;"></div>
+            <button onclick="Layout.changeGalleryCols(-1)" title="Fewer Columns (Larger)">-</button>
+            <div style="color:#eee; font-size:10px; margin:2px 0; font-weight:bold;">G</div>
+            <button onclick="Layout.changeGalleryCols(1)" title="More Columns (Smaller)">+</button>
+        </div>
     </div>
     `;
 
@@ -183,12 +196,24 @@ function initLayout() {
 
     // Expose layout functions
     window.Layout = {
+        toggleSidebar, // Exported
         toggleZenMode,
-        toggleViewMode,
         toggleTheme,
         zoom,
+        resetZoom,
         changeGalleryCols
     };
+}
+
+// SIDEBAR TOGGLE LOGIC
+function toggleSidebar() {
+    document.body.classList.toggle('sidebar-open');
+    const overlay = document.getElementById('sidebar-overlay');
+    if (document.body.classList.contains('sidebar-open')) {
+        if (overlay) overlay.style.display = 'block';
+    } else {
+        if (overlay) overlay.style.display = 'none';
+    }
 }
 
 // ZOOM LOGIC
@@ -202,6 +227,12 @@ function zoom(delta) {
     currentZoom += delta;
     // Clamp zoom between 0.5x and 2.0x
     currentZoom = Math.min(Math.max(currentZoom, 0.5), 2.0);
+    document.body.style.zoom = currentZoom;
+    localStorage.setItem('pageZoom', currentZoom);
+}
+
+function resetZoom() {
+    currentZoom = 1.0;
     document.body.style.zoom = currentZoom;
     localStorage.setItem('pageZoom', currentZoom);
 }
@@ -233,18 +264,6 @@ function updateToggleButtons() {
             btnTheme.classList.add('active');
         } else {
             btnTheme.classList.remove('active');
-        }
-    }
-
-    // View Mode
-    const btnView = document.getElementById('btn-view');
-    if (btnView) {
-        if (document.body.classList.contains('mobile-view')) {
-            btnView.classList.add('active');
-            btnView.textContent = "[ Desktop View ]"; // Option to switch back
-        } else {
-            btnView.classList.remove('active');
-            btnView.textContent = "[ Mobile View ]";
         }
     }
 }
@@ -283,13 +302,6 @@ function toggleZenMode() {
     updateToggleButtons();
 }
 
-// Helper: Toggle View Mode (Desktop/Mobile)
-function toggleViewMode() {
-    document.body.classList.toggle('mobile-view');
-    const isMobile = document.body.classList.contains('mobile-view');
-    localStorage.setItem('viewMode', isMobile ? 'mobile' : 'desktop');
-    updateToggleButtons();
-}
 
 // Helper: Update Login/Logout Link
 async function updateAuthLink(rootPath) {

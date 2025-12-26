@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Media Table</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background: #222;
+            color: #fff;
+            padding: 20px;
+            margin: 0;
+        }
+
+        table {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            border-collapse: collapse;
+            background: #333;
+        }
+
+        th,
+        td {
+            border: 1px solid #555;
+            padding: 10px;
+            text-align: center;
+            vertical-align: top;
+        }
+
+        /* Typography */
+        .name-header {
+            font-size: 24px;
+            font-weight: bold;
+            padding: 15px;
+            background: #444;
+            color: #fff;
+        }
+
+        .label-header {
+            font-size: 18px;
+            font-weight: bold;
+            color: #ddd;
+            background: #2a2a2a;
+        }
+
+        /* Media Frame - The Constraint */
+        .media-frame {
+            width: 100%;
+            /* Fixed height ensures uniformity regardless of source aspect ratio */
+            height: 300px;
+            position: relative;
+            background: #000;
+            overflow: hidden;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* The Content - The Fill */
+        .media-frame img,
+        .media-frame video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* KEY: This makes them fill the box without stretching */
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+
+    <table>
+        <!-- SASHA GREY (2 Columns -> Colspan 2 each to match 4-grid) -->
+        <tr>
+            <td colspan="4" class="name-header">Sasha Grey</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="label-header">In Public</td>
+            <td colspan="2" class="label-header">In Reality</td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <div class="media-frame">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcScP4Kl1htM8azHJhed-0ol4Zy5fZ-__LNOwQ&s"
+                        alt="Sasha Public">
+                </div>
+            </td>
+            <td colspan="2">
+                <div class="media-frame">
+                    <img src="https://i.redd.it/972380xxoqne1.gif" alt="Sasha Reality">
+                </div>
+            </td>
+        </tr>
+
+        <!-- KELSI MONROE (4 Columns) -->
+        <tr>
+            <td colspan="4" class="name-header">Kelsi Monroe</td>
+        </tr>
+        <tr>
+            <td class="label-header">In Public</td>
+            <td class="label-header">In Reality</td>
+            <td class="label-header">In Reality</td>
+            <td class="label-header">In Reality</td>
+        </tr>
+        <tr style="height:100px">
+            <td style="width: 40%">
+                <div class="media-frame">
+                    <img src="https://www.trashyweb.com/wp-content/uploads/2017/07/01-6.jpg" alt="Kelsi Public">
+                </div>
+            </td>
+            <td>
+                <div class="media-frame">
+                    <img src="https://imagex1.sx.cdn.live/images/pinporn/2020/02/27/22669392.gif?width=460"
+                        alt="Kelsi Reality 1">
+                </div>
+            </td>
+            <td>
+                <div class="media-frame">
+                    <img src="https://imagex1.sx.cdn.live/images/pinporn/2023/05/10/29378106.gif?width=460"
+                        alt="Kelsi Reality 2">
+                </div>
+            </td>
+            <td>
+                <div class="media-frame">
+                    <!-- Empty Placeholder or Add Source -->
+                </div>
+            </td>
+        </tr>
+
+        <!-- GIANNA DIOR (4 Columns) -->
+        <tr>
+            <td colspan="4" class="name-header">Gianna Dior</td>
+        </tr>
+        <tr>
+            <td class="label-header">In Public</td>
+            <td class="label-header">In Reality</td>
+            <td class="label-header">In Reality</td>
+            <td class="label-header">In Reality</td>
+        </tr>
+        <tr>
+            <td>
+                <div class="media-frame">
+                    <img src="https://pbs.twimg.com/media/FLh5egoVcAMremR.jpg:large" alt="Gianna Public">
+                </div>
+            </td>
+            <td>
+                <div class="media-frame">
+                    <video autoplay muted loop playsinline src="https://v.redd.it/1gnx2cuw19ke1/DASH_480.mp4"></video>
+                </div>
+            </td>
+            <td>
+                <div class="media-frame">
+                    <img src="https://imagex1.sx.cdn.live/images/pinporn/2023/06/19/29586979.gif?width=460"
+                        alt="Gianna Reality 2">
+                </div>
+            </td>
+            <td>
+                <div class="media-frame">
+                    <video autoplay muted loop playsinline
+                        src="https://img1.thatpervert.com/pics/post/webm/pissing-porn-perversion-Gianna-Dior-Porn-Model-7429335.webm"></video>
+                </div>
+            </td>
+        </tr>
+    </table>
+
+</body>
+
+</html>

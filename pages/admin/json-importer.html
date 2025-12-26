@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JSON Importer - RetroWiki</title>
-    <link rel="stylesheet" href="../../style.css">
+    <link rel="stylesheet" href="../../css/main.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <!-- Config -->
     <script src="../../src/config/app.config.js"></script>
@@ -16,7 +16,7 @@
     <script src="../../src/services/category.service.js"></script>
     <!-- Shared -->
     <script src="../../src/shared/utils.js"></script>
-    <script src="../../src/themes/theme-loader.js"></script>
+    <script src="../../src/shared/theme-loader.js"></script>
     <script src="../../src/shared/layout.js"></script>
 </head>
 
@@ -36,22 +36,60 @@
                         ChatGPT/Gemini</b></summary>
                 <div
                     style="background: #111; padding: 10px; margin-top: 5px; border: 1px dashed #555; white-space: pre-wrap; font-family: monospace;">
-                    Write a wiki article about: "[TOPIC]"
-                    Output strictly valid JSON with these keys:
-                    - title: The article title
-                    - category: A single category
-                    - tags: Comma-separated string of tags
-                    - content_html: Full article in HTML format
-
-                    JSON schema:
+                    OPTION 1:
+                    Important : output Response must be JSON only.
+                    You are an expert wiki writer
+                    Write a concise and complete wiki-style article about: "${topic}", modeled after Wikipedia
+                    structure.
+                    OUTPUT
+                    Output strictly valid JSON with the following keys:
+                    - title: The article title.
+                    - category: A single broad category.
+                    - tags: A comma-separated string of tags.
+                    - content: The full article content in HTML format.
+                    - Output ONLY valid JSON with this EXACT schema:
                     {
                     "title": "Article Title",
-                    "category": "Category",
+                    "category": "Architecture",
                     "tags": "tag1, tag2, tag3",
-                    "content_html": "&lt;p&gt;HTML content&lt;/p&gt;"
+                    "content_html": "&ltp&gt;HTML content here&lt/p&gt;"
                     }
 
-                    Response must be JSON only.
+                    Response must be JSON only. No markdown fence.
+
+                    STRUCTURE REQUIREMENTS for content_html:
+                    - Page title in &lttitle&gt; and main heading &lth1&gt;
+                    - Short summary paragraph under the title (like Wikipedia lead section)
+                    - A small info table infobox-style section aligned to the right
+                    - Name
+                    - Category
+                    - Key facts (2–4 rows relevant to topic for example location, length, opened, type, designer,
+                    coordinates)
+                    - Place a representative image above (use &ltimg&gt; with width max 200px)
+                    - Horizontal rule &lthr&gt;
+                    - Table of Contents using a simple unordered list with anchor links
+                    - Main sections using &lth2&gt; and &lth3&gt;, such as:
+                    - Overview
+                    - History / Background
+                    - Key Concepts or Features
+                    - Applications / Usage
+                    - Reception / Impact
+                    - Notes/Trivia/Bonus info
+                    - See Also
+                    - “See Also” section must contain internal-style links (# anchors or placeholder links)
+                    - External links can be included for references must open in a new tab
+                    - all the links mentioned in the page must open in new tab
+                    MEDIA & LINKS
+                    - Use &ltimg&gt; for images/GIFs and &ltvideo controls&gt; for videos.
+                    - Use &lta&gt; for links; all must open in new tabs.
+                    - Keep media centered and responsive with inline styles.
+                    RULES
+                    - Use only valid HTML inside &ltcontent_html&gt;.
+                    - No markdown, no explanations, no extra text.
+
+                    Do not use markdown formatting. Just raw JSON.
+                    IMPORTANT : put this exact json output in a code snippet format when I can see html "content_html":
+                    with hmtl tags and code
                 </div>
             </details>
 
