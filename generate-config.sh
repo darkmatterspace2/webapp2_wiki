@@ -1,7 +1,11 @@
-#!/bin/sh
-
 # This script generates src/config/supabase.config.js from Environment Variables
 # It is intended to be run during the build process (e.g. on Netlify/Vercel)
+
+# Load env vars from .devops/.env if present (Local Development)
+if [ -f .devops/.env ]; then
+  echo "Loading variables from .devops/.env..."
+  export $(grep -v '^#' .devops/.env | xargs)
+fi
 
 echo "Generating src/config/supabase.config.js..."
 
