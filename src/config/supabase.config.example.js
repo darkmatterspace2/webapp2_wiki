@@ -1,0 +1,11 @@
+// SUPABASE & API CONFIGURATION
+// Keep credentials separate from app config for security
+
+window.SUPABASE_URL = "YOUR_SUPABASE_URL";
+window.SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
+
+// AI API Keys
+window.GEMINI_API_KEY = "YOUR_GEMINI_API_KEY";
+window.OPENAI_API_KEY = "YOUR_OPENAI_API_KEY";
+window.ANTHROPIC_API_KEY = "YOUR_ANTHROPIC_KEY";
+window.XAI_API_KEY = "YOUR_GROK_KEY";
