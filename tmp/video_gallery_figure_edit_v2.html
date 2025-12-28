@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retro Video Gallery Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Custom styles to mimic the user's specific output style in the preview */
+        .retro-gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            padding: 20px;
+            background: #f3f4f6;
+            border-radius: 8px;
+        }
+        .retro-gallery figure {
+            margin: 0;
+            background: white;
+            padding: 10px;
+            border: 1px solid #ddd;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            max-width: 100%;
+        }
+        .retro-gallery video {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+        .retro-gallery figcaption {
+            margin-top: 10px;
+            font-family: sans-serif;
+            font-size: 14px;
+            color: #333;
+        }
+        
+        /* App UI Specifics */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .code-scroll::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        .code-scroll::-webkit-scrollbar-track {
+            background: #1e1e1e; 
+        }
+        .code-scroll::-webkit-scrollbar-thumb {
+            background: #555; 
+            border-radius: 4px;
+        }
+        .code-scroll::-webkit-scrollbar-thumb:hover {
+            background: #777; 
+        }
+        
+        /* Modal Animation */
+        .modal {
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        /* Drag and Drop Styles */
+        .draggable-item {
+            cursor: grab;
+            transition: all 0.2s ease;
+        }
+        .draggable-item:active {
+            cursor: grabbing;
+        }
+        .draggable-item.dragging {
+            opacity: 0.5;
+            background: #e0e7ff; /* light indigo */
+            border: 2px dashed #6366f1;
+            transform: scale(0.98);
+        }
+        .draggable-item.drag-over {
+            border-top: 3px solid #2563eb; /* blue-600 */
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 h-screen flex flex-col font-sans text-slate-800 overflow-hidden">
+
+    <!-- Header -->
+    <header class="bg-blue-600 text-white p-4 shadow-md flex justify-between items-center z-20 relative">
+        <div class="flex items-center gap-3">
+            <i class="fa-solid fa-film text-2xl"></i>
+            <h1 class="text-xl font-bold hidden md:block">Retro Gallery Generator</h1>
+            <h1 class="text-xl font-bold md:hidden">Gallery Gen</h1>
+        </div>
+        <div class="flex gap-2">
+            <button onclick="openImportModal()" class="text-xs bg-white text-blue-600 font-bold hover:bg-blue-50 px-3 py-1 rounded transition flex items-center gap-2">
+                <i class="fa-solid fa-file-import"></i> Import HTML
+            </button>
+            <button onclick="clearAll()" class="text-xs bg-blue-700 hover:bg-blue-800 px-3 py-1 rounded transition">
+                Reset All
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="flex flex-1 overflow-hidden">
+        
+        <!-- LEFT: Editor Panel -->
+        <div class="w-full md:w-1/3 min-w-[350px] flex flex-col border-r border-slate-300 bg-white shadow-xl z-10">
+            
+            <!-- Input Form -->
+            <div class="p-6 overflow-y-auto custom-scrollbar bg-slate-50 border-b border-slate-200">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-sm font-semibold text-slate-500 uppercase tracking-wider" id="formTitle">Add New Video</h2>
+                    <button onclick="cancelEdit()" id="btnCancel" class="hidden text-xs text-red-500 hover:text-red-700 font-bold">Cancel Edit</button>
+                </div>
+                
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1">Name / Title</label>
+                        <input type="text" id="inpName" placeholder="e.g. Vacation Video" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-500 outline-none text-sm transition">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1">Description</label>
+                        <textarea id="inpDesc" rows="2" placeholder="Brief description..." class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-500 outline-none text-sm transition"></textarea>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 mb-1">Video Source (URL)</label>
+                            <input type="text" id="inpVideo" placeholder="video.mp4" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-500 outline-none text-sm transition">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 mb-1">Poster Image (URL)</label>
+                            <input type="text" id="inpPoster" placeholder="poster.jpg" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-500 outline-none text-sm transition">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1">Source Link</label>
+                        <input type="text" id="inpLink" placeholder="https://..." class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-500 outline-none text-sm transition">
+                    </div>
+
+                    <button id="btnSubmit" onclick="handleFormSubmit()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded shadow transition mt-2 flex justify-center items-center gap-2">
+                        <i class="fa-solid fa-plus"></i> Add to List
+                    </button>
+                </div>
+            </div>
+
+            <!-- List of Items -->
+            <div class="flex-1 overflow-y-auto bg-white p-4">
+                <div class="flex justify-between items-center mb-3">
+                    <h3 class="text-xs font-bold text-slate-400 uppercase">Active Items (<span id="count">0</span>)</h3>
+                    <span class="text-[10px] text-slate-400"><i class="fa-solid fa-arrows-up-down mr-1"></i>Drag to reorder</span>
+                </div>
+                <div id="itemList" class="space-y-3 pb-10">
+                    <!-- Items injected here by JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT: Preview & Code -->
+        <div class="flex-1 flex flex-col bg-slate-200 overflow-hidden relative">
+            
+            <!-- Tabs -->
+            <div class="flex bg-white border-b border-slate-300 px-4 pt-2 gap-2">
+                <button onclick="switchTab('preview')" id="tab-preview" class="px-4 py-2 text-sm font-semibold border-b-2 border-blue-600 text-blue-600 transition">Visual Preview</button>
+                <button onclick="switchTab('code')" id="tab-code" class="px-4 py-2 text-sm font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-700 transition">Generated Code</button>
+            </div>
+
+            <!-- Preview Area -->
+            <div id="view-preview" class="flex-1 overflow-y-auto p-8">
+                <!-- The wrapper used in user's request -->
+                <div class="retro-gallery" id="previewContainer">
+                    <p class="text-slate-400 italic w-full text-center py-10">No videos added yet.</p>
+                </div>
+            </div>
+
+            <!-- Code Area (Hidden by default) -->
+            <div id="view-code" class="flex-1 hidden flex flex-col h-full">
+                <div class="bg-slate-800 text-slate-300 p-2 text-xs flex justify-between items-center">
+                    <span>HTML Output</span>
+                    <button onclick="copyCode()" class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-1 rounded transition text-xs">
+                        <i class="fa-regular fa-copy mr-1"></i> Copy Code
+                    </button>
+                </div>
+                <textarea id="codeOutput" readonly class="flex-1 w-full bg-[#1e1e1e] text-green-400 font-mono text-sm p-4 outline-none resize-none code-scroll"></textarea>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Import Modal -->
+    <div id="importModal" class="modal fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 backdrop-blur-sm">
+        <div class="bg-white rounded-lg shadow-2xl w-full max-w-2xl mx-4 flex flex-col max-h-[80vh]">
+            <div class="p-4 border-b border-slate-200 flex justify-between items-center bg-slate-50 rounded-t-lg">
+                <h3 class="font-bold text-slate-700"><i class="fa-solid fa-code mr-2"></i>Import Existing HTML</h3>
+                <button onclick="closeImportModal()" class="text-slate-400 hover:text-slate-600">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            <div class="p-4 flex-1 flex flex-col overflow-hidden">
+                <p class="text-sm text-slate-500 mb-2">Paste your existing gallery HTML (<b>&lt;figure&gt;</b> tags) OR source site HTML (<b>&lt;div class="card-scene"&gt;</b>) below.</p>
+                <textarea id="importText" class="w-full flex-1 p-3 border border-slate-300 rounded font-mono text-xs bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none resize-none" placeholder='<div class="retro-gallery">...</div> OR <div class="card-scene">...</div>'></textarea>
+            </div>
+            <div class="p-4 border-t border-slate-200 flex justify-end gap-3 bg-slate-50 rounded-b-lg">
+                <button onclick="closeImportModal()" class="px-4 py-2 text-sm text-slate-600 font-semibold hover:bg-slate-200 rounded transition">Cancel</button>
+                <button onclick="processImport()" class="px-4 py-2 text-sm bg-blue-600 text-white font-bold hover:bg-blue-700 rounded shadow transition">Import Videos</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- State Management ---
+        let videos = JSON.parse(localStorage.getItem('retroGalleryVideos')) || [];
+        let editingId = null; // Tracks which item is currently being edited
+        let draggedItemIndex = null; // Track drag index
+
+        // --- DOM Elements ---
+        const inputs = {
+            name: document.getElementById('inpName'),
+            desc: document.getElementById('inpDesc'),
+            video: document.getElementById('inpVideo'),
+            poster: document.getElementById('inpPoster'),
+            link: document.getElementById('inpLink'),
+        };
+        const itemListEl = document.getElementById('itemList');
+        const previewEl = document.getElementById('previewContainer');
+        const codeOutputEl = document.getElementById('codeOutput');
+        const countEl = document.getElementById('count');
+        const btnSubmit = document.getElementById('btnSubmit');
+        const btnCancel = document.getElementById('btnCancel');
+        const formTitle = document.getElementById('formTitle');
+        const importModal = document.getElementById('importModal');
+        const importText = document.getElementById('importText');
+
+        // --- Initialization ---
+        render();
+
+        // --- Form Logic (Add & Edit) ---
+
+        function handleFormSubmit() {
+            // Basic Validation
+            if(!inputs.video.value && !inputs.name.value) {
+                alert("Please enter at least a Name or Video URL.");
+                return;
+            }
+
+            const videoData = {
+                id: editingId ? editingId : Date.now(),
+                name: inputs.name.value || 'Untitled',
+                desc: inputs.desc.value || '',
+                video: inputs.video.value || '#',
+                poster: inputs.poster.value || '',
+                link: inputs.link.value || '#'
+            };
+
+            if (editingId) {
+                // Update existing
+                const index = videos.findIndex(v => v.id === editingId);
+                if (index !== -1) {
+                    videos[index] = videoData;
+                }
+                cancelEdit(); // Reset form mode
+            } else {
+                // Add new
+                videos.push(videoData);
+                clearForm();
+            }
+
+            save();
+            render();
+        }
+
+        function editVideo(id) {
+            const video = videos.find(v => v.id === id);
+            if (!video) return;
+
+            // Load data into inputs
+            inputs.name.value = video.name;
+            inputs.desc.value = video.desc;
+            inputs.video.value = video.video;
+            inputs.poster.value = video.poster;
+            inputs.link.value = video.link;
+
+            // Change UI to Edit Mode
+            editingId = id;
+            formTitle.textContent = "Edit Video";
+            formTitle.classList.add("text-blue-600");
+            btnSubmit.innerHTML = '<i class="fa-solid fa-save"></i> Update Item';
+            btnSubmit.classList.replace('bg-blue-600', 'bg-emerald-600');
+            btnSubmit.classList.replace('hover:bg-blue-700', 'hover:bg-emerald-700');
+            btnCancel.classList.remove('hidden');
+
+            // Scroll to top of form
+            inputs.name.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            inputs.name.focus();
+        }
+
+        function cancelEdit() {
+            editingId = null;
+            clearForm();
+            
+            // Reset UI to Add Mode
+            formTitle.textContent = "Add New Video";
+            formTitle.classList.remove("text-blue-600");
+            btnSubmit.innerHTML = '<i class="fa-solid fa-plus"></i> Add to List';
+            btnSubmit.classList.replace('bg-emerald-600', 'bg-blue-600');
+            btnSubmit.classList.replace('hover:bg-emerald-700', 'hover:bg-blue-700');
+            btnCancel.classList.add('hidden');
+        }
+
+        function removeVideo(id) {
+            // If deleting the item currently being edited, cancel edit first
+            if (editingId === id) cancelEdit();
+            
+            videos = videos.filter(v => v.id !== id);
+            save();
+            render();
+        }
+
+        function clearAll() {
+            if(confirm("Delete all videos from the list?")) {
+                videos = [];
+                cancelEdit();
+                save();
+                render();
+            }
+        }
+
+        function save() {
+            localStorage.setItem('retroGalleryVideos', JSON.stringify(videos));
+        }
+
+        function clearForm() {
+            Object.values(inputs).forEach(input => input.value = '');
+        }
+
+        // --- Drag and Drop Logic ---
+
+        function handleDragStart(e) {
+            draggedItemIndex = +this.dataset.index;
+            this.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            // Set data to ensure drag works in Firefox
+            e.dataTransfer.setData('text/plain', draggedItemIndex);
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            return false;
+        }
+
+        function handleDragEnter(e) {
+            this.classList.add('drag-over');
+        }
+
+        function handleDragLeave(e) {
+            this.classList.remove('drag-over');
+        }
+
+        function handleDrop(e) {
+            e.stopPropagation();
+            e.preventDefault();
+
+            if (draggedItemIndex === null) return;
+            
+            const dropIndex = +this.dataset.index;
+            
+            if (draggedItemIndex !== dropIndex) {
+                // Reorder array: Remove dragged item, insert at new position
+                const itemToMove = videos.splice(draggedItemIndex, 1)[0];
+                videos.splice(dropIndex, 0, itemToMove);
+                
+                save();
+                render();
+            }
+            return false;
+        }
+
+        function handleDragEnd(e) {
+            this.classList.remove('dragging');
+            document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+            draggedItemIndex = null;
+        }
+
+
+        // --- Import Logic ---
+
+        function openImportModal() {
+            importModal.classList.add('active');
+            importText.value = '';
+            importText.focus();
+        }
+
+        function closeImportModal() {
+            importModal.classList.remove('active');
+        }
+
+        function processImport() {
+            const html = importText.value;
+            if (!html.trim()) return closeImportModal();
+
+            try {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const figures = doc.querySelectorAll('figure');
+                const cardScenes = doc.querySelectorAll('.card-scene');
+                
+                let addedCount = 0;
+
+                // --- Strategy 1: Import existing <figure> gallery structure ---
+                if (figures.length > 0) {
+                    figures.forEach(fig => {
+                        const videoEl = fig.querySelector('video');
+                        const sourceEl = fig.querySelector('source');
+                        const capEl = fig.querySelector('figcaption');
+                        const bEl = capEl ? capEl.querySelector('b') : null;
+                        const aEl = capEl ? capEl.querySelector('a') : null;
+
+                        let desc = '';
+                        if (capEl && bEl) {
+                            let foundB = false;
+                            capEl.childNodes.forEach(node => {
+                                if (node === bEl) {
+                                    foundB = true;
+                                } else if (foundB && node === aEl) {
+                                    foundB = false;
+                                } else if (foundB && node.nodeType === 3) {
+                                    desc += node.textContent;
+                                }
+                            });
+                            desc = desc.trim();
+                        }
+
+                        if (!desc && capEl) {
+                            const clone = capEl.cloneNode(true);
+                            if(clone.querySelector('b')) clone.querySelector('b').remove();
+                            if(clone.querySelector('a')) clone.querySelector('a').remove();
+                            desc = clone.textContent.replace(/\*\*/g, '').trim();
+                        }
+
+                        const newVideo = {
+                            id: Date.now() + Math.random(),
+                            name: bEl ? bEl.textContent.trim() : 'Untitled',
+                            desc: desc,
+                            video: sourceEl ? sourceEl.getAttribute('src') : (videoEl ? videoEl.getAttribute('src') : ''),
+                            poster: videoEl ? videoEl.getAttribute('poster') : '',
+                            link: aEl ? aEl.getAttribute('href') : ''
+                        };
+
+                        videos.push(newVideo);
+                        addedCount++;
+                    });
+                }
+
+                // --- Strategy 2: Import .card-scene structure (User requested) ---
+                if (cardScenes.length > 0) {
+                    cardScenes.forEach(card => {
+                        // Extract Elements from specific structure
+                        const viewContainer = card.querySelector('.card-scene__view');
+                        const textContainer = card.querySelector('.card-scene__text');
+
+                        const anchor = viewContainer ? viewContainer.querySelector('a') : null;
+                        const img = viewContainer ? viewContainer.querySelector('img') : null;
+                        const titleAnchor = textContainer ? textContainer.querySelector('a') : null;
+
+                        // Extract Data
+                        // Priority for Video: data-preview attribute
+                        const videoUrl = anchor && anchor.dataset.preview ? anchor.dataset.preview : '';
+                        const linkUrl = anchor ? anchor.getAttribute('href') : '';
+                        const posterUrl = img ? img.getAttribute('src') : '';
+                        // Priority for Desc: Alt text
+                        const descText = img ? img.getAttribute('alt') : '';
+                        // Priority for Name: Title attribute or text content
+                        const nameText = titleAnchor ? (titleAnchor.getAttribute('title') || titleAnchor.textContent.trim()) : 'Untitled';
+
+                        const newVideo = {
+                            id: Date.now() + Math.random(),
+                            name: nameText,
+                            desc: descText,
+                            video: videoUrl,
+                            poster: posterUrl,
+                            link: linkUrl
+                        };
+
+                        videos.push(newVideo);
+                        addedCount++;
+                    });
+                }
+
+                if (addedCount > 0) {
+                    save();
+                    render();
+                    closeImportModal();
+                    alert(`Successfully imported ${addedCount} videos!`);
+                } else {
+                    alert("No valid videos found. Please check your HTML structure.");
+                }
+
+            } catch (e) {
+                alert("Error parsing HTML.");
+                console.error(e);
+            }
+        }
+
+        // --- Rendering Logic ---
+
+        function render() {
+            renderList();
+            renderPreview();
+            renderCode();
+            countEl.textContent = videos.length;
+        }
+
+        function renderList() {
+            itemListEl.innerHTML = '';
+            
+            if(videos.length === 0) {
+                itemListEl.innerHTML = `<div class="text-center text-slate-400 text-sm py-4">List is empty</div>`;
+                return;
+            }
+
+            videos.forEach((video, index) => {
+                const item = document.createElement('div');
+                const isEditing = video.id === editingId;
+                const activeClass = isEditing ? 'ring-2 ring-blue-500 bg-blue-50' : 'bg-slate-50 border-slate-200';
+                
+                // Add draggable class and attributes
+                item.className = `draggable-item group relative border rounded p-3 hover:shadow-md flex gap-3 items-start ${activeClass}`;
+                item.setAttribute('draggable', true);
+                item.dataset.index = index;
+
+                // Drag Events
+                item.addEventListener('dragstart', handleDragStart);
+                item.addEventListener('dragover', handleDragOver);
+                item.addEventListener('drop', handleDrop);
+                item.addEventListener('dragenter', handleDragEnter);
+                item.addEventListener('dragleave', handleDragLeave);
+                item.addEventListener('dragend', handleDragEnd);
+
+                let thumbHtml = video.poster 
+                    ? `<img src="${video.poster}" class="w-16 h-16 object-cover rounded bg-slate-200 pointer-events-none" onerror="this.src='https://placehold.co/100?text=No+Img'">`
+                    : `<div class="w-16 h-16 bg-slate-200 rounded flex items-center justify-center text-slate-400 pointer-events-none"><i class="fa-solid fa-video"></i></div>`;
+
+                item.innerHTML = `
+                    <div class="flex flex-col items-center justify-center self-stretch pr-2 cursor-grab text-slate-300 hover:text-slate-500">
+                        <i class="fa-solid fa-grip-vertical"></i>
+                    </div>
+                    ${thumbHtml}
+                    <div class="flex-1 min-w-0 pointer-events-none">
+                        <h4 class="font-bold text-sm text-slate-700 truncate">${index + 1}. ${video.name}</h4>
+                        <p class="text-xs text-slate-500 truncate">${video.desc}</p>
+                        <p class="text-[10px] text-slate-400 truncate mt-1 font-mono">${video.video}</p>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <button onclick="editVideo(${video.id})" class="text-blue-400 hover:text-blue-600 transition p-1" title="Edit">
+                            <i class="fa-solid fa-pencil"></i>
+                        </button>
+                        <button onclick="removeVideo(${video.id})" class="text-slate-400 hover:text-red-500 transition p-1" title="Delete">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                itemListEl.appendChild(item);
+            });
+        }
+
+        function renderPreview() {
+            if (videos.length === 0) {
+                previewEl.innerHTML = '<p class="text-slate-400 italic w-full text-center py-10">Add a video to see the preview.</p>';
+                return;
+            }
+
+            previewEl.innerHTML = videos.map(v => `
+                <figure>
+                    <video width="640" controls poster="${v.poster}" data-setup="{}">
+                        <source src="${v.video}" type="video/mp4" />
+                        Your browser does not support the video tag.
+                    </video>
+                    <figcaption>
+                        <b>${v.name}</b> ${v.desc}
+                        <a href="${v.link}" target="_blank">Source</a> **
+                    </figcaption>
+                </figure>
+            `).join('');
+        }
+
+        function renderCode() {
+            const separator = '<!--#########################################################################################################-->';
+            
+            let html = `<div class="retro-gallery">\n\n`;
+
+            videos.forEach(v => {
+                html += `  <figure>
+    <video
+      width="640"
+      controls
+      poster="${v.poster}"
+      data-setup="{}"
+    >
+      <source
+        src="${v.video}"
+        type="video/mp4"
+      />
+      Your browser does not support the video tag.
+    </video>
+
+    <figcaption>
+      <b>${v.name}</b> ${v.desc}
+    <a href="${v.link}" target="_blank">Source</a> **
+    </figcaption>
+  </figure>
+${separator}\n\n`;
+            });
+
+            html += `</div>`;
+            codeOutputEl.value = html;
+        }
+
+        // --- UI Interactions ---
+
+        function switchTab(tab) {
+            const previewTab = document.getElementById('tab-preview');
+            const codeTab = document.getElementById('tab-code');
+            const viewPreview = document.getElementById('view-preview');
+            const viewCode = document.getElementById('view-code');
+
+            if (tab === 'preview') {
+                viewPreview.classList.remove('hidden');
+                viewCode.classList.add('hidden');
+                
+                previewTab.classList.add('border-blue-600', 'text-blue-600');
+                previewTab.classList.remove('border-transparent', 'text-slate-500');
+                
+                codeTab.classList.add('border-transparent', 'text-slate-500');
+                codeTab.classList.remove('border-blue-600', 'text-blue-600');
+            } else {
+                viewPreview.classList.add('hidden');
+                viewCode.classList.remove('hidden');
+                
+                codeTab.classList.add('border-blue-600', 'text-blue-600');
+                codeTab.classList.remove('border-transparent', 'text-slate-500');
+                
+                previewTab.classList.add('border-transparent', 'text-slate-500');
+                previewTab.classList.remove('border-blue-600', 'text-blue-600');
+            }
+        }
+
+        function copyCode() {
+            codeOutputEl.select();
+            document.execCommand('copy');
+            
+            const btn = document.querySelector('#view-code button');
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-check mr-1"></i> Copied!';
+            btn.classList.add('bg-green-600');
+            setTimeout(() => {
+                btn.innerHTML = originalHtml;
+                btn.classList.remove('bg-green-600');
+            }, 1500);
+        }
+    </script>
+</body>
+</html>
