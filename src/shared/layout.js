@@ -161,13 +161,27 @@ function initLayout() {
             ▲
         </button>
 
-        <!-- Floating Gallery Controls (Fade on Hover) -->
-        <div class="gallery-float-controls">
-            <button onclick="Layout.toggleSidebar()" title="Toggle Menu">≡</button>
-            <div style="height: 5px;"></div>
-            <button onclick="Layout.changeGalleryCols(-1)" title="Fewer Columns (Larger)">-</button>
-            <div style="color:#eee; font-size:10px; margin:2px 0; font-weight:bold;">G</div>
-            <button onclick="Layout.changeGalleryCols(1)" title="More Columns (Smaller)">+</button>
+        <!-- Floating Controls Dock (Responsive & Collapsible) -->
+        <div class="gallery-float-controls" id="float-controls">
+            <button id="float-btn-toggle" onclick="Layout.toggleFloatDock()" title="Minimize / Expand Dock" class="btn-float-handle">
+                <span id="float-dock-icon">⚙</span>
+            </button>
+            <div class="float-dock-content" id="float-dock-content">
+                <button onclick="Layout.scrollToTop()" title="Scroll to Top" class="btn-float-action">▲</button>
+                <button onclick="Layout.toggleSidebar()" title="Toggle Navigation Sidebar" class="btn-float-action">≡</button>
+                <button id="float-btn-zen" onclick="Layout.toggleZenMode()" title="Toggle Zen Mode (Clean Reading)" class="btn-float-action">Z</button>
+                <button id="float-btn-theme" onclick="Layout.toggleTheme()" title="Toggle Light / Dark Mode" class="btn-float-action">◑</button>
+
+                <div class="float-gallery-group" id="float-gallery-group">
+                    <div class="float-divider"></div>
+                    <button onclick="Layout.changeGalleryCols(-1)" title="Fewer Columns (Larger Images)" class="btn-float-action">−</button>
+                    <div class="float-gallery-cols" id="float-gallery-cols" onclick="Layout.resetGalleryCols()" title="Columns (Click to reset to 3)">3C</div>
+                    <button onclick="Layout.changeGalleryCols(1)" title="More Columns (Smaller Images)" class="btn-float-action">+</button>
+                </div>
+
+                <div class="float-divider"></div>
+                <button onclick="Layout.scrollToBottom()" title="Scroll to Bottom" class="btn-float-action">▼</button>
+            </div>
         </div>
     </div>
     `;
@@ -191,17 +205,24 @@ function initLayout() {
     // Update Toggle Button States
     updateToggleButtons();
 
-    // Setup Back to Top button
+    // Setup Back to Top button & Floating Controls Dock
     setupBackToTop();
+    initFloatDock();
 
     // Expose layout functions
     window.Layout = {
-        toggleSidebar, // Exported
+        toggleSidebar,
         toggleZenMode,
         toggleTheme,
         zoom,
         resetZoom,
-        changeGalleryCols
+        changeGalleryCols,
+        resetGalleryCols,
+        updateGalleryColsIndicator,
+        checkGalleryPresence,
+        scrollToTop,
+        scrollToBottom,
+        toggleFloatDock
     };
 }
 
@@ -237,34 +258,101 @@ function resetZoom() {
     localStorage.setItem('pageZoom', currentZoom);
 }
 
+// FLOAT DOCK CONTROLS & HELPERS
+function initFloatDock() {
+    const isMinimized = localStorage.getItem('floatDockMinimized') === 'true';
+    const dock = document.getElementById('float-controls');
+    const icon = document.getElementById('float-dock-icon');
+    if (dock && isMinimized) {
+        dock.classList.add('minimized');
+        if (icon) icon.textContent = '+';
+    }
+    checkGalleryPresence();
+}
+
+function toggleFloatDock() {
+    const dock = document.getElementById('float-controls');
+    const icon = document.getElementById('float-dock-icon');
+    if (!dock) return;
+    dock.classList.toggle('minimized');
+    const isMinimized = dock.classList.contains('minimized');
+    if (icon) icon.textContent = isMinimized ? '+' : '⚙';
+    localStorage.setItem('floatDockMinimized', isMinimized);
+}
+
+function scrollToTop() {
+    const scrollContainer = document.querySelector('.layout-scroll');
+    if (scrollContainer && getComputedStyle(scrollContainer).overflowY === 'auto') {
+        scrollContainer.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function scrollToBottom() {
+    const scrollContainer = document.querySelector('.layout-scroll');
+    if (scrollContainer && getComputedStyle(scrollContainer).overflowY === 'auto') {
+        scrollContainer.scrollTo({ top: scrollContainer.scrollHeight, behavior: 'smooth' });
+    }
+    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+}
+
 // GALLERY COLS LOGIC
 function changeGalleryCols(delta) {
     if (window.changeGalleryColumns) {
         window.changeGalleryColumns(delta);
+    } else {
+        const cols = (window.currentGalleryCols || 3) + delta;
+        const clamped = Math.min(Math.max(cols, 1), 6);
+        window.currentGalleryCols = clamped;
+        updateGalleryColsIndicator(clamped);
+    }
+}
+
+function resetGalleryCols() {
+    if (window.changeGalleryColumns) {
+        const current = window.currentGalleryCols || 3;
+        window.changeGalleryColumns(3 - current);
+    } else {
+        window.currentGalleryCols = 3;
+        updateGalleryColsIndicator(3);
+    }
+}
+
+function updateGalleryColsIndicator(cols) {
+    const el = document.getElementById('float-gallery-cols');
+    if (el) {
+        const val = cols || window.currentGalleryCols || 3;
+        el.textContent = val + 'C';
+    }
+}
+
+function checkGalleryPresence() {
+    const group = document.getElementById('float-gallery-group');
+    if (!group) return;
+    const hasGalleries = document.querySelector('.retro-gallery') !== null;
+    group.style.display = hasGalleries ? 'flex' : 'none';
+    if (hasGalleries) {
+        updateGalleryColsIndicator();
     }
 }
 
 // UPDATE BTN STATES
 function updateToggleButtons() {
-    // Zen
+    // Zen (Header + Float Dock)
+    const isZen = document.body.classList.contains('zen-mode');
     const btnZen = document.getElementById('btn-zen');
-    if (btnZen) {
-        if (document.body.classList.contains('zen-mode')) {
-            btnZen.classList.add('active');
-        } else {
-            btnZen.classList.remove('active');
-        }
-    }
+    const floatBtnZen = document.getElementById('float-btn-zen');
+    if (btnZen) btnZen.classList.toggle('active', isZen);
+    if (floatBtnZen) floatBtnZen.classList.toggle('active', isZen);
 
-    // Theme (Active if Light Mode)
+    // Theme (Header + Float Dock)
+    const isLight = document.body.dataset.theme === 'light' || localStorage.getItem('theme') === 'light' || localStorage.getItem('selected-theme') === 'light-mode';
     const btnTheme = document.getElementById('btn-theme');
-    if (btnTheme) {
-        const isLight = document.body.dataset.theme === 'light' || localStorage.getItem('theme') === 'light' || localStorage.getItem('selected-theme') === 'light-mode';
-        if (isLight) {
-            btnTheme.classList.add('active');
-        } else {
-            btnTheme.classList.remove('active');
-        }
+    const floatBtnTheme = document.getElementById('float-btn-theme');
+    if (btnTheme) btnTheme.classList.toggle('active', isLight);
+    if (floatBtnTheme) {
+        floatBtnTheme.classList.toggle('active', isLight);
+        floatBtnTheme.textContent = isLight ? '☼' : '◑';
     }
 }
 

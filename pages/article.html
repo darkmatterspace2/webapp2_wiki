@@ -131,15 +131,20 @@
 
         // MASONRY GALLERY LOGIC
         let currentGalleryCols = 3;
+        window.currentGalleryCols = currentGalleryCols;
 
         window.changeGalleryColumns = function (delta) {
             currentGalleryCols += delta;
             if (currentGalleryCols < 1) currentGalleryCols = 1;
             if (currentGalleryCols > 6) currentGalleryCols = 6;
+            window.currentGalleryCols = currentGalleryCols;
 
             // Re-format all galleries
             formatGalleries(currentGalleryCols);
-        }
+            if (window.Layout && window.Layout.updateGalleryColsIndicator) {
+                window.Layout.updateGalleryColsIndicator(currentGalleryCols);
+            }
+        };
 
         function formatGalleries(forceCols = null) {
             const galleries = document.querySelectorAll('.retro-gallery');
@@ -231,7 +236,12 @@
                 gallery.innerHTML = '';
                 cols.forEach(c => gallery.appendChild(c));
             });
+
+            if (window.Layout && window.Layout.checkGalleryPresence) {
+                window.Layout.checkGalleryPresence();
+            }
         }
+        window.formatGalleries = formatGalleries;
 
         async function deleteArticle() {
             if (!currentMeta) return;

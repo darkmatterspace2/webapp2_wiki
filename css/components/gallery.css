@@ -110,110 +110,215 @@
     max-width: 20%;
 }
 
-/* FLOATING GALLERY CONTROLS (Bottom Right) */
+/* FLOATING CONTROLS DOCK (Bottom Right) */
 .gallery-float-controls {
     position: fixed;
-    bottom: 70px;
-    right: 70px;
+    bottom: 20px;
+    right: 20px;
     z-index: 1100;
-    /* Above hamburger (1000) */
-    background: rgba(0, 0, 0, 0.6);
+    background: rgba(18, 18, 18, 0.88);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
     padding: 3px;
     border-radius: 4px;
-    border: 1px solid #666;
+    border: 2px outset #666;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
     height: auto;
-
-    /* Vertical Slim Layout */
+    width: 34px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 24px;
-    /* Narrower */
-
-    /* Fade Effect: low opacity by default */
-    opacity: 0.3;
-    transition: opacity 0.4s ease-in-out;
+    opacity: 0.45;
+    transition: opacity 0.3s ease-in-out, transform 0.2s ease-in-out;
+    user-select: none;
 }
 
-.gallery-float-controls:hover {
+.gallery-float-controls:hover,
+.gallery-float-controls:focus-within {
     opacity: 1.0;
 }
 
-.gallery-float-controls button {
-    background: #ccc;
-    color: #000;
-    border: 1px solid #fff;
-    border-right: 1px solid #555;
-    border-bottom: 1px solid #555;
+/* Minimize/Expand Toggle Handle */
+.gallery-float-controls .btn-float-handle {
+    background: #111;
+    color: #ffcc00;
+    border: 1px outset #555;
     cursor: pointer;
-    font-size: 14px;
-    /* Larger font for icon */
+    font-size: 13px;
     font-weight: bold;
-    font-family: inherit;
-    padding: 8px 0;
-    /* Taller */
-    margin: 2px 0;
+    padding: 4px 0;
     width: 100%;
     text-align: center;
-    line-height: 10px;
+    line-height: 1;
+    margin-bottom: 2px;
+    border-radius: 2px;
+    transition: all 0.15s ease-in-out;
 }
 
-.gallery-float-controls button:active {
-    border: 1px solid #555;
-    border-right: 1px solid #fff;
-    border-bottom: 1px solid #fff;
-    background: #aaa;
+.gallery-float-controls .btn-float-handle:hover {
+    background: #222;
+    color: #fff;
+    border-color: #888;
 }
 
-/* BACK TO TOP BUTTON */
-/* Including here as it's often used with gallery, but could be separate */
+.gallery-float-controls .btn-float-handle:active {
+    background: #000;
+    border: 1px inset #888;
+}
+
+/* Float Dock Content Wrapper */
+.gallery-float-controls .float-dock-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+/* Action Buttons */
+.gallery-float-controls button.btn-float-action {
+    background: #2a2a2a;
+    color: #eee;
+    border: 1px outset #555;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: bold;
+    font-family: var(--font-main, monospace);
+    padding: 6px 0;
+    margin: 2px 0;
+    width: 100%;
+    min-height: 28px;
+    text-align: center;
+    line-height: 1;
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease-in-out;
+}
+
+.gallery-float-controls button.btn-float-action:hover {
+    background: #3a3a3a;
+    color: #fff;
+    border: 1px outset #888;
+}
+
+.gallery-float-controls button.btn-float-action:active {
+    background: #111;
+    border: 1px inset #fff;
+}
+
+/* Active State (Zen Mode, Light Mode, etc.) */
+.gallery-float-controls button.btn-float-action.active {
+    background: #000;
+    color: #00ff66;
+    border: 1px inset #00ff66;
+    text-shadow: 0 0 4px rgba(0, 255, 102, 0.6);
+}
+
+/* Dividers */
+.gallery-float-controls .float-divider {
+    width: 80%;
+    height: 1px;
+    background: #444;
+    margin: 3px 0;
+}
+
+/* Gallery Controls Group */
+.gallery-float-controls .float-gallery-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.gallery-float-controls .float-gallery-cols {
+    color: #00ff66;
+    font-size: 10px;
+    font-weight: bold;
+    font-family: var(--font-main, monospace);
+    margin: 2px 0;
+    cursor: pointer;
+    text-align: center;
+    padding: 1px 0;
+    user-select: none;
+    text-shadow: 0 0 3px rgba(0, 255, 102, 0.5);
+    width: 100%;
+}
+
+.gallery-float-controls .float-gallery-cols:hover {
+    text-decoration: underline;
+    color: #fff;
+}
+
+/* Minimized Dock State */
+.gallery-float-controls.minimized .float-dock-content {
+    display: none;
+}
+
+.gallery-float-controls.minimized {
+    padding: 2px;
+    opacity: 0.5;
+}
+
+.gallery-float-controls.minimized:hover {
+    opacity: 1.0;
+}
+
+/* BACK TO TOP BUTTON (Stand-alone fallback or styled consistently) */
 #back-to-top {
     display: none;
     position: fixed;
     bottom: 20px;
-    right: 70px;
-    z-index: 1100;
-    /* Above hamburger */
-
-    /* Match gallery-float-controls aesthetic */
-    background: rgba(0, 0, 0, 0.6);
+    right: 62px;
+    z-index: 1099;
+    background: rgba(18, 18, 18, 0.88);
     color: #fff;
-    border: 1px solid #666;
+    border: 2px outset #666;
     border-radius: 4px;
-    padding: 8px 0;
-
+    padding: 6px 0;
     cursor: pointer;
-    font-family: inherit;
+    font-family: var(--font-main, monospace);
     font-size: 12px;
-
-    /* Fade Effect */
-    opacity: 0.3;
-    transition: opacity 0.4s ease-in-out;
-    /* Vertical Slim Layout */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 30px;
-    /* Narrower */
+    font-weight: bold;
+    opacity: 0.4;
+    transition: opacity 0.3s ease-in-out;
+    width: 32px;
+    text-align: center;
 }
 
 #back-to-top:hover {
     opacity: 1.0;
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(40, 40, 40, 0.95);
+    border-color: #888;
 }
 
-/* MOBILE VIEW POSITIONING FIX */
-body.mobile-view .gallery-float-controls {
-    position: absolute;
-    bottom: 20px;
-    right: 10px;
-    z-index: 1100;
-}
+/* RESPONSIVE / MOBILE ADJUSTMENTS */
+@media screen and (max-width: 768px) {
+    .gallery-float-controls {
+        bottom: 12px;
+        right: 10px;
+        width: 38px;
+        padding: 3px;
+        opacity: 0.85;
+    }
 
-body.mobile-view #back-to-top {
-    position: absolute;
-    bottom: 120px;
-    /* Above gallery controls */
-    right: 10px;
-    z-index: 1100;
-}
+    .gallery-float-controls:hover,
+    .gallery-float-controls:active {
+        opacity: 1.0;
+    }
+
+    .gallery-float-controls button.btn-float-action {
+        min-height: 36px;
+        font-size: 14px;
+        margin: 2px 0;
+    }
+
+    .gallery-float-controls .btn-float-handle {
+        padding: 6px 0;
+        font-size: 14px;
+    }
+
+    #back-to-top {
+        display: none !important;
+    }
+}
