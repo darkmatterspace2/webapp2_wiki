@@ -71,21 +71,21 @@ body.lightbox-open {
 }
 
 .lightbox-counter {
-    color: #00ff66;
-    font-family: var(--font-main, 'Courier New', monospace);
+    color: var(--accent-green, #00ff88);
+    font-family: var(--font-mono, 'Courier New', monospace);
     font-size: 13px;
     font-weight: bold;
-    background: rgba(0, 0, 0, 0.75);
+    background: rgba(11, 15, 20, 0.85);
     padding: 4px 8px;
-    border: 1px solid #444;
-    text-shadow: 0 0 4px rgba(0, 255, 102, 0.5);
+    border: 1px solid var(--border-color, #2b3544);
+    text-shadow: 0 0 4px var(--accent-green-glow, rgba(0, 255, 136, 0.5));
     pointer-events: auto;
 }
 
 .lightbox-close-btn {
-    background: #111;
-    color: #ff3333;
-    border: 1px outset #666;
+    background: var(--btn-bg, #1a222e);
+    color: var(--accent-danger, #ff5566);
+    border: 1px outset var(--border-light, #3e4c60);
     font-family: var(--font-main, monospace);
     font-size: 13px;
     font-weight: bold;
@@ -100,7 +100,7 @@ body.lightbox-open {
 
 .lightbox-close-btn:hover,
 .lightbox-close-btn:active {
-    background: #ff3333;
+    background: var(--accent-danger, #ff5566);
     color: #000;
     border: 1px inset #fff;
 }
@@ -111,9 +111,9 @@ body.lightbox-open {
     top: 50%;
     transform: translateY(-50%);
     z-index: 2005;
-    background: rgba(0, 0, 0, 0.55);
-    color: #eee;
-    border: 1px solid #555;
+    background: rgba(14, 18, 24, 0.65);
+    color: var(--text-color, #e1e7ec);
+    border: 1px solid var(--border-color, #2b3544);
     font-size: 24px;
     line-height: 1;
     width: 44px;
@@ -128,9 +128,9 @@ body.lightbox-open {
 
 .lightbox-nav-btn:hover,
 .lightbox-nav-btn:active {
-    background: rgba(255, 255, 255, 0.25);
-    color: #00ff66;
-    border-color: #00ff66;
+    background: rgba(77, 163, 255, 0.2);
+    color: var(--accent-green, #00ff88);
+    border-color: var(--accent-green, #00ff88);
 }
 
 .lightbox-prev-btn {
@@ -151,12 +151,12 @@ body.lightbox-open {
     max-height: 48px;
     overflow-y: auto;
     text-align: center;
-    color: #ccc;
+    color: var(--text-color, #e1e7ec);
     font-size: 13px;
-    font-family: var(--font-main, 'Courier New', monospace);
-    background: rgba(0, 0, 0, 0.75);
+    font-family: var(--font-mono, 'Courier New', monospace);
+    background: rgba(14, 18, 24, 0.85);
     padding: 4px 12px;
-    border: 1px solid #333;
+    border: 1px solid var(--border-color, #2b3544);
     z-index: 2004;
     pointer-events: auto;
 }
@@ -175,9 +175,9 @@ body.lightbox-open {
     align-items: center;
     gap: 6px;
     z-index: 2010;
-    background: rgba(10, 10, 10, 0.85);
+    background: rgba(18, 24, 33, 0.92);
     padding: 6px 10px;
-    border: 2px outset #555;
+    border: 2px outset var(--border-light, #3e4c60);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.75);
     opacity: 0.95;
     transition: opacity 0.2s ease-in-out;
@@ -187,9 +187,9 @@ body.lightbox-open {
 }
 
 .lightbox-controls .lb-btn {
-    background: #222;
-    color: #ddd;
-    border: 1px outset #666;
+    background: var(--btn-bg, #1a222e);
+    color: var(--text-color, #e1e7ec);
+    border: 1px outset var(--border-light, #3e4c60);
     font-family: var(--font-main, monospace);
     font-size: 12px;
     font-weight: bold;
@@ -205,23 +205,23 @@ body.lightbox-open {
 
 .lightbox-controls .lb-btn:hover,
 .lightbox-controls .lb-btn:focus {
-    background: #333;
+    background: var(--btn-hover, #222d3d);
     color: #fff;
-    border-color: #aaa;
+    border-color: #52637c;
 }
 
 .lightbox-controls .lb-btn:active,
 .lightbox-controls .lb-btn.active {
-    background: #000;
-    color: #00ff66;
-    border: 1px inset #00ff66;
+    background: var(--btn-active, #0b0f14);
+    color: var(--accent-green, #00ff88);
+    border: 1px inset var(--accent-green, #00ff88);
 }
 
 .lightbox-controls .lb-separator {
     display: inline-block;
     width: 1px;
     height: 18px;
-    background: #444;
+    background: var(--border-color, #2b3544);
     margin: 0 2px;
 }
 

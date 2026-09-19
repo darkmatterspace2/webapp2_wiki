@@ -1,5 +1,38 @@
-/* DEFAULT THEME - Retro Classic
-   This is the base theme, inherits styles from main style.css
-   Add overrides here if needed in the future */
+/* DEFAULT THEME - Retro Classic (Obsidian Retro Tech)
+   Inherits from base tokens and components.
+   Explicit theme definitions for theme switcher consistency. */
 
-/* Currently empty - uses base dark mode styles from style.css */
+:root {
+    --bg-color: #0e1217;
+    --surface-header: #141a23;
+    --header-bg: #141a23;
+    --sidebar-bg: #121720;
+    --card-bg: #151c27;
+    --card-bg-hover: #1b2330;
+    --surface-toolbar: #131822;
+
+    --input-bg: #0b0f14;
+    --input-text: #e1e7ec;
+
+    --text-color: #e1e7ec;
+    --text-muted: #8a99ad;
+    --text-subtle: #5a687c;
+
+    --link-color: #4da3ff;
+    --link-hover: #79c0ff;
+    --visited-color: #b388ff;
+    --accent-green: #00ff88;
+    --accent-green-glow: rgba(0, 255, 136, 0.4);
+    --accent-amber: #ffb86c;
+    --accent-danger: #ff5566;
+    --accent-blue: #4da3ff;
+
+    --border-color: #2b3544;
+    --border-light: #3e4c60;
+    --border-dark: #10141b;
+
+    --btn-bg: #1a222e;
+    --btn-text: #e1e7ec;
+    --btn-hover: #222d3d;
+    --btn-active: #0b0f14;
+}

@@ -1,42 +1,117 @@
 /* HEADER */
 .header-cell {
-    background-color: var(--header-bg);
-    border-bottom: 2px solid var(--border-color);
-    min-height: 60px;
-    /* Allow growth */
+    background-color: var(--header-bg, #141a23);
+    border-bottom: 2px solid var(--border-color, #2b3544);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04);
+    min-height: 50px;
     height: auto;
-    padding: 10px 20px;
+    padding: 8px 16px;
 }
 
 .header-content {
     display: flex;
-    /* Fallback to flex for aligment if table cell isn't enough */
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    /* Allow wrapping on small screens/zoom */
-    gap: 10px;
+    gap: 8px;
+}
+
+.header-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* LIVE TELEMETRY STATUS PILL */
+.header-status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono, monospace);
+    font-size: 11px;
+    color: var(--accent-green, #00ff88);
+    background: rgba(0, 255, 136, 0.08);
+    border: 1px solid rgba(0, 255, 136, 0.3);
+    padding: 2px 8px;
+    border-radius: 2px;
+}
+
+.status-dot-blink {
+    width: 6px;
+    height: 6px;
+    background: var(--accent-green, #00ff88);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--accent-green, #00ff88);
+    animation: pulse-dot 1.8s infinite;
+}
+
+@keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.3; transform: scale(0.8); }
 }
 
 /* HEADER BUTTONS */
+.header-controls {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
 .btn-header {
-    margin-left: 5px;
-    min-width: 30px;
+    min-width: 28px;
     text-align: center;
+    padding: 3px 7px;
+    font-size: 12px;
+    font-family: var(--font-main, monospace);
+    background: var(--btn-bg, #1a222e);
+    color: var(--text-color, #e1e7ec);
+    border-top: 2px solid var(--border-light, #3e4c60);
+    border-left: 2px solid var(--border-light, #3e4c60);
+    border-right: 2px solid var(--border-dark, #10141b);
+    border-bottom: 2px solid var(--border-dark, #10141b);
+    transition: all 0.12s ease-in-out;
+}
+
+.btn-header:hover {
+    background: var(--btn-hover, #222d3d);
+    border-top-color: #52637c;
+    border-left-color: #52637c;
+    color: #ffffff;
 }
 
 /* Active Toggle State (Sunken/Highlighted) */
 .btn-header.active {
-    border-style: inset;
-    background: #444;
-    /* Darker bg for contrast */
-    color: #fff;
-    box-shadow: inset 1px 1px 2px #000;
+    background: var(--btn-active, #0b0f14);
+    color: var(--accent-green, #00ff88);
+    border: 2px inset var(--accent-green, #00ff88);
+    box-shadow: inset 0 0 6px var(--accent-green-glow, rgba(0, 255, 136, 0.3)), 0 0 8px var(--accent-green-glow, rgba(0, 255, 136, 0.2));
 }
 
 /* Light mode override for active state */
 [data-theme="light"] .btn-header.active {
-    background: #ccc;
-    color: #000;
-    box-shadow: inset 1px 1px 2px #666;
+    background: var(--btn-active, #bec8d4);
+    color: var(--accent-green, #0d8a4e);
+    border-color: var(--accent-green, #0d8a4e);
+    box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* RESPONSIVE TOGGLES FOR SHORT/LONG TEXT */
+@media (max-width: 768px) {
+    .header-text-long {
+        display: none !important;
+    }
+    .header-text-short {
+        display: inline !important;
+    }
+    .header-status-pill {
+        font-size: 10px;
+        padding: 2px 5px;
+    }
+}
+
+@media (min-width: 769px) {
+    .header-text-short {
+        display: none !important;
+    }
 }

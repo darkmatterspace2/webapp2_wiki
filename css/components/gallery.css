@@ -116,33 +116,38 @@
     bottom: 20px;
     right: 20px;
     z-index: 1100;
-    background: rgba(18, 18, 18, 0.88);
+    background: rgba(18, 24, 33, 0.92);
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
     padding: 3px;
     border-radius: 4px;
-    border: 2px outset #666;
+    border: 2px outset var(--border-light, #3e4c60);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
     height: auto;
     width: 34px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    opacity: 0.45;
+    opacity: 0.85;
     transition: opacity 0.3s ease-in-out, transform 0.2s ease-in-out;
     user-select: none;
 }
 
+.gallery-float-controls.dock-idle {
+    opacity: 0.25;
+}
+
 .gallery-float-controls:hover,
+.gallery-float-controls:active,
 .gallery-float-controls:focus-within {
-    opacity: 1.0;
+    opacity: 1.0 !important;
 }
 
 /* Minimize/Expand Toggle Handle */
 .gallery-float-controls .btn-float-handle {
-    background: #111;
-    color: #ffcc00;
-    border: 1px outset #555;
+    background: var(--btn-active, #0b0f14);
+    color: var(--accent-amber, #ffb86c);
+    border: 1px outset var(--border-color, #2b3544);
     cursor: pointer;
     font-size: 13px;
     font-weight: bold;
@@ -156,14 +161,14 @@
 }
 
 .gallery-float-controls .btn-float-handle:hover {
-    background: #222;
+    background: var(--btn-hover, #222d3d);
     color: #fff;
-    border-color: #888;
+    border-color: var(--border-light, #3e4c60);
 }
 
 .gallery-float-controls .btn-float-handle:active {
     background: #000;
-    border: 1px inset #888;
+    border: 1px inset var(--border-color, #2b3544);
 }
 
 /* Float Dock Content Wrapper */
@@ -176,9 +181,9 @@
 
 /* Action Buttons */
 .gallery-float-controls button.btn-float-action {
-    background: #2a2a2a;
-    color: #eee;
-    border: 1px outset #555;
+    background: var(--btn-bg, #1a222e);
+    color: var(--text-color, #e1e7ec);
+    border: 1px outset var(--border-light, #3e4c60);
     cursor: pointer;
     font-size: 13px;
     font-weight: bold;
@@ -197,29 +202,29 @@
 }
 
 .gallery-float-controls button.btn-float-action:hover {
-    background: #3a3a3a;
+    background: var(--btn-hover, #222d3d);
     color: #fff;
-    border: 1px outset #888;
+    border: 1px outset var(--border-light, #52637c);
 }
 
 .gallery-float-controls button.btn-float-action:active {
-    background: #111;
-    border: 1px inset #fff;
+    background: var(--btn-active, #0b0f14);
+    border: 1px inset var(--border-light, #3e4c60);
 }
 
 /* Active State (Zen Mode, Light Mode, etc.) */
 .gallery-float-controls button.btn-float-action.active {
-    background: #000;
-    color: #00ff66;
-    border: 1px inset #00ff66;
-    text-shadow: 0 0 4px rgba(0, 255, 102, 0.6);
+    background: var(--btn-active, #0b0f14);
+    color: var(--accent-green, #00ff88);
+    border: 1px inset var(--accent-green, #00ff88);
+    text-shadow: 0 0 4px var(--accent-green-glow, rgba(0, 255, 136, 0.6));
 }
 
 /* Dividers */
 .gallery-float-controls .float-divider {
     width: 80%;
     height: 1px;
-    background: #444;
+    background: var(--border-color, #2b3544);
     margin: 3px 0;
 }
 
@@ -232,7 +237,7 @@
 }
 
 .gallery-float-controls .float-gallery-cols {
-    color: #00ff66;
+    color: var(--accent-green, #00ff88);
     font-size: 10px;
     font-weight: bold;
     font-family: var(--font-main, monospace);
@@ -241,7 +246,7 @@
     text-align: center;
     padding: 1px 0;
     user-select: none;
-    text-shadow: 0 0 3px rgba(0, 255, 102, 0.5);
+    text-shadow: 0 0 3px var(--accent-green-glow, rgba(0, 255, 136, 0.5));
     width: 100%;
 }
 
@@ -271,9 +276,9 @@
     bottom: 20px;
     right: 62px;
     z-index: 1099;
-    background: rgba(18, 18, 18, 0.88);
-    color: #fff;
-    border: 2px outset #666;
+    background: rgba(18, 24, 33, 0.92);
+    color: var(--text-color, #e1e7ec);
+    border: 2px outset var(--border-light, #3e4c60);
     border-radius: 4px;
     padding: 6px 0;
     cursor: pointer;
@@ -288,14 +293,14 @@
 
 #back-to-top:hover {
     opacity: 1.0;
-    background: rgba(40, 40, 40, 0.95);
-    border-color: #888;
+    background: rgba(27, 35, 48, 0.95);
+    border-color: var(--border-light, #52637c);
 }
 
 /* RESPONSIVE / MOBILE ADJUSTMENTS */
 @media screen and (max-width: 768px) {
     .gallery-float-controls {
-        bottom: 12px;
+        bottom: calc(10px + env(safe-area-inset-bottom, 0px));
         right: 10px;
         width: 38px;
         padding: 3px;

@@ -26,11 +26,11 @@
         <!-- Terminal Stats & Status Bar -->
         <div class="index-stats-bar">
             <div>
-                <span style="color: #888;">[SYS_V2.5]</span>
-                STATUS: <span style="color: #00ff66; font-weight: bold;">ONLINE</span> &nbsp;|&nbsp;
-                ARTICLES: <b id="stat-articles" style="color: #00ff66;">--</b> &nbsp;|&nbsp;
-                VIEWS: <b id="stat-views" style="color: #00ff66;">--</b> &nbsp;|&nbsp;
-                CATEGORIES: <b id="stat-cats" style="color: #00ff66;">--</b>
+                <span style="color: var(--text-muted);">[SYS_V2.5]</span>
+                STATUS: <span class="stat-badge">ONLINE</span> &nbsp;|&nbsp;
+                ARTICLES: <b id="stat-articles" class="stat-badge">--</b> &nbsp;|&nbsp;
+                VIEWS: <b id="stat-views" class="stat-badge">--</b> &nbsp;|&nbsp;
+                CATEGORIES: <b id="stat-cats" class="stat-badge">--</b>
             </div>
             <div>
                 <button class="btn-random-article" id="btn-random" onclick="goToRandomArticle()" title="Jump to a random article (Hotkey: R)">🎲 Random Article [R]</button>

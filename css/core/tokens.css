@@ -1,43 +1,88 @@
 /* CSS TOKENS (Variables) */
 :root {
-    --bg-color: #000000;
-    --text-color: #cccccc;
-    --link-color: #0000FF;
-    /* Classic blue, will be overridden for dark mode readability usually, but keeping retro */
-    --visited-color: #800080;
-    --header-bg: #808080;
-    --sidebar-bg: #202020;
-    --border-color: #404040;
-    --input-bg: #333;
-    --input-text: #fff;
+    /* Base Surfaces */
+    --bg-color: #0e1217;
+    --surface-header: #141a23;
+    --header-bg: #141a23;
+    --sidebar-bg: #121720;
+    --card-bg: #151c27;
+    --card-bg-hover: #1b2330;
+    --surface-toolbar: #131822;
+
+    /* Inputs & Form Controls */
+    --input-bg: #0b0f14;
+    --input-text: #e1e7ec;
+
+    /* Typography & Hierarchy */
+    --text-color: #e1e7ec;
+    --text-muted: #8a99ad;
+    --text-subtle: #5a687c;
     --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     --font-mono: "Courier New", Courier, monospace;
 
+    /* Links & Accents */
+    --link-color: #4da3ff;
+    --link-hover: #79c0ff;
+    --visited-color: #b388ff;
+    --accent-green: #00ff88;
+    --accent-green-glow: rgba(0, 255, 136, 0.4);
+    --accent-amber: #ffb86c;
+    --accent-danger: #ff5566;
+    --accent-blue: #4da3ff;
+
+    /* 3D Borders & Bevels */
+    --border-color: #2b3544;
+    --border-light: #3e4c60;
+    --border-dark: #10141b;
+
+    /* Tactile Retro Buttons */
+    --btn-bg: #1a222e;
+    --btn-text: #e1e7ec;
+    --btn-hover: #222d3d;
+    --btn-active: #0b0f14;
+
     /* Sizing & Spacing */
     --space-xs: 2px;
-    /* Was 4px */
     --space-sm: 4px;
-    /* Was 8px */
     --space-md: 8px;
-    /* Was 16px */
     --space-lg: 16px;
-    /* Was 24px */
     --font-size-base: 13px;
-    /* Was 16px - Compact default */
     --touch-target-min: 30px;
-    /* Was 44px - Smaller default */
 }
 
 [data-theme="light"] {
-    --bg-color: #ffffff;
-    --text-color: #000000;
-    --link-color: #0000FF;
-    --visited-color: #800080;
-    --header-bg: #e0e0e0;
-    --sidebar-bg: #f0f0f0;
-    --border-color: #808080;
-    --input-bg: #fff;
-    --input-text: #000;
+    --bg-color: #f4f6f9;
+    --surface-header: #e4e7eb;
+    --header-bg: #e4e7eb;
+    --sidebar-bg: #eceff3;
+    --card-bg: #ffffff;
+    --card-bg-hover: #f0f4f8;
+    --surface-toolbar: #e8ecf0;
+
+    --input-bg: #ffffff;
+    --input-text: #1a202c;
+
+    --text-color: #1a202c;
+    --text-muted: #596579;
+    --text-subtle: #8795a8;
+
+    --link-color: #0056b3;
+    --link-hover: #003d80;
+    --visited-color: #6f42c1;
+    --accent-green: #0d8a4e;
+    --accent-green-glow: rgba(13, 138, 78, 0.3);
+    --accent-amber: #b86200;
+    --accent-danger: #d93025;
+    --accent-blue: #0056b3;
+
+    --border-color: #c0c8d4;
+    --border-light: #ffffff;
+    --border-dark: #9da8b7;
+
+    --btn-bg: #e2e7ee;
+    --btn-text: #1a202c;
+    --btn-hover: #d2d9e3;
+    --btn-active: #bec8d4;
 }
 
 /* HIGH CONTRAST DARK MODE ADJUSTMENTS FOR READABILITY */

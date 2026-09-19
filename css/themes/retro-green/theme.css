@@ -1,144 +1,657 @@
-/* CYBERPUNK TERMINAL THEME
-   Green-on-black terminal aesthetic with scanlines and glow effects
-   This file contains ONLY overrides - base styles come from style.css */
+/* ==========================================================================
+   CYBERPUNK MATRIX TERMINAL 2077 (theme.css)
+   A state-of-the-art Cyberdeck HUD & Matrix Netrunner theme.
+   Bio-luminescent phosphor green, glassmorphic cyber shards, CRT grid overlays,
+   tactile holo-buttons, and high-contrast digital telemetry.
+   ========================================================================== */
 
-/* OVERRIDE CSS VARIABLES */
+/* --------------------------------------------------------------------------
+   1. CYBERPUNK PALETTE TOKENS & SYSTEM VARIABLES
+   -------------------------------------------------------------------------- */
 :root {
-    --bg-color: #050505;
-    --text-color: #00ff41;
-    --link-color: #008F11;
-    --visited-color: #003b00;
-    --header-bg: #000000;
-    --sidebar-bg: #0a0a0a;
-    --border-color: #00ff41;
-    --input-bg: #000;
-    --input-text: #00ff41;
-    --font-main: "Courier New", Courier, monospace;
-    --font-mono: "Courier New", Courier, monospace;
+    /* Base Matrix Surfaces */
+    --bg-color: #030806;
+    --surface-header: rgba(4, 16, 11, 0.94);
+    --header-bg: rgba(4, 16, 11, 0.94);
+    --sidebar-bg: rgba(3, 12, 8, 0.96);
+    --card-bg: rgba(6, 22, 15, 0.85);
+    --card-bg-hover: rgba(10, 36, 24, 0.95);
+    --surface-toolbar: rgba(4, 14, 10, 0.92);
+
+    /* Tactical Inputs & Recessed Surfaces */
+    --input-bg: #020905;
+    --input-text: #00ff88;
+
+    /* Matrix Typography & Hierarchy */
+    --text-color: #00ff88;
+    --text-bright: #e8fff4;
+    --text-muted: #33a866;
+    --text-subtle: #195e37;
+    --font-main: 'JetBrains Mono', 'Share Tech Mono', 'Fira Code', 'Courier New', monospace;
+    --font-mono: 'JetBrains Mono', 'Share Tech Mono', 'Fira Code', 'Courier New', monospace;
+
+    /* Cyber Accents & Neon Phosphor */
+    --link-color: #00ff88;
+    --link-hover: #e8fff4;
+    --visited-color: #00cc6a;
+    --accent-green: #00ff88;
+    --accent-green-bright: #39ff9f;
+    --accent-green-glow: rgba(0, 255, 136, 0.6);
+    --accent-cyan: #00f0ff;
+    --accent-amber: #ffb833;
+    --accent-danger: #ff3366;
+    --accent-danger-glow: rgba(255, 51, 102, 0.5);
+
+    /* Cyberpunk Laser Borders & Bevels */
+    --border-color: #00ff88;
+    --border-dim: rgba(0, 255, 136, 0.28);
+    --border-light: rgba(0, 255, 136, 0.65);
+    --border-dark: #020e07;
+
+    /* Tactical Holo Buttons */
+    --btn-bg: rgba(4, 24, 16, 0.85);
+    --btn-text: #00ff88;
+    --btn-hover: #00ff88;
+    --btn-active: #01140a;
 }
 
-/* UNIQUE EFFECTS */
+/* --------------------------------------------------------------------------
+   2. MATRIX SCANLINE & DIGITAL GRID ATMOSPHERE
+   -------------------------------------------------------------------------- */
 body {
-    /* Scanline Effect */
-    background-image: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06)) !important;
-    background-size: 100% 2px, 3px 100% !important;
-    text-shadow: 0 0 5px rgba(0, 255, 65, 0.5) !important;
+    background-color: var(--bg-color) !important;
+    background-image: 
+        radial-gradient(ellipse at 50% 0%, rgba(0, 255, 136, 0.12) 0%, transparent 75%),
+        linear-gradient(rgba(0, 255, 136, 0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 136, 0.035) 1px, transparent 1px),
+        linear-gradient(rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.32) 50%) !important;
+    background-size: 100% 100%, 28px 28px, 28px 28px, 100% 3px !important;
+    background-attachment: fixed !important;
+    color: var(--text-color) !important;
+    font-family: var(--font-main) !important;
+    letter-spacing: 0.2px;
+    text-shadow: 0 0 2px rgba(0, 255, 136, 0.5), 0 0 10px rgba(0, 255, 136, 0.15);
 }
 
-/* LINKS - Cyberpunk style */
+/* Cyber Selection Glow */
+::selection {
+    background: #00ff88 !important;
+    color: #020a06 !important;
+    text-shadow: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   3. HYPERLINKS & TYPOGRAPHIC HEADINGS
+   -------------------------------------------------------------------------- */
 a {
-    color: #00ff41 !important;
+    color: var(--link-color) !important;
     text-decoration: none !important;
-    border-bottom: 1px dashed #00ff41 !important;
-}
-
-a:visited {
-    color: #008F11 !important;
+    border-bottom: 1px dashed rgba(0, 255, 136, 0.45) !important;
+    transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    position: relative;
 }
 
 a:hover {
-    background-color: #00ff41 !important;
-    color: #000 !important;
+    color: #ffffff !important;
+    background-color: rgba(0, 255, 136, 0.18) !important;
+    border-bottom-color: var(--accent-green) !important;
+    text-shadow: 0 0 8px var(--accent-green), 0 0 16px rgba(0, 255, 136, 0.8) !important;
+    box-shadow: 0 0 12px rgba(0, 255, 136, 0.25);
 }
 
-/* HEADINGS - Cyberpunk style */
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+a:visited {
+    color: var(--visited-color) !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--text-bright) !important;
     text-transform: uppercase !important;
-    letter-spacing: 2px !important;
+    letter-spacing: 1.5px !important;
+    border-bottom: 1px solid var(--border-dim) !important;
+    position: relative;
+    padding-bottom: 4px;
+    text-shadow: 0 0 4px rgba(0, 255, 136, 0.6), 0 0 12px rgba(0, 255, 136, 0.3) !important;
 }
 
-/* BUTTONS - Glow effect */
-button {
-    background: #000 !important;
-    color: var(--text-color) !important;
-    border: 1px solid var(--border-color) !important;
+h1::before, h2::before {
+    content: ">> ";
+    color: var(--accent-cyan);
+    font-size: 0.85em;
+    opacity: 0.8;
+}
+
+/* --------------------------------------------------------------------------
+   4. TACTICAL CYBERNETIC BUTTONS
+   -------------------------------------------------------------------------- */
+button,
+.btn-header,
+.btn-random-article,
+.index-tab-btn,
+.view-mode-btn,
+.archive-month-btn {
+    background: var(--btn-bg) !important;
+    color: var(--btn-text) !important;
+    border: 1px solid var(--border-dim) !important;
+    border-left: 2px solid var(--accent-green) !important;
+    font-family: var(--font-main) !important;
+    font-size: 11px !important;
+    font-weight: bold !important;
     text-transform: uppercase !important;
-    box-shadow: 0 0 5px rgba(0, 255, 65, 0.5) !important;
-    transition: all 0.2s !important;
+    letter-spacing: 0.8px !important;
+    padding: 4px 10px !important;
+    cursor: pointer !important;
+    position: relative;
+    box-shadow: 0 0 8px rgba(0, 255, 136, 0.12), inset 0 0 8px rgba(0, 255, 136, 0.08) !important;
+    transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    user-select: none;
 }
 
-button:hover {
-    background: var(--text-color) !important;
+button:hover,
+.btn-header:hover,
+.btn-random-article:hover,
+.index-tab-btn:hover,
+.view-mode-btn:hover,
+.archive-month-btn:hover {
+    background: var(--accent-green) !important;
+    color: #020a06 !important;
+    border-color: var(--accent-green) !important;
+    border-left-color: #ffffff !important;
+    box-shadow: 0 0 15px rgba(0, 255, 136, 0.7), inset 0 0 10px rgba(255, 255, 255, 0.5) !important;
+    text-shadow: none !important;
+    transform: translateY(-1px);
+}
+
+button:active,
+.btn-header:active,
+.btn-random-article:active,
+.view-mode-btn:active {
+    background: var(--btn-active) !important;
+    color: var(--accent-green) !important;
+    transform: translateY(1px);
+    box-shadow: inset 0 0 12px rgba(0, 255, 136, 0.4) !important;
+}
+
+/* Active State for Tabs / Buttons */
+.btn-header.active,
+.index-tab-btn.active,
+.view-mode-btn.active,
+.archive-month-btn.active {
+    background: rgba(0, 255, 136, 0.18) !important;
+    color: #ffffff !important;
+    border-color: var(--accent-green) !important;
+    border-left: 3px solid var(--accent-cyan) !important;
+    box-shadow: 0 0 12px rgba(0, 255, 136, 0.45), inset 0 0 10px rgba(0, 255, 136, 0.25) !important;
+    text-shadow: 0 0 6px var(--accent-green) !important;
+}
+
+/* Danger / Delete Button */
+.btn-delete,
+.btn-header.btn-delete,
+.filter-pill-remove {
+    color: var(--accent-danger) !important;
+    border-left-color: var(--accent-danger) !important;
+}
+
+.btn-delete:hover,
+.filter-pill-remove:hover {
+    background: var(--accent-danger) !important;
     color: #000 !important;
+    box-shadow: 0 0 15px var(--accent-danger-glow) !important;
 }
 
-button:active {
-    transform: translateY(2px) !important;
-}
-
-/* INPUTS - Glow effect */
+/* --------------------------------------------------------------------------
+   5. COMMAND CONSOLE FORMS, INPUTS & TEXTAREA
+   -------------------------------------------------------------------------- */
 input,
 textarea,
-select {
-    box-shadow: 0 0 5px rgba(0, 255, 65, 0.5) !important;
+select,
+.sidebar-filter-input,
+.editor-input,
+.editor-select,
+.toolbar-select {
+    background: var(--input-bg) !important;
+    color: var(--input-text) !important;
+    border: 1px solid var(--border-dim) !important;
+    border-left: 2px solid var(--accent-green) !important;
+    font-family: var(--font-mono) !important;
+    font-size: 12px !important;
+    padding: 5px 8px !important;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.8), 0 0 6px rgba(0, 255, 136, 0.1) !important;
+    transition: all 0.2s ease-in-out !important;
+    caret-color: var(--accent-green) !important;
 }
 
 input:focus,
-textarea:focus {
+textarea:focus,
+select:focus,
+.sidebar-filter-input:focus,
+.editor-input:focus,
+.editor-select:focus,
+.toolbar-select:focus {
     outline: none !important;
-    background-color: #111 !important;
+    border-color: var(--accent-green) !important;
+    border-left: 3px solid var(--accent-cyan) !important;
+    background: #031008 !important;
+    box-shadow: 0 0 14px var(--accent-green-glow), inset 0 0 10px rgba(0, 255, 136, 0.2) !important;
 }
 
-/* VISITOR COUNTER - Glow */
-.visitor-counter {
-    box-shadow: 0 0 5px rgba(0, 255, 65, 0.5) !important;
+select option {
+    background-color: #04140b !important;
+    color: var(--accent-green) !important;
 }
 
-/* LOADING */
-#loading-indicator {
-    color: #000 !important;
-    background: var(--text-color) !important;
+/* Checkbox & Radios */
+input[type="checkbox"],
+input[type="radio"] {
+    accent-color: var(--accent-green) !important;
+    cursor: pointer;
 }
 
-/* ARTICLE CARDS */
+/* --------------------------------------------------------------------------
+   6. HEADER CYBERDECK HUD
+   -------------------------------------------------------------------------- */
+.header-cell {
+    background: var(--surface-header) !important;
+    backdrop-filter: blur(10px) saturate(180%) !important;
+    border-bottom: 2px solid var(--border-color) !important;
+    box-shadow: 0 4px 20px rgba(0, 255, 136, 0.18), inset 0 -1px 0 rgba(0, 255, 136, 0.4) !important;
+    padding: 8px 16px !important;
+}
+
+/* Telemetry Status Pill */
+.header-status-pill {
+    background: rgba(0, 255, 136, 0.08) !important;
+    border: 1px solid rgba(0, 255, 136, 0.4) !important;
+    color: var(--accent-green-bright) !important;
+    font-family: var(--font-mono) !important;
+    text-shadow: 0 0 6px var(--accent-green) !important;
+    box-shadow: 0 0 10px rgba(0, 255, 136, 0.25) !important;
+}
+
+.status-dot-blink {
+    background: var(--accent-green) !important;
+    box-shadow: 0 0 10px var(--accent-green), 0 0 20px var(--accent-green) !important;
+}
+
+/* --------------------------------------------------------------------------
+   7. SIDEBAR & ACCORDION DIRECTORIES
+   -------------------------------------------------------------------------- */
+.sidebar-cell {
+    background: var(--sidebar-bg) !important;
+    backdrop-filter: blur(8px) !important;
+    border-right: 2px solid var(--border-color) !important;
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.8), inset -1px 0 0 rgba(0, 255, 136, 0.3) !important;
+}
+
+.sidebar-cell ul li a {
+    color: var(--text-color) !important;
+    border-bottom: none !important;
+    padding: 3px 6px !important;
+    border-left: 2px solid transparent !important;
+}
+
+.sidebar-cell ul li a:hover {
+    background: rgba(0, 255, 136, 0.12) !important;
+    border-left: 2px solid var(--accent-green) !important;
+    color: #ffffff !important;
+    text-shadow: 0 0 8px var(--accent-green) !important;
+}
+
+/* Active Category item */
+.sidebar-cell ul li a.active-category {
+    background: rgba(0, 255, 136, 0.2) !important;
+    color: #ffffff !important;
+    border-left: 3px solid var(--accent-cyan) !important;
+    box-shadow: 0 0 12px rgba(0, 255, 136, 0.3), inset 0 0 8px rgba(0, 255, 136, 0.2) !important;
+    text-shadow: 0 0 6px var(--accent-green) !important;
+    font-weight: bold !important;
+}
+
+.category-count-badge {
+    color: var(--accent-cyan) !important;
+    font-family: var(--font-mono) !important;
+    font-size: 10px !important;
+    opacity: 0.85;
+}
+
+/* Accordions */
+.sidebar-accordion {
+    border: 1px solid var(--border-dim) !important;
+    background: rgba(2, 10, 6, 0.6) !important;
+    margin-bottom: 10px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5) !important;
+}
+
+.sidebar-accordion summary {
+    background: rgba(6, 26, 17, 0.9) !important;
+    color: var(--text-bright) !important;
+    border-bottom: 1px solid var(--border-dim) !important;
+    font-family: var(--font-mono) !important;
+    letter-spacing: 0.5px !important;
+    text-transform: uppercase !important;
+    font-size: 11px !important;
+}
+
+.sidebar-accordion summary:hover {
+    background: rgba(0, 255, 136, 0.2) !important;
+    color: #ffffff !important;
+    box-shadow: inset 0 0 10px rgba(0, 255, 136, 0.3) !important;
+}
+
+.jump-links,
+.search-help-content {
+    background: rgba(4, 18, 12, 0.85) !important;
+    border: 1px solid var(--border-dim) !important;
+    box-shadow: 0 0 10px rgba(0, 255, 136, 0.1) !important;
+}
+
+/* --------------------------------------------------------------------------
+   8. ARTICLE CARDS (CYBER DATA SHARDS)
+   -------------------------------------------------------------------------- */
+.content-cell {
+    background: transparent !important;
+}
+
 .article-card {
-    border-color: var(--border-color) !important;
-    border-left-color: #00cc00 !important;
+    background: linear-gradient(135deg, rgba(6, 24, 16, 0.88) 0%, rgba(2, 14, 9, 0.95) 100%) !important;
+    backdrop-filter: blur(8px) !important;
+    border: 1px solid var(--border-dim) !important;
+    border-left: 4px solid var(--accent-green) !important;
+    padding: 14px !important;
+    margin-bottom: 12px !important;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.85), inset 0 0 15px rgba(0, 255, 136, 0.05) !important;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    position: relative;
+}
+
+.article-card::after {
+    content: "[DATA_SHARD]";
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    font-size: 8px;
+    font-family: var(--font-mono);
+    color: var(--accent-cyan);
+    letter-spacing: 1px;
+    opacity: 0.55;
+}
+
+.article-card:hover {
+    background: linear-gradient(135deg, rgba(8, 34, 23, 0.94) 0%, rgba(3, 18, 12, 0.98) 100%) !important;
+    border-color: var(--accent-green) !important;
+    border-left: 4px solid var(--accent-cyan) !important;
+    box-shadow: 0 0 25px rgba(0, 255, 136, 0.35), inset 0 0 20px rgba(0, 255, 136, 0.12) !important;
+    transform: translateX(4px);
 }
 
 .article-card-title {
-    color: var(--text-color) !important;
+    color: var(--text-bright) !important;
+    font-size: 1.25em !important;
+    font-weight: bold !important;
+    letter-spacing: 0.5px !important;
+    text-shadow: 0 0 6px rgba(0, 255, 136, 0.5) !important;
+}
+
+.article-card-title:hover {
+    color: var(--accent-cyan) !important;
+    text-shadow: 0 0 12px var(--accent-cyan), 0 0 20px rgba(0, 240, 255, 0.6) !important;
 }
 
 .article-card-stats {
-    color: #009900 !important;
+    color: var(--text-muted) !important;
+    font-family: var(--font-mono) !important;
+    font-size: 11px !important;
 }
 
-/* SEARCH HELP */
-.search-help-content {
-    background: #001100 !important;
-    border-color: var(--border-color) !important;
+/* --------------------------------------------------------------------------
+   9. TERMINAL DASHBOARD, STATS BAR & TOOLBARS
+   -------------------------------------------------------------------------- */
+.index-stats-bar {
+    background: rgba(4, 18, 12, 0.92) !important;
+    backdrop-filter: blur(8px) !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: 0 0 15px rgba(0, 255, 136, 0.2), inset 0 0 12px rgba(0, 255, 136, 0.08) !important;
+    color: var(--text-muted) !important;
+    font-family: var(--font-mono) !important;
 }
 
-/* ARTICLE HEADER & ACTIONS */
-.article-actions button {
-    background: #002200 !important;
-    color: var(--text-color) !important;
-    border-color: var(--border-color) !important;
+.index-stats-bar .stat-badge {
+    color: var(--accent-green-bright) !important;
+    font-weight: bold !important;
+    text-shadow: 0 0 6px var(--accent-green) !important;
 }
 
-.btn-delete {
-    color: #ff3333 !important;
-}
-
-/* TAG LINKS - Booru style */
+/* Popular Tag Chips */
+.tag-chip,
 .tag-link {
-    display: inline-block !important;
-    border: 1px solid #00ff41 !important;
-    padding: 2px 6px !important;
-    margin: 2px !important;
-    background: #002200 !important;
-    color: #00ff41 !important;
-    text-decoration: none !important;
+    background: rgba(0, 255, 136, 0.08) !important;
+    color: var(--accent-green) !important;
+    border: 1px solid var(--border-dim) !important;
+    font-family: var(--font-mono) !important;
+    font-size: 10px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    padding: 2px 8px !important;
+    border-radius: 1px !important;
+    box-shadow: 0 0 6px rgba(0, 255, 136, 0.1) !important;
 }
 
+.tag-chip:hover,
 .tag-link:hover {
-    background: #00ff41 !important;
-    color: #000 !important;
-    border-color: #00ff41 !important;
+    background: var(--accent-green) !important;
+    color: #020a06 !important;
+    border-color: var(--accent-green) !important;
+    box-shadow: 0 0 12px rgba(0, 255, 136, 0.6) !important;
+    font-weight: bold !important;
+}
+
+/* Primary Navigation Tabs */
+.index-tabs {
+    border-bottom: 2px solid var(--border-color) !important;
+}
+
+/* Secondary Controls Toolbar */
+.index-toolbar {
+    background: var(--surface-toolbar) !important;
+    border: 1px solid var(--border-dim) !important;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.6) !important;
+}
+
+/* Active Filter Breadcrumbs */
+.active-filters-bar {
+    background: rgba(0, 255, 136, 0.08) !important;
+    border-left: 3px solid var(--accent-cyan) !important;
+    box-shadow: 0 0 10px rgba(0, 255, 136, 0.15) !important;
+}
+
+.filter-pill {
+    background: rgba(4, 20, 14, 0.9) !important;
+    border: 1px solid var(--border-dim) !important;
+    color: var(--text-bright) !important;
+}
+
+/* Compact View Mode */
+.article-compact-item {
+    background: rgba(4, 18, 12, 0.75) !important;
+    border: 1px solid var(--border-dim) !important;
+    border-left: 3px solid var(--accent-green) !important;
+    transition: all 0.15s ease-in-out !important;
+}
+
+.article-compact-item:hover {
+    background: rgba(8, 32, 22, 0.9) !important;
+    border-color: var(--accent-green) !important;
+    box-shadow: 0 0 14px rgba(0, 255, 136, 0.25) !important;
+    transform: translateX(2px);
+}
+
+.article-compact-title {
+    color: var(--text-bright) !important;
+}
+
+/* Brutalist Matrix Table View Mode */
+.article-table {
+    border: 1px solid var(--border-color) !important;
+    box-shadow: 0 0 15px rgba(0, 255, 136, 0.15) !important;
+}
+
+.article-table th {
+    background: rgba(6, 28, 18, 0.95) !important;
+    color: var(--accent-cyan) !important;
+    border: 1px solid var(--border-dim) !important;
+    font-family: var(--font-mono) !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+}
+
+.article-table td {
+    border: 1px solid rgba(0, 255, 136, 0.12) !important;
+    background: rgba(3, 14, 9, 0.6) !important;
+}
+
+.article-table tr:hover td {
+    background: rgba(0, 255, 136, 0.12) !important;
+}
+
+.article-table-title {
+    color: var(--text-bright) !important;
+}
+
+/* --------------------------------------------------------------------------
+   10. ADMIN EDITOR & AUTHORING HUD
+   -------------------------------------------------------------------------- */
+.editor-draft-banner {
+    background: rgba(255, 184, 51, 0.12) !important;
+    border: 1px solid var(--accent-amber) !important;
+    color: var(--accent-amber) !important;
+    box-shadow: 0 0 12px rgba(255, 184, 51, 0.3) !important;
+    font-family: var(--font-mono) !important;
+}
+
+.editor-tag-pill {
+    background: rgba(0, 255, 136, 0.15) !important;
+    border: 1px solid var(--accent-green) !important;
+    color: var(--accent-green) !important;
+    box-shadow: 0 0 8px rgba(0, 255, 136, 0.2) !important;
+}
+
+.editor-quick-tag {
+    background: rgba(0, 240, 255, 0.1) !important;
+    border: 1px solid rgba(0, 240, 255, 0.4) !important;
+    color: var(--accent-cyan) !important;
+}
+
+.editor-quick-tag:hover {
+    background: var(--accent-cyan) !important;
+    color: #020a06 !important;
+    box-shadow: 0 0 12px rgba(0, 240, 255, 0.6) !important;
+}
+
+.editor-metrics-hud {
+    background: var(--surface-toolbar) !important;
+    border-top: 1px solid var(--border-color) !important;
+    color: var(--text-muted) !important;
+    font-family: var(--font-mono) !important;
+}
+
+.editor-action-footer {
+    background: var(--surface-header) !important;
+    border: 2px solid var(--border-color) !important;
+    box-shadow: 0 0 15px rgba(0, 255, 136, 0.15) !important;
+}
+
+/* --------------------------------------------------------------------------
+   11. VISITOR COUNTER (RADIOACTIVE FLUX METER)
+   -------------------------------------------------------------------------- */
+.visitor-counter {
+    background: #010804 !important;
+    color: #00ff88 !important;
+    border: 1px solid #00ff88 !important;
+    box-shadow: 0 0 15px rgba(0, 255, 136, 0.5), inset 0 0 8px rgba(0, 255, 136, 0.3) !important;
+    text-shadow: 0 0 8px #00ff88, 0 0 14px rgba(0, 255, 136, 0.8) !important;
+    font-family: var(--font-mono) !important;
+    letter-spacing: 3px !important;
+}
+
+/* --------------------------------------------------------------------------
+   12. AUXILIARY HUD (GALLERY DOCK, LIGHTBOX, MODALS & PROGRESS)
+   -------------------------------------------------------------------------- */
+/* Neon Reading Progress Bar */
+#reading-progress-bar {
+    background: var(--accent-green) !important;
+    box-shadow: 0 0 10px var(--accent-green), 0 0 20px var(--accent-cyan) !important;
+}
+
+/* Exit Zen Button */
+#btn-exit-zen {
+    background: #020e07 !important;
+    color: var(--accent-green) !important;
+    border: 1px solid var(--accent-green) !important;
+    box-shadow: 0 0 15px var(--accent-green-glow) !important;
+}
+
+/* Quick Search Overlay */
+.retro-quick-search-box {
+    background: rgba(3, 14, 9, 0.96) !important;
+    border: 2px solid var(--border-color) !important;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.95), 0 0 20px var(--accent-green-glow) !important;
+}
+
+.retro-quick-search-header {
+    background: rgba(6, 26, 17, 0.95) !important;
+    border-bottom: 2px solid var(--border-color) !important;
+    color: var(--accent-cyan) !important;
+}
+
+/* Floating Controls Dock */
+.gallery-float-controls {
+    background: rgba(4, 18, 12, 0.92) !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: 0 0 20px rgba(0, 255, 136, 0.3) !important;
+}
+
+.gallery-float-controls .btn-float-handle {
+    background: #020a06 !important;
+    color: var(--accent-cyan) !important;
+    border: 1px solid var(--border-dim) !important;
+}
+
+.gallery-float-controls button.btn-float-action.active {
+    background: rgba(0, 255, 136, 0.2) !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 10px var(--accent-green) !important;
+}
+
+/* Lightbox Modal */
+.lightbox-counter {
+    background: rgba(2, 10, 6, 0.9) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--accent-green) !important;
+    box-shadow: 0 0 10px rgba(0, 255, 136, 0.3) !important;
+}
+
+.lightbox-controls {
+    background: rgba(4, 18, 12, 0.95) !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: 0 0 25px rgba(0, 255, 136, 0.25) !important;
+}
+
+/* --------------------------------------------------------------------------
+   13. FOOTER TELEMETRY & COPYRIGHT
+   -------------------------------------------------------------------------- */
+.footer-cell {
+    background: var(--sidebar-bg) !important;
+    border-top: 2px solid var(--border-color) !important;
+    box-shadow: 0 -4px 20px rgba(0, 255, 136, 0.15) !important;
+    color: var(--text-muted) !important;
+}
+
+.footer-telemetry {
+    color: var(--text-muted) !important;
+    font-family: var(--font-mono) !important;
+    letter-spacing: 1px !important;
+}
+
+.footer-links a {
+    color: var(--accent-green) !important;
 }

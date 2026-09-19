@@ -1,21 +1,108 @@
 /* FOOTER */
 .footer-cell {
-    height: 40px;
-    background-color: var(--sidebar-bg);
-    border-top: 2px solid var(--border-color);
+    background-color: var(--sidebar-bg, #121720);
+    border-top: 2px solid var(--border-color, #2b3544);
+    box-shadow: 0 -1px 0 rgba(255, 255, 255, 0.03);
     text-align: center;
-    font-size: 12px;
+    font-size: 11px;
     font-family: var(--font-main);
+    color: var(--text-muted, #8a99ad);
+    padding: 15px 10px;
 }
 
 /* VISITOR COUNTER */
 .visitor-counter {
-    border: 1px solid red;
-    background: black;
-    color: red;
-    padding: 2px 5px;
-    font-family: "Courier New", monospace;
+    border: 1px solid #ff3344;
+    background: #080303;
+    color: #ff3344;
+    padding: 2px 6px;
+    font-family: var(--font-mono, "Courier New", monospace);
     font-weight: bold;
     letter-spacing: 2px;
     display: inline-block;
+    box-shadow: 0 0 8px rgba(255, 51, 68, 0.4);
+    text-shadow: 0 0 4px #ff3344;
+    margin: 4px 0;
+}
+
+/* 88x31 RETRO PIXEL BADGES */
+.retro-badges-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 12px 0;
+}
+
+.retro-badge-88x31 {
+    width: 88px;
+    height: 31px;
+    border: 1px outset #888;
+    background: #000;
+    font-family: "Courier New", monospace;
+    font-size: 8px;
+    font-weight: bold;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    line-height: 1.1;
+    color: #fff;
+    cursor: default;
+    user-select: none;
+    text-transform: uppercase;
+    box-shadow: 1px 1px 0 #000;
+}
+
+.retro-badge-netscape {
+    background: linear-gradient(135deg, #004080, #001a33);
+    color: #00ffcc;
+    border-color: #0088cc;
+}
+
+.retro-badge-html {
+    background: linear-gradient(135deg, #cc4400, #662200);
+    color: #ffffff;
+    border-color: #ff6600;
+}
+
+.retro-badge-win98 {
+    background: linear-gradient(135deg, #008080, #004040);
+    color: #ffffff;
+    border-color: #00a0a0;
+}
+
+.retro-badge-dialup {
+    background: linear-gradient(135deg, #444444, #111111);
+    color: #00ff66;
+    border-color: #555555;
+}
+
+/* FOOTER TELEMETRY BAR */
+.footer-telemetry {
+    font-family: var(--font-mono, monospace);
+    font-size: 10px;
+    color: var(--text-muted, #8a99ad);
+    margin-top: 8px;
+    letter-spacing: 0.5px;
+}
+
+/* FOOTER QUICK LINKS */
+.footer-links {
+    margin: 8px 0;
+    font-size: 11px;
+}
+
+.footer-links a {
+    color: var(--link-color, #4da3ff);
+    text-decoration: none;
+    margin: 0 6px;
+    transition: color 0.15s;
+}
+
+.footer-links a:hover {
+    color: var(--link-hover, #79c0ff);
+    text-decoration: underline;
 }
