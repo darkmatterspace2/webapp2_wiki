@@ -43,11 +43,29 @@ function showLoading(show) {
     if (el) el.style.display = show ? 'inline-block' : 'none';
 }
 
+// Check if R-Rated content is allowed (must be logged in AND have setting checked)
+async function isRRatedAllowed() {
+    const isChecked = localStorage.getItem('show_r_rated') === 'true';
+    if (!isChecked) return false;
+
+    const sb = initSupabase();
+    if (!sb) return false;
+
+    const user = await checkAuth(sb);
+    if (!user) {
+        localStorage.setItem('show_r_rated', 'false');
+        return false;
+    }
+    return true;
+}
+
 // Export to window
 window.AppUtils = {
     initSupabase,
     checkAuth,
+    isRRatedAllowed,
     getParam,
     formatDate,
     showLoading
 };
+

@@ -112,7 +112,7 @@ function initLayout() {
                                 
                                 <br><br>
                                 
-                                <div style="margin-left: 5px;">
+                                <div id="r-rated-container" style="margin-left: 5px; display: none;">
                                     <label style="font-size: 12px; cursor: pointer;">
                                         <input type="checkbox" id="show-r-rated-checkbox">
                                          Show R Rated content
@@ -319,6 +319,7 @@ async function updateAuthLink(rootPath) {
         link.onclick = async (e) => {
             e.preventDefault();
             await sbClient.auth.signOut();
+            localStorage.setItem('show_r_rated', 'false');
             window.location.href = rootPath + "index.html";
         };
     } else {
@@ -328,10 +329,25 @@ async function updateAuthLink(rootPath) {
     }
 }
 
-// Helper: Setup R-rated Checkbox
-function setupRRatedCheckbox() {
+// Helper: Setup R-rated Checkbox (visible only when logged in)
+async function setupRRatedCheckbox() {
+    const container = document.getElementById('r-rated-container');
     const cb = document.getElementById('show-r-rated-checkbox');
     if (!cb) return;
+
+    if (window.AppUtils) {
+        const sbClient = window.AppUtils.initSupabase();
+        if (sbClient) {
+            const user = await window.AppUtils.checkAuth(sbClient);
+            if (user) {
+                if (container) container.style.display = 'block';
+            } else {
+                if (container) container.style.display = 'none';
+                localStorage.setItem('show_r_rated', 'false');
+                return;
+            }
+        }
+    }
 
     const isChecked = localStorage.getItem('show_r_rated') === 'true';
     cb.checked = isChecked;
@@ -382,7 +398,7 @@ async function setupThemeSelector() {
 
 // Helper: Load Categories (uses CategoryService if available)
 async function loadCategories(rootPath) {
-    const showR = localStorage.getItem('show_r_rated') === 'true';
+    const showR = window.AppUtils ? await window.AppUtils.isRRatedAllowed() : false;
     let categories = [];
 
     // Use CategoryService if available, fallback to direct query

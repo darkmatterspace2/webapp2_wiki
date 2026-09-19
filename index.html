@@ -94,13 +94,14 @@
             AppUtils.showLoading(true);
 
             try {
+                const showR = await AppUtils.isRRatedAllowed();
                 // Use ArticleService for centralized query
                 const { articles, total } = await ArticleService.getList({
                     page: currentPage,
                     limit: itemsPerPage,
                     category: currentCategory,
                     search: searchQuery,
-                    showRRated: localStorage.getItem('show_r_rated') === 'true'
+                    showRRated: showR
                 });
 
                 renderList(articles);

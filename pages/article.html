@@ -59,6 +59,27 @@
                 // Check if user is logged in (for showing edit/delete buttons)
                 const sbClient = AppUtils.initSupabase();
                 const user = await AppUtils.checkAuth(sbClient);
+
+                // Restricted R-rated Content Guard
+                const isRRated = meta.ratings && ['M', 'P', 'X'].includes(meta.ratings);
+                if (isRRated && !user) {
+                    document.getElementById('article-meta').innerHTML = `
+                        <div class="article-header">
+                            <h2>${meta.title}</h2>
+                        </div>
+                        <p><small>Rating: <b>${meta.ratings}</b></small></p>
+                    `;
+                    document.getElementById('article-content').innerHTML = `
+                        <div style="padding: 30px; text-align: center; border: 2px solid var(--border-color); background: var(--header-bg); margin: 20px 0;">
+                            <h3 style="color: red; margin-top: 0;">[ RESTRICTED CONTENT ]</h3>
+                            <p>This article is rated <b>${meta.ratings}</b> and is restricted to logged-in users.</p>
+                            <p><a href="admin/login.html">[ Admin Login ]</a></p>
+                        </div>
+                    `;
+                    AppUtils.showLoading(false);
+                    return;
+                }
+
                 const actionButtons = user ? `
                     <span class="article-actions">
                         <button onclick="editArticle()">[ Edit ]</button>

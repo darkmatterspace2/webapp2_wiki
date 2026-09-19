@@ -1,3 +1,4 @@
 src/config/supabase.config.js
 src/config/supabase.config.js
 .devops/.env
+.vscode/*

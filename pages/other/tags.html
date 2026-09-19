@@ -94,7 +94,7 @@
                 // Fetch all articles, selecting only tags
                 // Limit to 1000 to be safe, though ideally we'd paginate if needed
                 // Check R-rated setting
-                const showR = localStorage.getItem('show_r_rated') === 'true';
+                const showR = await AppUtils.isRRatedAllowed();
 
                 // Fetch all articles, selecting only tags
                 // Limit to 1000 to be safe, though ideally we'd paginate if needed
