@@ -310,6 +310,29 @@ const ArticleService = {
             .map(entry => ({ tag: entry[0], count: entry[1] }));
     },
 
+    // GET: All distinct tags for editor autocomplete
+    async getAllTags(showRRated = false) {
+        const sbClient = AppUtils.initSupabase();
+        let query = sbClient.from('wiki_articles').select('tags').limit(500);
+        if (!showRRated) {
+            query = query.not("ratings", "in", '("M","P","X")');
+        }
+        const { data, error } = await query;
+        if (error || !data) return [];
+
+        const tagSet = new Set();
+        data.forEach(item => {
+            if (Array.isArray(item.tags)) {
+                item.tags.forEach(t => {
+                    const tag = (t || '').trim().toLowerCase();
+                    if (tag) tagSet.add(tag);
+                });
+            }
+        });
+
+        return Array.from(tagSet).sort();
+    },
+
     // CREATE: Insert new article
     async create(articleData) {
         const sbClient = AppUtils.initSupabase();

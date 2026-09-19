@@ -416,4 +416,221 @@
     font-weight: bold;
     font-size: 12px;
     text-decoration: none;
-}
+}
+
+/* ==========================================
+   EDITOR STYLES (Admin & Authoring)
+   ========================================== */
+
+.editor-wrapper {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.editor-draft-banner {
+    display: none;
+    background: rgba(255, 170, 0, 0.12);
+    border: 1px solid #ffaa00;
+    color: #ffcc00;
+    padding: 8px 12px;
+    margin-bottom: 15px;
+    font-size: 12px;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.editor-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.editor-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+
+.editor-col {
+    flex: 1;
+    min-width: 260px;
+}
+
+.editor-label {
+    display: block;
+    font-weight: bold;
+    font-size: 12px;
+    margin-bottom: 4px;
+    color: var(--text-color, #ccc);
+}
+
+.editor-input,
+.editor-select {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 6px 8px;
+    background: var(--input-bg, #222);
+    color: var(--text-color, #eee);
+    border: 1px solid var(--border-color, #555);
+    font-size: 13px;
+    font-family: inherit;
+}
+
+.editor-input:focus,
+.editor-select:focus {
+    border-color: #00ff66;
+    outline: none;
+}
+
+/* Category selector with custom category */
+.category-input-group {
+    display: flex;
+    gap: 6px;
+    align-items: stretch;
+}
+
+.category-new-wrapper {
+    margin-top: 6px;
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+/* Tag Chips */
+.editor-tags-container {
+    background: var(--input-bg, #1a1a1a);
+    border: 1px solid var(--border-color, #555);
+    padding: 6px;
+    min-height: 40px;
+    box-sizing: border-box;
+}
+
+.tag-chips-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-bottom: 6px;
+}
+
+.editor-tag-pill {
+    background: rgba(0, 255, 102, 0.12);
+    border: 1px solid #00ff66;
+    color: #00ff66;
+    font-size: 11px;
+    padding: 2px 6px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    border-radius: 2px;
+    font-family: monospace;
+}
+
+.editor-tag-pill button {
+    background: transparent;
+    border: none;
+    color: #ff5555;
+    cursor: pointer;
+    padding: 0;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 1;
+}
+
+.editor-tag-pill button:hover {
+    color: #ff0000;
+}
+
+.editor-quick-tag {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid #555;
+    color: #88c0d0;
+    font-size: 10px;
+    padding: 2px 6px;
+    text-decoration: none;
+    border-radius: 2px;
+    display: inline-block;
+    margin: 2px;
+    transition: all 0.15s;
+    cursor: pointer;
+}
+
+.editor-quick-tag:hover {
+    background: #88c0d0;
+    color: #000 !important;
+}
+
+/* Terminal Metrics HUD */
+.editor-metrics-hud {
+    background: var(--header-bg, #161616);
+    border-top: 1px solid var(--border-color, #444);
+    padding: 6px 10px;
+    font-family: var(--font-main, monospace);
+    font-size: 11px;
+    color: #888;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+/* Responsive Action Footer */
+.editor-action-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 12px;
+    background: var(--header-bg, #1a1a1a);
+    border: 2px solid var(--border-color, #444);
+    margin-top: 20px;
+}
+
+.editor-action-buttons {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+@media (max-width: 640px) {
+    .editor-wrapper {
+        padding: 5px;
+    }
+    
+    .editor-action-footer {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .editor-action-buttons {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .editor-action-buttons button,
+    .editor-action-footer > button {
+        width: 100%;
+        padding: 8px !important;
+    }
+
+    .tab-nav {
+        overflow-x: auto;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 4px;
+    }
+
+    .tab-btn {
+        flex-shrink: 0;
+        padding: 6px 12px;
+    }
+}
+

@@ -33,8 +33,10 @@
             display: flex;
             border-bottom: 2px solid var(--border-color);
             margin-bottom: 15px;
-            /* Spacing between tabs and content */
             padding-left: 5px;
+            overflow-x: auto;
+            white-space: nowrap;
+            -webkit-overflow-scrolling: touch;
         }
 
         .tab-btn {
@@ -46,6 +48,7 @@
             margin-right: 2px;
             font-family: inherit;
             font-size: 13px;
+            flex-shrink: 0;
         }
 
         .tab-btn:hover {
@@ -55,13 +58,11 @@
 
         .tab-content {
             display: none;
-            /* Hidden by default */
             animation: fadeIn 0.2s;
         }
 
         #tab-content-editor {
             display: block;
-            /* Default visible */
         }
 
         @keyframes fadeIn {
@@ -78,10 +79,15 @@
 
 <body>
 
-    <div id="view-editor" style="max-width: 900px; margin: 0 auto; padding: 10px;">
+    <div id="view-editor" class="editor-wrapper">
         <h2 id="editor-title"
-            style="border-bottom: 2px solid var(--border-color); padding-bottom: 5px; margin-bottom: 20px;">Create New
+            style="border-bottom: 2px solid var(--border-color); padding-bottom: 5px; margin-bottom: 15px;">Create New
             Article</h2>
+
+        <!-- Local Draft Recovery Banner -->
+        <div id="draft-recovery-banner" class="editor-draft-banner">
+            <!-- Populated dynamically if draft exists -->
+        </div>
 
         <form onsubmit="handleSave(event)">
             <!-- Metadata Section -->
@@ -90,32 +96,70 @@
                 <legend
                     style="padding: 0 10px; font-weight: bold; border: 2px solid var(--border-color); background: var(--header-bg);">
                     Metadata</legend>
-                <table width="100%" cellpadding="5" cellspacing="0">
-                    <tr>
-                        <td width="120" style="font-weight: bold;">Title:</td>
-                        <td><input type="text" id="edit-title" required
-                                style="width: 100%; box-sizing: border-box; padding: 5px;"></td>
-                    </tr>
-                    <tr>
-                        <td style="font-weight: bold;">Category:</td>
-                        <td>
-                            <input type="text" id="edit-category" required style="width: 200px; padding: 5px;">
-                            &nbsp;&nbsp;
-                            <span style="font-weight: bold;">Rating:</span>
-                            <select id="edit-rating" style="padding: 5px;">
-                                <option value="NR">NR (Not Rated)</option>
-                                <option value="M">M (Mature)</option>
-                                <option value="P">P (Prohibited)</option>
-                                <option value="X">X (Restricted)</option>
+
+                <div class="editor-grid">
+                    <!-- Title Row -->
+                    <div>
+                        <label for="edit-title" class="editor-label">Article Title: <span style="color: #ff5555;">*</span></label>
+                        <input type="text" id="edit-title" required class="editor-input"
+                            placeholder="e.g. Netscape Navigator 4.0 Architecture">
+                    </div>
+
+                    <!-- Category & Rating Row -->
+                    <div class="editor-row">
+                        <!-- Category with Dropdown + Add New Option -->
+                        <div class="editor-col">
+                            <label for="edit-category-select" class="editor-label">Category: <span style="color: #ff5555;">*</span></label>
+                            <div class="category-input-group">
+                                <select id="edit-category-select" class="editor-select" onchange="handleCategorySelectChange()">
+                                    <option value="">-- Loading Categories... --</option>
+                                </select>
+                                <button type="button" onclick="toggleNewCategoryInput()" style="white-space: nowrap; padding: 4px 10px; cursor: pointer;" title="Toggle custom category input">+ New</button>
+                            </div>
+                            <!-- Custom category input (visible when __NEW__ selected) -->
+                            <div id="custom-category-wrapper" class="category-new-wrapper" style="display: none;">
+                                <input type="text" id="custom-category-input" placeholder="Type new category name..." class="editor-input" style="flex: 1;">
+                                <button type="button" onclick="toggleNewCategoryInput()" style="cursor: pointer; padding: 4px 8px; font-size: 11px;">✕</button>
+                            </div>
+                        </div>
+
+                        <!-- Rating Selector with Status Badge -->
+                        <div class="editor-col">
+                            <label for="edit-rating" class="editor-label">Content Rating:</label>
+                            <select id="edit-rating" class="editor-select">
+                                <option value="NR">NR (Not Rated - Public)</option>
+                                <option value="M">M (Mature - Restricted)</option>
+                                <option value="P">P (Prohibited - Restricted)</option>
+                                <option value="X">X (Adult / 18+ - Restricted)</option>
                             </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="font-weight: bold;">Tags:</td>
-                        <td><input type="text" id="edit-tags" placeholder="comma, separated"
-                                style="width: 100%; box-sizing: border-box; padding: 5px;"></td>
-                    </tr>
-                </table>
+                            <div id="rating-warning-badge" style="margin-top: 5px;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Tags Row with Autocomplete & Visual Chips -->
+                    <div>
+                        <label for="tag-input" class="editor-label">Tags (Type and press Enter or comma):</label>
+                        <div class="editor-tags-container">
+                            <div id="tag-chips-container" class="tag-chips-list">
+                                <!-- Tag pills injected here -->
+                            </div>
+                            <div style="display: flex; gap: 6px;">
+                                <input type="text" id="tag-input" list="tags-datalist"
+                                    placeholder="Add tag (e.g. windows_98, browser, dialup)..."
+                                    class="editor-input" style="border: 1px dashed var(--border-color);">
+                                <button type="button" onclick="addTag(document.getElementById('tag-input').value)" style="padding: 4px 12px; cursor: pointer;">Add</button>
+                            </div>
+                            <datalist id="tags-datalist">
+                                <!-- Populated dynamically -->
+                            </datalist>
+                        </div>
+                        <!-- Popular Tags Quick-Add Bar -->
+                        <div style="margin-top: 6px; font-size: 11px;">
+                            <span style="color: #888; font-family: monospace;">POPULAR TAGS:</span>
+                            <span id="editor-popular-tags">Loading tags...</span>
+                        </div>
+                    </div>
+                </div>
             </fieldset>
 
             <!-- Content Section with Tabs -->
@@ -125,149 +169,139 @@
                     style="padding: 0 10px; font-weight: bold; border: 2px solid var(--border-color); background: var(--header-bg); margin-left: 10px;">
                     Content</legend>
 
-                <div style="padding: 15px;">
+                <div style="padding: 12px;">
                     <!-- Tab Navigation -->
                     <div class="tab-nav">
-                        <button type="button" id="tab-btn-editor" class="tab-btn" onclick="switchTab('editor')">Write
-                            Article</button>
-                        <button type="button" id="tab-btn-wysiwyg" class="tab-btn"
-                            onclick="switchTab('wysiwyg')">WYSIWYG</button>
-                        <button type="button" id="tab-btn-fetch" class="tab-btn" onclick="switchTab('fetch')">Fetch
-                            URLs</button>
-                        <button type="button" id="tab-btn-ai" class="tab-btn" onclick="switchTab('ai')">AI
-                            Assist</button>
-                        <button type="button" id="tab-btn-other" class="tab-btn"
-                            onclick="switchTab('other')">Other</button>
+                        <button type="button" id="tab-btn-editor" class="tab-btn" onclick="switchTab('editor')">Write Article</button>
+                        <button type="button" id="tab-btn-wysiwyg" class="tab-btn" onclick="switchTab('wysiwyg')">WYSIWYG</button>
+                        <button type="button" id="tab-btn-fetch" class="tab-btn" onclick="switchTab('fetch')">Fetch URLs</button>
+                        <button type="button" id="tab-btn-ai" class="tab-btn" onclick="switchTab('ai')">AI Assist</button>
+                        <button type="button" id="tab-btn-other" class="tab-btn" onclick="switchTab('other')">Scratchpad</button>
                     </div>
 
-                    <!-- Tab: Editor (Main) -->
+                    <!-- Tab: Editor (Main Source View) -->
                     <div id="tab-content-editor" class="tab-content">
                         <!-- Toolbar -->
-                        <div
-                            style="background: var(--header-bg); border: 2px solid var(--border-color); padding: 8px; margin-bottom: 10px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
-                            <button type="button" onclick="format('bold')" title="Bold"
-                                style="min-width: 30px;"><b>B</b></button>
-                            <button type="button" onclick="format('italic')" title="Italic"
-                                style="min-width: 30px;"><i>I</i></button>
-                            <button type="button" onclick="format('h2')" title="Header 2">H2</button>
-                            <button type="button" onclick="format('h3')" title="Header 3">H3</button>
+                        <div style="background: var(--header-bg); border: 2px solid var(--border-color); padding: 8px; margin-bottom: 10px; display: flex; gap: 6px; flex-wrap: wrap; align-items: center;">
+                            <button type="button" onclick="format('bold')" title="Bold" style="min-width: 32px; min-height: 28px;"><b>B</b></button>
+                            <button type="button" onclick="format('italic')" title="Italic" style="min-width: 32px; min-height: 28px;"><i>I</i></button>
+                            <button type="button" onclick="format('h2')" title="Header 2" style="min-height: 28px;">H2</button>
+                            <button type="button" onclick="format('h3')" title="Header 3" style="min-height: 28px;">H3</button>
 
-                            <span
-                                style="border-left: 2px solid var(--border-color); height: 20px; margin: 0 5px;"></span>
+                            <span style="border-left: 2px solid var(--border-color); height: 20px; margin: 0 2px;"></span>
 
-                            <button type="button" onclick="format('link')" title="Link">Link</button>
-                            <button type="button" onclick="format('code')" title="Code Block">Code</button>
-                            <button type="button" onclick="format('quote')" title="Blockquote">Quote</button>
+                            <button type="button" onclick="format('link')" title="Insert Hyperlink" style="min-height: 28px;">Link</button>
+                            <button type="button" onclick="format('code')" title="Code Block" style="min-height: 28px;">Code</button>
+                            <button type="button" onclick="format('quote')" title="Blockquote" style="min-height: 28px;">Quote</button>
 
-                            <span
-                                style="border-left: 2px solid var(--border-color); height: 20px; margin: 0 5px;"></span>
+                            <span style="border-left: 2px solid var(--border-color); height: 20px; margin: 0 2px;"></span>
 
-                            <button type="button" onclick="insertImage()" title="Insert Image Tag">Image</button>
-                            <button type="button" onclick="insertGallery()"
-                                title="Insert Gallery Snippet">Gallery</button>
-                            <button type="button" onclick="insertVideo()" title="Insert Video Snippet">Video</button>
+                            <button type="button" onclick="insertImage()" title="Insert Image Tag" style="min-height: 28px;">🖼 Image</button>
+                            <button type="button" onclick="insertVideo()" title="Insert Video/Embed" style="min-height: 28px;">🎬 Video</button>
+                            <button type="button" onclick="insertGallery(3)" title="Insert 3-Col Gallery" style="min-height: 28px;">▦ Gallery (3-Col)</button>
+                            <button type="button" onclick="insertGallery(2)" title="Insert 2-Col Gallery" style="min-height: 28px;">⊞ Gallery (2-Col)</button>
+                            <button type="button" onclick="insertCallout('note')" title="Insert Note Box" style="min-height: 28px;">📌 Callout</button>
+                            <button type="button" onclick="insertTableTemplate()" title="Insert Table Template" style="min-height: 28px;">📊 Table</button>
                         </div>
 
                         <textarea id="edit-content" class="editor" required
-                            style="width: 100%; height: 500px; box-sizing: border-box; font-family: 'Courier New', monospace; padding: 10px; border: 2px solid var(--border-color); resize: vertical;"></textarea>
-                        <div style="text-align: right; font-size: 11px; margin-top: 5px; opacity: 0.7;">Supports HTML5.
-                            Ensure tags are closed.</div>
+                            style="width: 100%; height: 450px; box-sizing: border-box; font-family: 'Courier New', monospace; padding: 10px; border: 2px solid var(--border-color); resize: vertical; background: var(--input-bg, #111); color: var(--text-color, #eee);"></textarea>
+
+                        <!-- Terminal Metrics HUD -->
+                        <div class="editor-metrics-hud">
+                            <div id="editor-metrics">
+                                WORDS: <b>0</b> &nbsp;|&nbsp; CHARS: <b>0</b> &nbsp;|&nbsp; READ TIME: <b>~1 min</b>
+                            </div>
+                            <div>
+                                <span id="draft-status-indicator" style="color: #00ff66; margin-right: 8px;"></span>
+                                <span style="color: #888;">FORMAT: HTML5</span>
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- Tab: WYSIWYG -->
+                    <!-- Tab: WYSIWYG (Visual Mode) -->
                     <div id="tab-content-wysiwyg" class="tab-content">
                         <!-- WYSIWYG Toolbar -->
-                        <div
-                            style="background: var(--header-bg); border: 2px solid var(--border-color); padding: 8px; margin-bottom: 10px; display: flex; gap: 8px; align-items: center;">
-                            <button type="button" onclick="execWysiwygCmd('bold')" title="Bold"><b>B</b></button>
-                            <button type="button" onclick="execWysiwygCmd('italic')" title="Italic"><i>I</i></button>
-                            <button type="button" onclick="execWysiwygCmd('underline')"
-                                title="Underline"><u>U</u></button>
-                            <span
-                                style="border-left: 2px solid var(--border-color); height: 20px; margin: 0 5px;"></span>
-                            <button type="button" onclick="execWysiwygCmd('formatBlock', '<h2>')"
-                                title="Header 2">H2</button>
-                            <button type="button" onclick="execWysiwygCmd('formatBlock', '<h3>')"
-                                title="Header 3">H3</button>
-                            <button type="button" onclick="execWysiwygCmd('formatBlock', '<p>')"
-                                title="Paragraph">P</button>
-                            <span
-                                style="border-left: 2px solid var(--border-color); height: 20px; margin: 0 5px;"></span>
-                            <button type="button" onclick="execWysiwygCmd('insertOrderedList')"
-                                title="Ordered List">1.</button>
-                            <button type="button" onclick="execWysiwygCmd('insertUnorderedList')"
-                                title="Unordered List">•</button>
+                        <div style="background: var(--header-bg); border: 2px solid var(--border-color); padding: 8px; margin-bottom: 10px; display: flex; gap: 6px; flex-wrap: wrap; align-items: center;">
+                            <button type="button" onclick="execWysiwygCmd('bold')" title="Bold" style="min-width: 30px;"><b>B</b></button>
+                            <button type="button" onclick="execWysiwygCmd('italic')" title="Italic" style="min-width: 30px;"><i>I</i></button>
+                            <button type="button" onclick="execWysiwygCmd('underline')" title="Underline"><u>U</u></button>
+                            <span style="border-left: 2px solid var(--border-color); height: 20px; margin: 0 4px;"></span>
+                            <button type="button" onclick="execWysiwygCmd('formatBlock', '<h2>')" title="Header 2">H2</button>
+                            <button type="button" onclick="execWysiwygCmd('formatBlock', '<h3>')" title="Header 3">H3</button>
+                            <button type="button" onclick="execWysiwygCmd('formatBlock', '<p>')" title="Paragraph">P</button>
+                            <span style="border-left: 2px solid var(--border-color); height: 20px; margin: 0 4px;"></span>
+                            <button type="button" onclick="execWysiwygCmd('insertOrderedList')" title="Ordered List">1.</button>
+                            <button type="button" onclick="execWysiwygCmd('insertUnorderedList')" title="Unordered List">•</button>
                             <span style="flex-grow: 1;"></span>
-                            <button type="button" onclick="toggleSourceView()" title="Switch to Source View">Source
-                                View</button>
+                            <button type="button" onclick="toggleSourceView()" title="Switch to Source View">Source View</button>
                         </div>
 
+                        <!-- Fluid WYSIWYG Container -->
                         <div id="wysiwyg-editor" contenteditable="true"
-                            style="width: 860px; height: 500px; box-sizing: border-box; padding: 15px; border: 2px solid var(--border-color); overflow-y: auto; background: white; color: black;">
+                            style="width: 100%; min-height: 450px; box-sizing: border-box; padding: 15px; border: 2px solid var(--border-color); overflow-y: auto; background: #fff; color: #111;">
                             <!-- Content Syncs Here -->
                         </div>
-                        <div style="text-align: right; font-size: 11px; margin-top: 5px; opacity: 0.7;">Visual Editor
-                            Mode</div>
+                        <div style="text-align: right; font-size: 11px; margin-top: 5px; opacity: 0.7;">Visual Editor Mode</div>
                     </div>
 
                     <!-- Tab: Fetch URL -->
                     <div id="tab-content-fetch" class="tab-content">
                         <h3>HTML Image Extractor</h3>
-                        <p>Paste HTML code below to extract all image tags.</p>
+                        <p style="font-size: 12px; color: #aaa;">Paste raw HTML code below to extract all image tags automatically.</p>
                         <textarea id="fetch-html-source" placeholder="Paste HTML Source Code Here..."
-                            style="width: 100%; height: 150px; font-family: monospace; padding: 10px; margin-bottom: 10px;"></textarea>
-                        <button type="button" onclick="extractImagesFromHtml()">Extract Images</button>
-                        <hr>
+                            style="width: 100%; height: 140px; font-family: monospace; padding: 10px; margin-bottom: 10px; box-sizing: border-box; background: var(--input-bg, #222); color: #fff; border: 1px solid var(--border-color);"></textarea>
+                        <button type="button" onclick="extractImagesFromHtml()" style="padding: 5px 12px; cursor: pointer;">Extract Images</button>
+                        <hr style="border-color: var(--border-color); margin: 15px 0;">
                         <textarea id="fetch-output" placeholder="Extracted <img> tags will appear here..."
-                            style="width: 100%; height: 150px; font-family: monospace; padding: 10px;"></textarea>
+                            style="width: 100%; height: 140px; font-family: monospace; padding: 10px; box-sizing: border-box; background: var(--input-bg, #222); color: #fff; border: 1px solid var(--border-color);"></textarea>
                         <br>
-                        <button type="button" onclick="copyFetchOutput(this)" style="margin-top:5px;">Copy
-                            Output</button>
+                        <button type="button" onclick="copyFetchOutput(this)" style="margin-top: 8px; padding: 5px 12px; cursor: pointer;">Copy Output</button>
                     </div>
 
                     <!-- Tab: AI Assist -->
                     <div id="tab-content-ai" class="tab-content">
                         <h3>AI Assistant</h3>
-                        <p>Ask AI to generate content (Placeholder).</p>
+                        <p style="font-size: 12px; color: #aaa;">Ask AI to generate content or summarize notes.</p>
                         <textarea placeholder="Describe what you want to write..."
-                            style="width: 100%; height: 100px; padding: 10px;"></textarea>
+                            style="width: 100%; height: 90px; padding: 10px; box-sizing: border-box; background: var(--input-bg, #222); color: #fff; border: 1px solid var(--border-color);"></textarea>
                         <br><br>
-                        <button type="button" onclick="alert('AI Feature coming soon!')">Generate</button>
-                        <hr>
+                        <button type="button" onclick="alert('AI Module standby. Ready for API integration.')" style="padding: 5px 15px; cursor: pointer;">Generate</button>
+                        <hr style="border-color: var(--border-color); margin: 15px 0;">
                         <textarea placeholder="Generated content..."
-                            style="width: 100%; height: 250px; font-family: monospace; padding: 10px;"></textarea>
+                            style="width: 100%; height: 200px; font-family: monospace; padding: 10px; box-sizing: border-box; background: var(--input-bg, #222); color: #fff; border: 1px solid var(--border-color);"></textarea>
                     </div>
 
-                    <!-- Tab: Other -->
+                    <!-- Tab: Other / Scratchpad -->
                     <div id="tab-content-other" class="tab-content">
-                        <h3>Other Tools</h3>
-                        <p>Scratchpad / Notes</p>
-                        <textarea placeholder="Use this space for temporary notes, clipboard, etc."
-                            style="width: 100%; height: 400px; padding: 10px; font-family: monospace;"></textarea>
+                        <h3>Scratchpad / Notes</h3>
+                        <p style="font-size: 12px; color: #aaa;">Use this space for temporary clipboard, drafts, and research references.</p>
+                        <textarea placeholder="Use this space for temporary notes, clipboard snippets, or reference links..."
+                            style="width: 100%; height: 350px; padding: 10px; font-family: monospace; box-sizing: border-box; background: var(--input-bg, #222); color: #fff; border: 1px solid var(--border-color);"></textarea>
                     </div>
                 </div>
-
             </fieldset>
 
-            <!-- Actions -->
-            <div
-                style="text-align: right; padding: 15px; background: var(--header-bg); border: 2px solid var(--border-color); margin-top: 20px;">
-                <button type="button" onclick="window.history.back()" style="float: left;">&laquo; Cancel</button>
-                <button type="button" onclick="showPreview()" style="margin-right: 15px;">Preview Article</button>
-                <button type="submit" name="save-continue" style="margin-right: 5px;">Save & Continue</button>
-                <button type="submit" style="font-weight: bold; padding: 5px 20px;">PUBLISH TO NET</button>
+            <!-- Responsive Action Footer -->
+            <div class="editor-action-footer">
+                <button type="button" onclick="window.history.back()" style="cursor: pointer; padding: 6px 14px;">&laquo; Cancel</button>
+                <div class="editor-action-buttons">
+                    <button type="button" onclick="showPreview()" style="cursor: pointer; padding: 6px 14px;">Preview Article</button>
+                    <button type="submit" name="save-continue" style="cursor: pointer; padding: 6px 14px;">Save & Continue</button>
+                    <button type="submit" style="font-weight: bold; padding: 6px 22px; background: #00ff66; color: #000; border: 2px outset #00ff66; cursor: pointer;">PUBLISH TO NET</button>
+                </div>
             </div>
         </form>
 
-        <!-- PREVIEW MODAL -->
+        <!-- PREVIEW MODAL (Responsive) -->
         <div id="preview-overlay"
-            style="display:none; position:fixed; top:20px; left:20px; right:20px; bottom:20px; background:var(--bg-color); border:4px outset var(--border-color); padding:0; z-index:1000; overflow:hidden; box-shadow: 10px 10px 20px rgba(0,0,0,0.5);">
+            style="display:none; position:fixed; top:20px; left:50%; transform:translateX(-50%); width:calc(100% - 30px); max-width:920px; height:calc(100% - 40px); background:var(--bg-color); border:4px outset var(--border-color); padding:0; z-index:1000; overflow:hidden; box-shadow: 10px 10px 25px rgba(0,0,0,0.7);">
             <div
-                style="background:var(--header-bg); padding:10px; border-bottom:2px solid var(--border-color); display:flex; justify-content:space-between; align-items: center;">
-                <b style="font-size: 1.2em;">Article Preview</b>
-                <button type="button" onclick="closePreview()">X Close</button>
+                style="background:var(--header-bg); padding:10px 15px; border-bottom:2px solid var(--border-color); display:flex; justify-content:space-between; align-items: center;">
+                <b style="font-size: 1.1em; color: #00ff66;">Article Preview</b>
+                <button type="button" onclick="closePreview()" style="cursor: pointer; padding: 3px 10px;">✕ Close</button>
             </div>
-            <div style="padding: 20px; overflow-y: auto; height: calc(100% - 60px);">
+            <div style="padding: 20px; overflow-y: auto; height: calc(100% - 55px); box-sizing: border-box;">
                 <h1 id="preview-title" style="margin-top: 0;"></h1>
                 <div class="article-meta" id="preview-meta"
                     style="border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px;">
