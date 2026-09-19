@@ -23,16 +23,35 @@
 <body>
 
     <div id="view-home">
-        <div class="jump-links" id="jump-links">
+        <!-- Terminal Stats & Status Bar -->
+        <div class="index-stats-bar">
+            <div>
+                <span style="color: #888;">[SYS_V2.5]</span>
+                STATUS: <span style="color: #00ff66; font-weight: bold;">ONLINE</span> &nbsp;|&nbsp;
+                ARTICLES: <b id="stat-articles" style="color: #00ff66;">--</b> &nbsp;|&nbsp;
+                VIEWS: <b id="stat-views" style="color: #00ff66;">--</b> &nbsp;|&nbsp;
+                CATEGORIES: <b id="stat-cats" style="color: #00ff66;">--</b>
+            </div>
+            <div>
+                <button class="btn-random-article" id="btn-random" onclick="goToRandomArticle()" title="Jump to a random article (Hotkey: R)">🎲 Random Article [R]</button>
+            </div>
+        </div>
+
+        <!-- A-Z Alphabet Jump Links -->
+        <div class="jump-links" id="jump-links" style="margin-bottom: 12px;">
             <!-- A-Z links injected here -->
         </div>
 
-        <div style="margin-bottom: 20px;">
-            <input type="text" id="search-input" placeholder="Search: react -deprecated ~vue web*" class="search-box">
-            <button onclick="runSearch()">Search</button>
-            <details class="search-help">
-                <summary>Search Syntax Help</summary>
-                <div class="search-help-content">
+        <!-- Search Bar with Hotkey and Help -->
+        <div style="margin-bottom: 10px;">
+            <div style="display: flex; gap: 6px; align-items: stretch;">
+                <input type="text" id="search-input" placeholder="Search: react -deprecated ~vue web* (Press '/' to focus)" class="search-box" style="flex: 1; margin-bottom: 0;">
+                <button onclick="runSearch()" style="white-space: nowrap; padding: 4px 12px; cursor: pointer;">Search</button>
+                <button id="btn-clear-search" onclick="clearSearch()" style="display: none; white-space: nowrap; padding: 4px 8px; cursor: pointer;">Clear</button>
+            </div>
+            <details class="search-help" style="margin-top: 5px;">
+                <summary style="cursor: pointer; font-size: 11px;">Search Syntax Help</summary>
+                <div class="search-help-content" style="font-size: 11px;">
                     <code>word</code> - Match title or tags<br>
                     <code>tag1 tag2</code> - Must have BOTH<br>
                     <code>-tag</code> - Exclude this tag<br>
@@ -40,105 +59,325 @@
                     <code>web*</code> - Wildcard (starts with)
                 </div>
             </details>
+            <!-- Popular Tag Chips -->
+            <div class="popular-tags-bar" id="popular-tags-bar">
+                <span style="color: #888; font-family: monospace;">POPULAR TAGS:</span>
+                <span id="popular-tags-list" style="display: inline-flex; gap: 5px; flex-wrap: wrap;">Loading...</span>
+            </div>
         </div>
 
-        <h3>Article Index</h3>
-        <!-- Category Filter Display -->
-        <div id="filter-display" style="margin-bottom: 10px; font-style: italic; display: none;">
-            Showing category: <span id="current-cat" style="font-weight: bold;"></span>
-            (<a href="index.html">Clear</a>)
+        <!-- Primary Navigation Tabs -->
+        <div class="index-tabs" id="index-tabs">
+            <button class="index-tab-btn active" id="tab-all" onclick="switchTab('all')">All Articles</button>
+            <button class="index-tab-btn" id="tab-updated" onclick="switchTab('updated')">⚡ Recently Updated</button>
+            <button class="index-tab-btn" id="tab-views" onclick="switchTab('views')">🔥 Most Viewed</button>
+            <button class="index-tab-btn" id="tab-archive" onclick="switchTab('archive')">📅 Archive Timeline</button>
         </div>
 
+        <!-- Secondary Controls Toolbar (Sort, View Mode, Items Per Page) -->
+        <div class="index-toolbar">
+            <div class="toolbar-group">
+                <label for="sort-select"><b>Sort By:</b></label>
+                <select id="sort-select" class="toolbar-select" onchange="handleSortChange(this.value)">
+                    <option value="created_at-desc">Newest First</option>
+                    <option value="created_at-asc">Oldest First</option>
+                    <option value="updated_at-desc">⚡ Recently Updated</option>
+                    <option value="views-desc">🔥 Most Viewed</option>
+                    <option value="views-asc">Least Viewed</option>
+                    <option value="title-asc">Title (A &rarr; Z)</option>
+                    <option value="title-desc">Title (Z &rarr; A)</option>
+                </select>
+            </div>
+
+            <div class="toolbar-group">
+                <label><b>View Mode:</b></label>
+                <button class="view-mode-btn active" id="btn-view-cards" onclick="setViewMode('cards')" title="Card View">▦ Cards</button>
+                <button class="view-mode-btn" id="btn-view-compact" onclick="setViewMode('compact')" title="Compact List View">≡ Compact</button>
+                <button class="view-mode-btn" id="btn-view-table" onclick="setViewMode('table')" title="Brutalist Table View">⊞ Table</button>
+                
+                <span style="color: #555; margin: 0 4px;">|</span>
+                
+                <label for="limit-select"><b>Per Page:</b></label>
+                <select id="limit-select" class="toolbar-select" onchange="handleLimitChange(this.value)">
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Active Filter Breadcrumbs -->
+        <div id="active-filters" class="active-filters-bar" style="display: none;">
+            <span style="color: #888;">FILTERS:</span>
+            <span id="active-filter-chips"></span>
+            <button class="btn-clear-all-filters" onclick="clearAllFilters()">[ Clear All Filters ]</button>
+        </div>
+
+        <!-- Date Archive Tree Container (Shown when Archive tab is active or month selected) -->
+        <div id="archive-container" class="archive-tree-container" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; border-bottom: 1px solid #444; padding-bottom: 4px;">
+                <span style="font-weight: bold; color: #00ff66;">📅 ARCHIVE TIMELINE BY YEAR &amp; MONTH</span>
+                <span id="archive-status-hint" style="font-size: 11px; color: #aaa;">Click a month to filter articles</span>
+            </div>
+            <div id="archive-tree-content">Loading archive tree...</div>
+        </div>
+
+        <!-- Article List Container (Cards, Compact, or Table) -->
         <div id="article-list" class="article-list">
-            <!-- Article cards injected here -->
+            <!-- Rendered content injected here -->
         </div>
 
+        <!-- Pagination Controls -->
         <div style="margin-top: 20px; text-align: center;">
-            <button onclick="changePage(-1)">&lt; Prev</button>
-            <span id="page-indicator">Page 1</span>
-            <button onclick="changePage(1)">Next &gt;</button>
+            <button id="btn-prev-page" onclick="changePage(-1)" style="padding: 4px 12px; cursor: pointer;">&lt; Prev</button>
+            <span id="page-indicator" style="margin: 0 12px; font-weight: bold; font-family: monospace;">Page 1 of 1</span>
+            <button id="btn-next-page" onclick="changePage(1)" style="padding: 4px 12px; cursor: pointer;">Next &gt;</button>
         </div>
     </div>
 
     <script>
-        // Local State
+        // State Management
         let currentPage = 1;
-        const itemsPerPage = 10;
+        let itemsPerPage = 10;
         let searchQuery = '';
         let currentCategory = 'all';
+        let currentSortBy = 'created_at';
+        let currentSortAsc = false;
+        let currentViewMode = localStorage.getItem('wiki_view_mode') || 'cards';
+        let currentTab = 'all';
+        let currentArchiveYear = null;
+        let currentArchiveMonth = null;
+        let totalArticlesCount = 0;
+        let cachedArchiveData = null;
+
+        // Month Names for Archive display
+        const MONTH_NAMES = [
+            'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+            'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+        ];
 
         async function initHome() {
-            // Read URL Params
+            // Read URL Parameters
             currentCategory = AppUtils.getParam('cat') || 'all';
             const q = AppUtils.getParam('q');
             if (q) {
                 searchQuery = q;
                 document.getElementById('search-input').value = q;
+                document.getElementById('btn-clear-search').style.display = 'inline-block';
             }
 
-            if (currentCategory !== 'all') {
-                document.getElementById('filter-display').style.display = 'block';
-                document.getElementById('current-cat').textContent = currentCategory;
+            const tabParam = AppUtils.getParam('tab');
+            if (['all', 'updated', 'views', 'archive'].includes(tabParam)) {
+                currentTab = tabParam;
             }
+
+            const sortParam = AppUtils.getParam('sort');
+            if (sortParam) {
+                const parts = sortParam.split('-');
+                if (parts[0]) currentSortBy = parts[0];
+                if (parts[1]) currentSortAsc = (parts[1] === 'asc');
+            } else if (currentTab === 'updated') {
+                currentSortBy = 'updated_at';
+                currentSortAsc = false;
+            } else if (currentTab === 'views') {
+                currentSortBy = 'views';
+                currentSortAsc = false;
+            }
+
+            const yearParam = AppUtils.getParam('year');
+            const monthParam = AppUtils.getParam('month');
+            if (yearParam && monthParam) {
+                currentArchiveYear = parseInt(yearParam, 10);
+                currentArchiveMonth = monthParam.padStart(2, '0');
+            }
+
+            const viewParam = AppUtils.getParam('view');
+            if (['cards', 'compact', 'table'].includes(viewParam)) {
+                currentViewMode = viewParam;
+                localStorage.setItem('wiki_view_mode', currentViewMode);
+            }
+
+            const limitParam = AppUtils.getParam('limit');
+            if (['10', '25', '50'].includes(limitParam)) {
+                itemsPerPage = parseInt(limitParam, 10);
+                document.getElementById('limit-select').value = itemsPerPage;
+            }
+
+            // Sync Toolbar UI Controls
+            syncToolbarUI();
 
             renderJumpLinks();
-            fetchArticles();
+            bindEventListeners();
 
+            // Load Metadata in Parallel
+            loadStats();
+            loadPopularTags();
+            if (currentTab === 'archive' || currentArchiveYear) {
+                document.getElementById('archive-container').style.display = 'block';
+                loadArchives();
+            }
+
+            // Fetch and Render Articles
+            fetchArticles();
+        }
+
+        function syncToolbarUI() {
+            // Sort Dropdown
+            const sortVal = `${currentSortBy}-${currentSortAsc ? 'asc' : 'desc'}`;
+            const sortSelect = document.getElementById('sort-select');
+            if (sortSelect) sortSelect.value = sortVal;
+
+            // View Mode Buttons
+            ['cards', 'compact', 'table'].forEach(mode => {
+                const btn = document.getElementById(`btn-view-${mode}`);
+                if (btn) btn.classList.toggle('active', currentViewMode === mode);
+            });
+
+            // Tabs
+            ['all', 'updated', 'views', 'archive'].forEach(tab => {
+                const tabBtn = document.getElementById(`tab-${tab}`);
+                if (tabBtn) tabBtn.classList.toggle('active', currentTab === tab);
+            });
+        }
+
+        function bindEventListeners() {
             // Bind Search Enter Key
             document.getElementById('search-input').addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') runSearch();
             });
+
+            // Keyboard Shortcuts
+            window.addEventListener('keydown', (e) => {
+                const tag = (e.target.tagName || '').toLowerCase();
+                const isInputActive = tag === 'input' || tag === 'textarea' || tag === 'select';
+
+                // Escape clears search or blurs
+                if (e.key === 'Escape' && isInputActive) {
+                    e.target.blur();
+                    return;
+                }
+
+                if (isInputActive) return;
+
+                // '/' key focuses search
+                if (e.key === '/') {
+                    e.preventDefault();
+                    const searchInput = document.getElementById('search-input');
+                    searchInput.focus();
+                    searchInput.select();
+                }
+                // 'r' or 'R' jumps to random article
+                else if (e.key === 'r' || e.key === 'R') {
+                    e.preventDefault();
+                    goToRandomArticle();
+                }
+                // '[' or ']' page pagination
+                else if (e.key === '[') {
+                    e.preventDefault();
+                    changePage(-1);
+                } else if (e.key === ']') {
+                    e.preventDefault();
+                    changePage(1);
+                }
+            });
         }
+
+        // ==========================================
+        // DATA FETCHING & RENDERING
+        // ==========================================
 
         async function fetchArticles() {
             AppUtils.showLoading(true);
 
             try {
                 const showR = await AppUtils.isRRatedAllowed();
-                // Use ArticleService for centralized query
+
+                // Compute Date Range if Month Archive is selected
+                let dateFrom = null;
+                let dateTo = null;
+                if (currentArchiveYear && currentArchiveMonth) {
+                    const yearNum = parseInt(currentArchiveYear, 10);
+                    const monthIndex = parseInt(currentArchiveMonth, 10) - 1; // 0-indexed
+                    dateFrom = new Date(Date.UTC(yearNum, monthIndex, 1, 0, 0, 0, 0)).toISOString();
+                    // Day 0 of next month gives the last day of this month
+                    const lastDay = new Date(Date.UTC(yearNum, monthIndex + 1, 0, 23, 59, 59, 999));
+                    dateTo = lastDay.toISOString();
+                }
+
                 const { articles, total } = await ArticleService.getList({
                     page: currentPage,
                     limit: itemsPerPage,
                     category: currentCategory,
                     search: searchQuery,
-                    showRRated: showR
+                    showRRated: showR,
+                    sortBy: currentSortBy,
+                    sortAsc: currentSortAsc,
+                    dateFrom: dateFrom,
+                    dateTo: dateTo
                 });
 
-                renderList(articles);
-                updatePagination(total);
+                totalArticlesCount = total || 0;
+                renderArticles(articles);
+                updatePagination(totalArticlesCount);
+                renderActiveFilters();
+
             } catch (error) {
-                console.error(error);
-                alert("Error retrieving data.");
+                console.error("Error fetching articles:", error);
+                const container = document.getElementById('article-list');
+                container.innerHTML = `<div style="text-align: center; padding: 20px; color: #ff5555;">Error retrieving data: ${error.message || 'Unknown error'}</div>`;
             }
 
             AppUtils.showLoading(false);
         }
 
-        function renderList(articles) {
+        function renderArticles(articles) {
             const container = document.getElementById('article-list');
             container.innerHTML = '';
+
             if (!articles || articles.length === 0) {
-                container.innerHTML = '<div style="text-align: center; padding: 20px;">No data found in matrix.</div>';
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 30px; border: 1px dashed #555; background: rgba(0,0,0,0.3);">
+                        <div style="font-size: 14px; color: #aaa; margin-bottom: 8px;">[ NO DATA FOUND IN MATRIX ]</div>
+                        <div style="font-size: 11px; color: #666;">Try broadening your search or resetting filters.</div>
+                        <button onclick="clearAllFilters()" style="margin-top: 10px; font-size: 11px; cursor: pointer;">Reset All Filters</button>
+                    </div>
+                `;
                 return;
             }
+
+            if (currentViewMode === 'cards') {
+                renderCardsView(articles, container);
+            } else if (currentViewMode === 'compact') {
+                renderCompactView(articles, container);
+            } else if (currentViewMode === 'table') {
+                renderTableView(articles, container);
+            }
+        }
+
+        // 1. CARDS VIEW
+        function renderCardsView(articles, container) {
             articles.forEach(art => {
-                // Generate clickable tag links
                 const tagLinks = (art.tags || []).map(tag =>
-                    `<a href="index.html?q=${encodeURIComponent(tag)}">${tag}</a>`
+                    `<a href="javascript:void(0)" onclick="filterByTag('${encodeURIComponent(tag)}')">${tag}</a>`
                 ).join(' ');
 
                 const card = document.createElement('div');
                 card.className = 'article-card';
                 card.innerHTML = `
                     <div class="article-card-inner">
-                        <a href="pages/article.html?id=${art.id}" class="article-card-title">${art.title}</a>
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;">
+                            <a href="pages/article.html?id=${art.id}" class="article-card-title">${art.title}</a>
+                            ${art.ratings && ['M', 'P', 'X'].includes(art.ratings) ? `<span style="color: #ff3333; font-size: 10px; border: 1px solid #ff3333; padding: 1px 3px; font-family: monospace; white-space: nowrap;">[R:${art.ratings}]</span>` : ''}
+                        </div>
                         
                         <div class="article-card-stats">
-                            Created on: ${AppUtils.formatDate(art.created_at)}, views ${art.views || 0}
+                            Created: ${AppUtils.formatDate(art.created_at)}
+                            ${art.updated_at ? ` | Updated: <span style="color: #00ff66;">${AppUtils.formatDate(art.updated_at)}</span>` : ''}
+                            | Views: ${art.views || 0}
                         </div>
 
                         <div class="article-card-meta">
-                            <a href="index.html?cat=${encodeURIComponent(art.category)}"><b>${art.category}</b></a>: ${tagLinks || '<i>no tags</i>'}
+                            <a href="javascript:void(0)" onclick="filterByCategory('${encodeURIComponent(art.category)}')"><b>${art.category}</b></a>: ${tagLinks || '<i>no tags</i>'}
                         </div>
                     </div>
                 `;
@@ -146,28 +385,432 @@
             });
         }
 
-        function renderJumpLinks() {
-            const container = document.getElementById('jump-links');
-            const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
-            const links = alphabet.map(char => `<a href="index.html?q=${char}">${char}</a>`).join(" | ");
-            container.innerHTML = `[ ${links} | <a href="index.html">ALL</a> ]`;
+        // 2. COMPACT LIST VIEW
+        function renderCompactView(articles, container) {
+            const listWrapper = document.createElement('div');
+            listWrapper.className = 'article-compact-list';
+
+            articles.forEach(art => {
+                const item = document.createElement('div');
+                item.className = 'article-compact-item';
+
+                const rBadge = art.ratings && ['M', 'P', 'X'].includes(art.ratings) 
+                    ? `<span style="color: #ff3333; font-size: 10px;"> [R]</span>` : '';
+
+                const dateStr = art.updated_at 
+                    ? `Upd: ${AppUtils.formatDate(art.updated_at)}` 
+                    : AppUtils.formatDate(art.created_at);
+
+                item.innerHTML = `
+                    <div class="article-compact-title">
+                        <a href="pages/article.html?id=${art.id}" style="color: var(--link-color, #66b2ff); text-decoration: none;">${art.title}</a>${rBadge}
+                    </div>
+                    <div class="article-compact-meta">
+                        <a href="javascript:void(0)" onclick="filterByCategory('${encodeURIComponent(art.category)}')" style="color: #aaa; text-decoration: none;">[${art.category}]</a>
+                        &nbsp;|&nbsp; 👁 ${art.views || 0}
+                        &nbsp;|&nbsp; 📅 ${dateStr}
+                    </div>
+                `;
+                listWrapper.appendChild(item);
+            });
+
+            container.appendChild(listWrapper);
         }
 
-        function runSearch() {
-            const val = document.getElementById('search-input').value;
-            window.location.href = `index.html?q=${encodeURIComponent(val)}`;
+        // 3. BRUTALIST TABLE VIEW
+        function renderTableView(articles, container) {
+            const table = document.createElement('table');
+            table.className = 'article-table';
+
+            table.innerHTML = `
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th style="width: 110px;">Category</th>
+                        <th>Tags</th>
+                        <th style="width: 65px; text-align: right;">Views</th>
+                        <th style="width: 90px;">Created</th>
+                        <th style="width: 90px;">Updated</th>
+                    </tr>
+                </thead>
+                <tbody id="article-table-body">
+                </tbody>
+            `;
+
+            const tbody = table.querySelector('#article-table-body');
+            articles.forEach(art => {
+                const tagLinks = (art.tags || []).map(tag =>
+                    `<a href="javascript:void(0)" onclick="filterByTag('${encodeURIComponent(tag)}')">${tag}</a>`
+                ).join(', ');
+
+                const rBadge = art.ratings && ['M', 'P', 'X'].includes(art.ratings) 
+                    ? `<span style="color: #ff3333; font-size: 10px;"> [R]</span>` : '';
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>
+                        <a href="pages/article.html?id=${art.id}" class="article-table-title">${art.title}</a>${rBadge}
+                    </td>
+                    <td>
+                        <a href="javascript:void(0)" onclick="filterByCategory('${encodeURIComponent(art.category)}')">${art.category}</a>
+                    </td>
+                    <td style="font-size: 10px;">${tagLinks || '-'}</td>
+                    <td style="text-align: right; font-family: monospace;">${art.views || 0}</td>
+                    <td style="font-size: 10px; white-space: nowrap;">${AppUtils.formatDate(art.created_at)}</td>
+                    <td style="font-size: 10px; white-space: nowrap; color: ${art.updated_at ? '#00ff66' : '#888'};">
+                        ${art.updated_at ? AppUtils.formatDate(art.updated_at) : '-'}
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            container.appendChild(table);
         }
 
-        function changePage(delta) {
-            const newPage = currentPage + delta;
-            if (newPage < 1) return;
-            currentPage = newPage;
+        // ==========================================
+        // STATS, POPULAR TAGS, ARCHIVE TREE
+        // ==========================================
+
+        async function loadStats() {
+            try {
+                const showR = await AppUtils.isRRatedAllowed();
+                const stats = await ArticleService.getStats(showR);
+                document.getElementById('stat-articles').textContent = stats.totalArticles;
+                document.getElementById('stat-views').textContent = stats.totalViews;
+                document.getElementById('stat-cats').textContent = stats.totalCategories;
+            } catch (err) {
+                console.warn("Could not load stats:", err);
+            }
+        }
+
+        async function loadPopularTags() {
+            try {
+                const showR = await AppUtils.isRRatedAllowed();
+                const tags = await ArticleService.getPopularTags(10, showR);
+                const container = document.getElementById('popular-tags-list');
+                if (!tags || tags.length === 0) {
+                    container.innerHTML = '<span style="color: #666;">none</span>';
+                    return;
+                }
+                container.innerHTML = tags.map(t =>
+                    `<a href="javascript:void(0)" onclick="filterByTag('${encodeURIComponent(t.tag)}')" class="tag-chip" title="${t.count} articles">#${t.tag} (${t.count})</a>`
+                ).join(' ');
+            } catch (err) {
+                console.warn("Could not load popular tags:", err);
+            }
+        }
+
+        async function loadArchives() {
+            const content = document.getElementById('archive-tree-content');
+            if (cachedArchiveData) {
+                renderArchiveTree(cachedArchiveData);
+                return;
+            }
+
+            try {
+                const showR = await AppUtils.isRRatedAllowed();
+                const archiveData = await ArticleService.getArchiveIndex(showR);
+                cachedArchiveData = archiveData;
+                renderArchiveTree(archiveData);
+            } catch (err) {
+                console.warn("Could not load archives:", err);
+                content.innerHTML = '<span style="color: #ff5555;">Error loading timeline archive.</span>';
+            }
+        }
+
+        function renderArchiveTree(data) {
+            const content = document.getElementById('archive-tree-content');
+            const years = Object.keys(data).sort((a, b) => b - a);
+
+            if (years.length === 0) {
+                content.innerHTML = '<span style="color: #888;">No archived records found.</span>';
+                return;
+            }
+
+            let html = '';
+            years.forEach(yr => {
+                const yearInfo = data[yr];
+                const months = Object.keys(yearInfo.months).sort((a, b) => b - a);
+
+                html += `
+                    <div class="archive-year-block">
+                        <div class="archive-year-title" onclick="filterByYear('${yr}')">
+                            📁 <b>Year ${yr}</b> <span style="font-size: 11px; color: #aaa;">(${yearInfo.count} total)</span>
+                        </div>
+                        <div class="archive-months-grid">
+                `;
+
+                months.forEach(m => {
+                    const count = yearInfo.months[m];
+                    const monthIdx = parseInt(m, 10) - 1;
+                    const monthName = MONTH_NAMES[monthIdx] || m;
+                    const isActive = (currentArchiveYear === parseInt(yr, 10) && currentArchiveMonth === m);
+
+                    html += `
+                        <button class="archive-month-btn ${isActive ? 'active' : ''}" onclick="filterByMonth(${yr}, '${m}')">
+                            ${monthName} '${yr.slice(2)} (${count})
+                        </button>
+                    `;
+                });
+
+                html += `
+                        </div>
+                    </div>
+                `;
+            });
+
+            content.innerHTML = html;
+        }
+
+        // ==========================================
+        // NAVIGATION, TABS, VIEW MODES & FILTERS
+        // ==========================================
+
+        function switchTab(tab) {
+            currentTab = tab;
+            currentPage = 1;
+
+            const archiveContainer = document.getElementById('archive-container');
+
+            if (tab === 'all') {
+                currentSortBy = 'created_at';
+                currentSortAsc = false;
+                archiveContainer.style.display = currentArchiveYear ? 'block' : 'none';
+            } else if (tab === 'updated') {
+                currentSortBy = 'updated_at';
+                currentSortAsc = false;
+                archiveContainer.style.display = currentArchiveYear ? 'block' : 'none';
+            } else if (tab === 'views') {
+                currentSortBy = 'views';
+                currentSortAsc = false;
+                archiveContainer.style.display = currentArchiveYear ? 'block' : 'none';
+            } else if (tab === 'archive') {
+                archiveContainer.style.display = 'block';
+                loadArchives();
+            }
+
+            syncToolbarUI();
             fetchArticles();
         }
 
+        function handleSortChange(sortValue) {
+            const [sortBy, order] = sortValue.split('-');
+            currentSortBy = sortBy;
+            currentSortAsc = (order === 'asc');
+            currentPage = 1;
+
+            // Update Tab states if appropriate
+            if (currentSortBy === 'updated_at' && !currentSortAsc) {
+                currentTab = 'updated';
+            } else if (currentSortBy === 'views' && !currentSortAsc) {
+                currentTab = 'views';
+            } else if (currentTab !== 'archive') {
+                currentTab = 'all';
+            }
+
+            syncToolbarUI();
+            fetchArticles();
+        }
+
+        function setViewMode(mode) {
+            currentViewMode = mode;
+            localStorage.setItem('wiki_view_mode', mode);
+            syncToolbarUI();
+            fetchArticles();
+        }
+
+        function handleLimitChange(limitVal) {
+            itemsPerPage = parseInt(limitVal, 10);
+            currentPage = 1;
+            fetchArticles();
+        }
+
+        function filterByCategory(cat) {
+            currentCategory = decodeURIComponent(cat);
+            currentPage = 1;
+            fetchArticles();
+        }
+
+        function filterByTag(tag) {
+            const decodedTag = decodeURIComponent(tag);
+            document.getElementById('search-input').value = decodedTag;
+            searchQuery = decodedTag;
+            document.getElementById('btn-clear-search').style.display = 'inline-block';
+            currentPage = 1;
+            fetchArticles();
+        }
+
+        function filterByYear(year) {
+            currentArchiveYear = parseInt(year, 10);
+            currentArchiveMonth = null;
+            currentPage = 1;
+            document.getElementById('archive-container').style.display = 'block';
+            loadArchives();
+            fetchArticles();
+        }
+
+        function filterByMonth(year, month) {
+            currentArchiveYear = parseInt(year, 10);
+            currentArchiveMonth = month.padStart(2, '0');
+            currentPage = 1;
+            document.getElementById('archive-container').style.display = 'block';
+            loadArchives();
+            fetchArticles();
+        }
+
+        function clearMonthFilter() {
+            currentArchiveYear = null;
+            currentArchiveMonth = null;
+            if (currentTab !== 'archive') {
+                document.getElementById('archive-container').style.display = 'none';
+            }
+            if (cachedArchiveData) renderArchiveTree(cachedArchiveData);
+            currentPage = 1;
+            fetchArticles();
+        }
+
+        function renderActiveFilters() {
+            const bar = document.getElementById('active-filters');
+            const chips = document.getElementById('active-filter-chips');
+            chips.innerHTML = '';
+
+            let hasFilters = false;
+
+            // Category Filter
+            if (currentCategory && currentCategory !== 'all') {
+                hasFilters = true;
+                const pill = document.createElement('span');
+                pill.className = 'filter-pill';
+                pill.innerHTML = `Category: <b>${currentCategory}</b> <a href="javascript:void(0)" class="filter-pill-remove" onclick="removeCategoryFilter()">✕</a>`;
+                chips.appendChild(pill);
+            }
+
+            // Search Query Filter
+            if (searchQuery && searchQuery.trim()) {
+                hasFilters = true;
+                const pill = document.createElement('span');
+                pill.className = 'filter-pill';
+                pill.innerHTML = `Search: <b>${searchQuery}</b> <a href="javascript:void(0)" class="filter-pill-remove" onclick="clearSearch()">✕</a>`;
+                chips.appendChild(pill);
+            }
+
+            // Archive Month Filter
+            if (currentArchiveYear) {
+                hasFilters = true;
+                const monthName = currentArchiveMonth 
+                    ? MONTH_NAMES[parseInt(currentArchiveMonth, 10) - 1] 
+                    : 'All';
+                const label = currentArchiveMonth 
+                    ? `${monthName} ${currentArchiveYear}` 
+                    : `Year ${currentArchiveYear}`;
+
+                const pill = document.createElement('span');
+                pill.className = 'filter-pill';
+                pill.innerHTML = `Archive: <b>${label}</b> <a href="javascript:void(0)" class="filter-pill-remove" onclick="clearMonthFilter()">✕</a>`;
+                chips.appendChild(pill);
+            }
+
+            bar.style.display = hasFilters ? 'flex' : 'none';
+        }
+
+        function removeCategoryFilter() {
+            currentCategory = 'all';
+            currentPage = 1;
+            fetchArticles();
+        }
+
+        function clearAllFilters() {
+            currentCategory = 'all';
+            searchQuery = '';
+            document.getElementById('search-input').value = '';
+            document.getElementById('btn-clear-search').style.display = 'none';
+            currentArchiveYear = null;
+            currentArchiveMonth = null;
+            currentTab = 'all';
+            currentSortBy = 'created_at';
+            currentSortAsc = false;
+            currentPage = 1;
+
+            if (currentTab !== 'archive') {
+                document.getElementById('archive-container').style.display = 'none';
+            }
+            if (cachedArchiveData) renderArchiveTree(cachedArchiveData);
+
+            syncToolbarUI();
+            fetchArticles();
+        }
+
+        // ==========================================
+        // SEARCH & ACTIONS
+        // ==========================================
+
+        function runSearch() {
+            const val = document.getElementById('search-input').value.trim();
+            searchQuery = val;
+            currentPage = 1;
+            document.getElementById('btn-clear-search').style.display = val ? 'inline-block' : 'none';
+            fetchArticles();
+        }
+
+        function clearSearch() {
+            document.getElementById('search-input').value = '';
+            searchQuery = '';
+            document.getElementById('btn-clear-search').style.display = 'none';
+            currentPage = 1;
+            fetchArticles();
+        }
+
+        async function goToRandomArticle() {
+            const btn = document.getElementById('btn-random');
+            const originalText = btn.textContent;
+            btn.textContent = '🎲 Rolling...';
+            btn.disabled = true;
+
+            try {
+                const showR = await AppUtils.isRRatedAllowed();
+                const randomId = await ArticleService.getRandom(showR);
+                if (randomId) {
+                    window.location.href = `pages/article.html?id=${randomId}`;
+                } else {
+                    alert("No articles available to jump to.");
+                    btn.textContent = originalText;
+                    btn.disabled = false;
+                }
+            } catch (err) {
+                console.error("Failed to get random article:", err);
+                alert("Error finding random article.");
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        function renderJumpLinks() {
+            const container = document.getElementById('jump-links');
+            const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+            const links = alphabet.map(char => 
+                `<a href="javascript:void(0)" onclick="filterByTag('${char}*')">${char}</a>`
+            ).join(" | ");
+            container.innerHTML = `[ JUMP: ${links} | <a href="javascript:void(0)" onclick="clearAllFilters()">ALL</a> ]`;
+        }
+
+        function changePage(delta) {
+            const totalPages = Math.ceil(totalArticlesCount / itemsPerPage) || 1;
+            const newPage = currentPage + delta;
+            if (newPage < 1 || newPage > totalPages) return;
+            currentPage = newPage;
+            fetchArticles();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
         function updatePagination(totalCount) {
-            const totalPages = Math.ceil(totalCount / itemsPerPage);
-            document.getElementById('page-indicator').textContent = `Page ${currentPage} of ${totalPages || 1}`;
+            const totalPages = Math.max(1, Math.ceil(totalCount / itemsPerPage));
+            document.getElementById('page-indicator').textContent = `Page ${currentPage} of ${totalPages} (${totalCount} articles)`;
+            
+            const prevBtn = document.getElementById('btn-prev-page');
+            const nextBtn = document.getElementById('btn-next-page');
+
+            if (prevBtn) prevBtn.disabled = (currentPage <= 1);
+            if (nextBtn) nextBtn.disabled = (currentPage >= totalPages);
         }
 
         window.onload = initHome;

@@ -1,18 +1,19 @@
-/* THEME: RAUNCHY III - Ultra-Lightweight Edition 💖 */
+/* THEME: SHAMELESS CUM-PINK WHORE - Ultra-Horny Edition 💦 */
 /* Mobile-first, optimized for cheap devices & slow connections */
+/* Designed for sites that look like they belong to a girl who’s already been gangbanged raw */
 
 :root {
-    --bg-dark: #0d001a;
-    --bg-mid: #1c0028;
-    --bg-light: #2a0040;
-    --text-main: #ff00ff;
-    --text-light: #ffb6c1;
-    --link-pink: #ff69b4;
-    --link-deep: #ff1493;
-    --gold: #ffd700;
-    --blood-red: #ff4500;
-    --header-bg: #4b0082;
-    --border-pink: #ff1493;
+    --bg-dark: #1a0014;          /* deep used-cunt black-pink */
+    --bg-mid: #2d0024;           /* sticky inner-thigh purple */
+    --bg-light: #4a0038;         /* freshly creamed pink */
+    --text-main: #ff69b4;        /* classic slut neon pink */
+    --text-light: #ffb6c1;       /* soft cum-on-skin pink */
+    --link-pink: #ff1493;        /* deep-throat magenta */
+    --link-deep: #ff007f;        /* gaped-pussy neon */
+    --gold: #ffd700;             /* still keeping a little “expensive whore” gold */
+    --blood-red: #ff0066;        /* swollen clit red */
+    --header-bg: #8b008b;        /* dark used-up purple */
+    --border-pink: #ff69b4;      /* shiny wet border */
     --font-main: 'Segoe UI', Tahoma, sans-serif;
     --font-display: Impact, 'Arial Black', sans-serif;
 }
@@ -31,25 +32,27 @@ body {
     padding: 8px;
     font-size: 15px;
     line-height: 1.6;
+    text-shadow: 0 0 6px rgba(255, 105, 180, 0.6);
 }
 
-/* Links */
+/* Links – look like they’re begging to be clicked */
 a {
     color: var(--link-pink);
     text-decoration: underline dotted var(--gold);
     font-weight: bold;
+    text-shadow: 0 0 8px var(--link-deep);
 }
 
 a:hover {
     color: #fff;
-    text-shadow: 0 0 8px var(--text-main);
+    text-shadow: 0 0 12px #ff69b4, 0 0 20px #ff1493;
 }
 
 a:visited {
     color: var(--text-light);
 }
 
-/* Headings */
+/* Headings – big, shameless, ahegao energy */
 h1,
 h2,
 h3,
@@ -59,52 +62,50 @@ h6 {
     font-family: var(--font-display);
     color: #fff;
     text-align: center;
-    text-shadow: 2px 2px 4px #000, 0 0 10px var(--text-main);
+    text-shadow: 
+        2px 2px 4px #000,
+        0 0 12px #ff69b4,
+        0 0 24px #ff1493;
     border-bottom: 3px dashed var(--border-pink);
     margin: 1em 0 0.5em;
     padding: 12px;
     background: url('https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Ahegao_Belle_Delphine.gif/250px-Ahegao_Belle_Delphine.gif') center no-repeat;
     background-size: contain;
+    background-color: rgba(255, 20, 147, 0.25);
 }
 
-h1 {
-    font-size: 1.5em;
-}
+h1 { font-size: 1.5em; }
+h2 { font-size: 1.3em; }
+h3 { font-size: 1.1em; }
 
-h2 {
-    font-size: 1.3em;
-}
-
-h3 {
-    font-size: 1.1em;
-}
-
-/* Layout */
+/* Layout – the whole page looks like it’s already been fucked on */
 table.main-layout {
     width: 100%;
     min-height: 100vh;
     border-collapse: separate;
     border-spacing: 4px;
     border: 4px ridge var(--border-pink);
-    box-shadow: 0 0 20px var(--text-main);
-    background: rgba(0, 0, 0, 0.5) url('https://media.istockphoto.com/id/1091144208/vector/heart-shape-icons.jpg') repeat;
+    box-shadow: 
+        0 0 25px #ff69b4,
+        0 0 40px rgba(255, 20, 147, 0.5);
+    background: rgba(0, 0, 0, 0.55) url('https://media.istockphoto.com/id/1091144208/vector/heart-shape-icons.jpg') repeat;
 }
 
 td {
     vertical-align: top;
     padding: 10px;
     border: 2px groove var(--gold);
-    background: rgba(255, 20, 147, 0.15);
+    background: rgba(255, 20, 147, 0.18);
 }
 
-/* Header */
+/* Header – looks like a used whore’s profile banner */
 .header-cell {
     background: var(--header-bg) url('https://i.ytimg.com/vi/pd8ll8HHTM0/mqdefault.jpg') center/cover no-repeat;
     border-bottom: 4px solid var(--gold);
     padding: 12px;
     text-align: center;
     color: #fff;
-    text-shadow: 2px 2px 4px #000;
+    text-shadow: 2px 2px 4px #000, 0 0 10px #ff69b4;
 }
 
 .header-content {
@@ -115,19 +116,19 @@ td {
     gap: 6px;
 }
 
-.header-content>div:first-child {
+.header-content > div:first-child {
     display: flex;
     align-items: center;
     gap: 8px;
 }
 
-.header-content>div:last-child {
+.header-content > div:last-child {
     display: flex;
     flex-wrap: wrap;
     gap: 4px;
 }
 
-/* Sidebar */
+/* Sidebar – sticky and wet looking */
 .sidebar-cell {
     width: 180px;
     background: var(--bg-mid) url('https://myteenwebcam.com/fapp/gifs/8b06f5b1e00237ab0016f809c52a14e5.gif') top/cover;
@@ -147,7 +148,7 @@ body.zen-mode .sidebar-cell {
     background: var(--bg-dark);
 }
 
-/* Inputs */
+/* Inputs – look like they want cum typed into them */
 input,
 textarea,
 select {
@@ -158,16 +159,17 @@ select {
     font-family: var(--font-main);
     border-radius: 12px;
     width: 100%;
+    box-shadow: inset 0 0 8px rgba(255, 105, 180, 0.4);
 }
 
 input:focus,
 textarea:focus {
     border-color: var(--gold);
     outline: none;
-    box-shadow: 0 0 10px var(--border-pink);
+    box-shadow: 0 0 14px var(--border-pink), inset 0 0 10px rgba(255, 20, 147, 0.3);
 }
 
-/* Buttons */
+/* Buttons – shiny and ready to be pressed hard */
 button,
 .btn-header {
     background: linear-gradient(to bottom, var(--link-deep), #8b008b);
@@ -178,36 +180,39 @@ button,
     font-family: var(--font-display);
     font-size: 1em;
     border-radius: 20px;
+    text-shadow: 0 0 6px #000;
+    box-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
 }
 
 button:hover,
 .btn-header:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 15px var(--link-pink);
+    transform: scale(1.06);
+    box-shadow: 0 0 20px #ff69b4, 0 0 30px #ff1493;
 }
 
 button:active {
     border-style: inset;
 }
 
-/* Article Cards */
+/* Article Cards – look freshly used */
 .article-card {
     border: 4px groove var(--text-main);
     margin-bottom: 12px;
     background: url('https://media.istockphoto.com/id/1091144208/vector/heart-shape-icons.jpg') center/cover;
     border-radius: 16px;
     overflow: hidden;
+    box-shadow: 0 0 15px rgba(255, 105, 180, 0.4);
 }
 
 .article-card .card-main {
     padding: 12px;
-    background: rgba(0, 0, 0, 0.6);
+    background: rgba(0, 0, 0, 0.65);
 }
 
 .article-card .card-title {
     font-size: 1.3em;
     font-family: var(--font-display);
-    text-shadow: 1px 1px 3px #000;
+    text-shadow: 1px 1px 3px #000, 0 0 8px #ff69b4;
 }
 
 .article-card .card-title a {
@@ -216,11 +221,12 @@ button:active {
 
 .article-card .card-title a:hover {
     color: #fff;
+    text-shadow: 0 0 12px #ff1493;
 }
 
 .article-card .card-right {
     border-left: 3px dashed var(--gold);
-    background: rgba(255, 20, 147, 0.2);
+    background: rgba(255, 20, 147, 0.25);
 }
 
 .article-card .card-meta {
@@ -228,7 +234,7 @@ button:active {
     font-size: 12px;
 }
 
-/* Tags */
+/* Tags – little pink cum badges */
 .article-tags a {
     border: 2px solid var(--gold);
     padding: 4px 10px;
@@ -238,21 +244,23 @@ button:active {
     color: #fff;
     font-size: 11px;
     display: inline-block;
+    box-shadow: 0 0 8px rgba(255, 105, 180, 0.5);
 }
 
 .article-tags a:hover {
-    transform: scale(1.1);
-    box-shadow: 0 0 10px var(--text-main);
+    transform: scale(1.12);
+    box-shadow: 0 0 16px #ff69b4;
 }
 
 /* Jump Links */
 .jump-links {
     border: 3px dashed var(--gold);
     padding: 10px;
-    background: rgba(255, 105, 180, 0.3);
+    background: rgba(255, 105, 180, 0.35);
     text-align: center;
     border-radius: 12px;
     margin-bottom: 12px;
+    box-shadow: 0 0 12px rgba(255, 20, 147, 0.4);
 }
 
 /* Article List */
@@ -263,16 +271,17 @@ button:active {
 }
 
 .article-list-item:hover {
-    background: rgba(255, 215, 0, 0.15);
+    background: rgba(255, 105, 180, 0.2);
 }
 
-/* Footer */
+/* Footer – sticky and used */
 .footer-cell {
     background: var(--bg-mid);
     border-top: 4px ridge var(--blood-red);
     text-align: center;
     padding: 12px;
     font-size: 12px;
+    text-shadow: 0 0 6px #ff69b4;
 }
 
 /* Visitor Counter */
@@ -282,6 +291,7 @@ button:active {
     color: var(--text-main);
     padding: 8px;
     font-family: var(--font-display);
+    box-shadow: 0 0 10px #ff69b4;
 }
 
 /* Search */
@@ -304,15 +314,16 @@ pre {
     overflow-x: auto;
 }
 
-/* HR */
+/* HR – cum drip line */
 hr {
     border: none;
     height: 3px;
-    background: linear-gradient(90deg, transparent, var(--text-main), transparent);
+    background: linear-gradient(90deg, transparent, #ff69b4, #ff1493, #ff69b4, transparent);
     margin: 16px 0;
+    box-shadow: 0 0 8px #ff69b4;
 }
 
-/* Scrollbar */
+/* Scrollbar – sticky pink */
 ::-webkit-scrollbar {
     width: 10px;
 }
@@ -322,15 +333,15 @@ hr {
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--header-bg);
+    background: linear-gradient(#ff1493, #8b008b);
     border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: var(--border-pink);
+    background: #ff69b4;
 }
 
-/* Selection */
+/* Selection – looks like it’s been marked with cum */
 ::selection {
     background: var(--link-pink);
     color: #fff;
@@ -346,6 +357,7 @@ hr {
     background: var(--header-bg);
     color: #fff;
     border: 2px solid var(--text-main);
+    box-shadow: 0 0 12px #ff69b4;
 }
 
 /* Utilities */
@@ -353,14 +365,14 @@ hr {
     display: none !important;
 }
 
-/* Editor */
+/* Editor – ready for dirty confessions */
 textarea.editor {
     height: 400px;
     background: var(--bg-light) url('https://thumbs.dreamstime.com/z/colorful-pattern-hearts-emojis-various-expressions-pink-background-perfect-cheerful-designs-crafts-bright-376307750.jpg');
     background-size: cover;
 }
 
-/* MOBILE FIRST - Base styles above, desktop overrides below */
+/* MOBILE FIRST */
 @media screen and (min-width: 481px) {
     body {
         padding: 12px;
