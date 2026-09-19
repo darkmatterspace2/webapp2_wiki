@@ -64,7 +64,7 @@ const Lightbox = {
                     <span class="lb-separator"></span>
                     <button type="button" class="lb-btn lb-btn-zoom" onclick="Lightbox.zoomStep(-0.25)" title="Zoom Out">-</button>
                     <button type="button" class="lb-btn lb-btn-zoom" onclick="Lightbox.zoomStep(0.25)" title="Zoom In">+</button>
-                    <button type="button" class="lb-btn lb-btn-fs" onclick="Lightbox.toggleFullScreen()" title="Toggle Fullscreen">[ ⛶ ]</button>
+                    <button type="button" class="lb-btn lb-btn-fs" id="lightbox-btn-fs" onclick="Lightbox.toggleFullScreen()" title="Toggle Fullscreen">⛶</button>
                 </div>
             </div>`;
             document.body.insertAdjacentHTML('beforeend', html);
@@ -76,6 +76,11 @@ const Lightbox = {
         this.setupKeyboardLogic();
         this.setupBackgroundClick();
         this.setupActivityListeners();
+
+        // Fullscreen state listener
+        ['fullscreenchange', 'webkitfullscreenchange', 'mozfullscreenchange', 'MSFullscreenChange'].forEach(evt => {
+            document.addEventListener(evt, () => this.updateFullScreenState());
+        });
     },
 
     attach(selector) {
@@ -198,6 +203,10 @@ const Lightbox = {
         }
     },
 
+    isMobileDevice() {
+        return window.innerWidth <= 768 || ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+    },
+
     // HUD Auto-hide controls
     showHud() {
         const modal = document.getElementById('lightbox');
@@ -206,11 +215,28 @@ const Lightbox = {
         this.resetHudTimer();
     },
 
+    toggleHud() {
+        const modal = document.getElementById('lightbox');
+        if (!modal) return;
+        if (modal.classList.contains('hud-hidden')) {
+            this.showHud();
+        } else {
+            modal.classList.add('hud-hidden');
+            if (this.hudTimer) {
+                clearTimeout(this.hudTimer);
+                this.hudTimer = null;
+            }
+        }
+    },
+
     resetHudTimer() {
         if (this.hudTimer) {
             clearTimeout(this.hudTimer);
             this.hudTimer = null;
         }
+
+        // On mobile / touch devices, do not auto-hide controls after a timer - keep toolbar accessible
+        if (this.isMobileDevice()) return;
 
         if (this.isControlsHovered || this.isDragging) return;
 
@@ -219,7 +245,7 @@ const Lightbox = {
             if (modal && modal.classList.contains('active') && !this.isControlsHovered && !this.isDragging) {
                 modal.classList.add('hud-hidden');
             }
-        }, 1000);
+        }, 3500);
     },
 
     resize(mode) {
@@ -304,21 +330,37 @@ const Lightbox = {
         });
     },
 
-    toggleFullScreen() {
-        const elem = document.getElementById('lightbox');
-        if (!elem) return;
+    updateFullScreenState() {
+        const isFS = !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
+        const btn = document.getElementById('lightbox-btn-fs') || document.querySelector('.lb-btn-fs');
+        if (btn) {
+            btn.classList.toggle('active', isFS);
+            btn.innerHTML = isFS ? '⤡' : '⛶';
+            btn.title = isFS ? 'Exit Fullscreen' : 'Toggle Fullscreen';
+        }
+    },
 
-        if (!document.fullscreenElement) {
+    toggleFullScreen() {
+        const isFS = !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
+        const elem = document.getElementById('lightbox') || document.documentElement;
+
+        if (!isFS) {
             if (elem.requestFullscreen) {
-                elem.requestFullscreen();
+                elem.requestFullscreen().catch(() => {
+                    if (document.documentElement.requestFullscreen) {
+                        document.documentElement.requestFullscreen().catch(() => {});
+                    }
+                });
             } else if (elem.webkitRequestFullscreen) {
                 elem.webkitRequestFullscreen();
             } else if (elem.msRequestFullscreen) {
                 elem.msRequestFullscreen();
+            } else if (document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen().catch(() => {});
             }
         } else {
             if (document.exitFullscreen) {
-                document.exitFullscreen();
+                document.exitFullscreen().catch(() => {});
             } else if (document.webkitExitFullscreen) {
                 document.webkitExitFullscreen();
             } else if (document.msExitFullscreen) {
@@ -326,6 +368,7 @@ const Lightbox = {
             }
         }
         this.showHud();
+        this.updateFullScreenState();
     },
 
     setupActivityListeners() {
@@ -357,7 +400,8 @@ const Lightbox = {
                 if (this.hudTimer) clearTimeout(this.hudTimer);
                 this.showHud();
             });
-            el.addEventListener('pointerleave', () => {
+            el.addEventListener('pointerleave', (e) => {
+                if (e && e.relatedTarget && el.contains(e.relatedTarget)) return;
                 this.isControlsHovered = false;
                 this.resetHudTimer();
             });
@@ -459,6 +503,11 @@ const Lightbox = {
                         this.lastTapTime = 0;
                     } else {
                         this.lastTapTime = now;
+                        if (this.isMobileDevice()) {
+                            this.toggleHud();
+                        } else {
+                            this.showHud();
+                        }
                     }
                 }
 

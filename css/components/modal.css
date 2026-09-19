@@ -8,8 +8,13 @@
     z-index: 2000;
     left: 0;
     top: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
     width: 100vw;
+    height: 100%;
     height: 100vh;
+    height: 100dvh;
     background-color: rgba(0, 0, 0, 0.94);
     align-items: center;
     justify-content: center;
@@ -17,6 +22,7 @@
     overflow: hidden;
     touch-action: none;
     user-select: none;
+    box-sizing: border-box;
 }
 
 .lightbox-modal.active {
@@ -107,11 +113,11 @@ body.lightbox-open {
 
 /* Prev / Next Navigation Arrows */
 .lightbox-nav-btn {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
+    position: absolute !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
     z-index: 2005;
-    background: rgba(14, 18, 24, 0.65);
+    background: rgba(14, 18, 24, 0.75);
     color: var(--text-color, #e1e7ec);
     border: 1px solid var(--border-color, #2b3544);
     font-size: 24px;
@@ -122,15 +128,28 @@ body.lightbox-open {
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: background 0.2s, color 0.2s, border-color 0.2s;
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
     user-select: none;
+    pointer-events: auto !important;
 }
 
 .lightbox-nav-btn:hover,
+.lightbox-nav-btn:focus {
+    background: rgba(0, 255, 136, 0.2) !important;
+    color: var(--accent-green, #00ff88) !important;
+    border-color: var(--accent-green, #00ff88) !important;
+    box-shadow: 0 0 12px rgba(0, 255, 136, 0.4) !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+}
+
 .lightbox-nav-btn:active {
-    background: rgba(77, 163, 255, 0.2);
-    color: var(--accent-green, #00ff88);
-    border-color: var(--accent-green, #00ff88);
+    background: rgba(0, 255, 136, 0.35) !important;
+    color: #ffffff !important;
+    border-color: var(--accent-green, #00ff88) !important;
+    box-shadow: inset 0 0 10px rgba(0, 255, 136, 0.6) !important;
+    top: 50% !important;
+    transform: translateY(-50%) scale(0.95) !important;
 }
 
 .lightbox-prev-btn {
@@ -181,9 +200,11 @@ body.lightbox-open {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.75);
     opacity: 0.95;
     transition: opacity 0.2s ease-in-out;
-    max-width: 95vw;
-    flex-wrap: wrap;
-    justify-content: center;
+    max-width: calc(100vw - 20px);
+    width: max-content;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    box-sizing: border-box;
 }
 
 .lightbox-controls .lb-btn {
@@ -201,6 +222,8 @@ body.lightbox-open {
     align-items: center;
     justify-content: center;
     transition: all 0.15s;
+    flex-shrink: 0;
+    box-sizing: border-box;
 }
 
 .lightbox-controls .lb-btn:hover,
@@ -266,10 +289,19 @@ body.lightbox-open {
     }
 
     .lightbox-nav-btn {
-        width: 36px;
-        height: 52px;
+        width: 38px;
+        height: 54px;
         font-size: 20px;
-        background: rgba(0, 0, 0, 0.7);
+        background: rgba(0, 0, 0, 0.75);
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+    }
+
+    .lightbox-nav-btn:hover,
+    .lightbox-nav-btn:focus,
+    .lightbox-nav-btn:active {
+        top: 50% !important;
+        transform: translateY(-50%) !important;
     }
 
     .lightbox-prev-btn {
@@ -281,21 +313,56 @@ body.lightbox-open {
     }
 
     .lightbox-controls {
-        bottom: 8px;
-        padding: 4px 6px;
-        gap: 4px;
-        max-width: 98vw;
+        position: absolute !important;
+        bottom: calc(14px + env(safe-area-inset-bottom, 0px)) !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        display: flex !important;
+        align-items: center !important;
+        padding: 4px 6px !important;
+        gap: 3px !important;
+        max-width: calc(100vw - 12px) !important;
+        width: max-content !important;
+        flex-wrap: nowrap !important;
+        white-space: nowrap !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        box-sizing: border-box !important;
+        z-index: 2015 !important;
+        opacity: 0.96 !important;
+        visibility: visible !important;
+        pointer-events: auto !important;
+    }
+
+    /* On mobile viewports, keep toolbar always accessible */
+    .lightbox-modal.hud-hidden .lightbox-controls {
+        opacity: 0.96 !important;
+        visibility: visible !important;
+        pointer-events: auto !important;
+    }
+
+    .lightbox-controls::-webkit-scrollbar {
+        display: none;
     }
 
     .lightbox-controls .lb-btn {
-        font-size: 11px;
-        padding: 5px 6px;
-        min-height: 34px;
-        min-width: 30px;
+        font-size: 11px !important;
+        padding: 4px 6px !important;
+        min-height: 28px !important;
+        min-width: 28px !important;
+        flex-shrink: 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    .lightbox-controls .lb-separator {
+        height: 16px !important;
+        margin: 0 1px !important;
+        flex-shrink: 0 !important;
     }
 
     .lightbox-caption {
-        bottom: 54px;
+        bottom: calc(56px + env(safe-area-inset-bottom, 0px));
         max-width: 92%;
         font-size: 12px;
         padding: 3px 8px;
@@ -304,5 +371,32 @@ body.lightbox-open {
     .lightbox-content {
         max-width: 96%;
         max-height: 76vh;
+    }
+}
+
+@media (max-width: 480px) {
+    .lightbox-controls {
+        bottom: calc(12px + env(safe-area-inset-bottom, 0px)) !important;
+        padding: 3px 4px !important;
+        gap: 2px !important;
+        max-width: calc(100vw - 8px) !important;
+        width: max-content !important;
+    }
+
+    .lightbox-controls .lb-btn {
+        font-size: 10px !important;
+        padding: 3px 5px !important;
+        min-height: 26px !important;
+        min-width: 26px !important;
+        flex-shrink: 0 !important;
+    }
+
+    .lightbox-controls .lb-btn[data-mode="stretch"] {
+        font-size: 0 !important;
+    }
+
+    .lightbox-controls .lb-btn[data-mode="stretch"]::after {
+        content: "Str" !important;
+        font-size: 10px !important;
     }
 }

@@ -274,10 +274,10 @@ function initLayout() {
                 <button id="float-btn-zen" onclick="Layout.toggleZenMode()" title="Toggle Zen Mode (Clean Reading)" class="btn-float-action">Z</button>
                 <button id="float-btn-theme" onclick="Layout.toggleTheme()" title="Toggle Light / Dark Mode" class="btn-float-action">◑</button>
 
-                <!-- Typography Quick Adjusters -->
+                <!-- Fullscreen & Fullscreen Exit Controls -->
                 <div class="float-divider"></div>
-                <button onclick="Layout.changeTextSize(-1)" title="Decrease Text Size" class="btn-float-action" style="font-size: 11px;">A−</button>
-                <button onclick="Layout.changeTextSize(1)" title="Increase Text Size" class="btn-float-action" style="font-size: 11px;">A+</button>
+                <button id="float-btn-fullscreen" onclick="Layout.enterFullscreen()" title="Fullscreen" class="btn-float-action">⛶</button>
+                <button id="float-btn-exit-fullscreen" onclick="Layout.exitFullscreen()" title="Exit Fullscreen" class="btn-float-action">⤡</button>
 
                 <!-- Gallery Column Controls (shown if gallery present) -->
                 <div class="float-gallery-group" id="float-gallery-group">
@@ -321,6 +321,7 @@ function initLayout() {
     initFloatDock();
     setupFloatDockAutoFade();
     setupGlobalKeyboardShortcuts(rootPath);
+    setupFullscreenListeners();
 
     // Expose layout functions
     window.Layout = {
@@ -329,6 +330,10 @@ function initLayout() {
         toggleTheme,
         toggleCrtEffect,
         toggleQuickSearch,
+        enterFullscreen,
+        exitFullscreen,
+        toggleFullscreen,
+        isFullscreen,
         changeTextSize,
         resetTextSize,
         filterSidebarCategories,
@@ -508,6 +513,72 @@ function setupGlobalKeyboardShortcuts(rootPath) {
                 toggleQuickSearch(true);
             }
         }
+    });
+}
+
+// ==========================================
+// FULLSCREEN CONTROLS
+// ==========================================
+
+function isFullscreen() {
+    return !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
+}
+
+function enterFullscreen() {
+    const docEl = document.documentElement;
+    if (!isFullscreen()) {
+        if (docEl.requestFullscreen) {
+            docEl.requestFullscreen().catch(err => console.warn('Fullscreen request failed:', err));
+        } else if (docEl.webkitRequestFullscreen) {
+            docEl.webkitRequestFullscreen();
+        } else if (docEl.mozRequestFullScreen) {
+            docEl.mozRequestFullScreen();
+        } else if (docEl.msRequestFullscreen) {
+            docEl.msRequestFullscreen();
+        }
+    }
+    updateFullscreenButtons();
+}
+
+function exitFullscreen() {
+    if (isFullscreen()) {
+        if (document.exitFullscreen) {
+            document.exitFullscreen().catch(err => console.warn('Exit fullscreen failed:', err));
+        } else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+        } else if (document.mozCancelFullScreen) {
+            document.mozCancelFullScreen();
+        } else if (document.msExitFullscreen) {
+            document.msExitFullscreen();
+        }
+    }
+    updateFullscreenButtons();
+}
+
+function toggleFullscreen() {
+    if (isFullscreen()) {
+        exitFullscreen();
+    } else {
+        enterFullscreen();
+    }
+}
+
+function updateFullscreenButtons() {
+    const inFS = isFullscreen();
+    const btnEnter = document.getElementById('float-btn-fullscreen');
+    const btnExit = document.getElementById('float-btn-exit-fullscreen');
+
+    if (btnEnter) {
+        btnEnter.classList.toggle('active', inFS);
+    }
+    if (btnExit) {
+        btnExit.classList.toggle('active', inFS);
+    }
+}
+
+function setupFullscreenListeners() {
+    ['fullscreenchange', 'webkitfullscreenchange', 'mozfullscreenchange', 'MSFullscreenChange'].forEach(evt => {
+        document.addEventListener(evt, updateFullscreenButtons);
     });
 }
 
@@ -715,6 +786,9 @@ function updateToggleButtons() {
         floatBtnTheme.classList.toggle('active', isLight);
         floatBtnTheme.textContent = isLight ? '☼' : '◑';
     }
+
+    // Fullscreen state
+    updateFullscreenButtons();
 }
 
 async function toggleTheme() {
