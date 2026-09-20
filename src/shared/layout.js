@@ -409,6 +409,10 @@ function setupReadingProgress() {
 // ==========================================
 
 function toggleSidebar() {
+    if (window.innerWidth > 768) {
+        toggleZenMode();
+        return;
+    }
     document.body.classList.toggle('sidebar-open');
     const overlay = document.getElementById('sidebar-overlay');
     if (document.body.classList.contains('sidebar-open')) {
@@ -787,6 +791,14 @@ function updateToggleButtons() {
     if (btnZen) btnZen.classList.toggle('active', isZen);
     if (floatBtnZen) floatBtnZen.classList.toggle('active', isZen);
 
+    const colSidebar = document.querySelector('.col-sidebar');
+    const colContent = document.querySelector('.col-content');
+    if (colSidebar && colContent) {
+        colSidebar.style.width = isZen ? '0px' : '';
+        colSidebar.style.display = isZen ? 'none' : '';
+        colContent.style.width = isZen ? '100%' : '';
+    }
+
     // Theme (Header + Float Dock)
     const isLight = document.body.dataset.theme === 'light' || localStorage.getItem('theme') === 'light' || localStorage.getItem('selected-theme') === 'light-mode';
     const btnTheme = document.getElementById('btn-theme');
@@ -822,6 +834,7 @@ function toggleZenMode() {
     const isZen = document.body.classList.contains('zen-mode');
     localStorage.setItem('zenMode', isZen);
     updateToggleButtons();
+    window.dispatchEvent(new Event('resize'));
 }
 
 async function updateAuthLink(rootPath) {
