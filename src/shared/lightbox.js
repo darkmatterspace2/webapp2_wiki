@@ -235,9 +235,6 @@ const Lightbox = {
             this.hudTimer = null;
         }
 
-        // On mobile / touch devices, do not auto-hide controls after a timer - keep toolbar accessible
-        if (this.isMobileDevice()) return;
-
         if (this.isControlsHovered || this.isDragging) return;
 
         this.hudTimer = setTimeout(() => {

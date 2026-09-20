@@ -130,11 +130,18 @@
         }
 
         // MASONRY GALLERY LOGIC
-        let currentGalleryCols = 3;
+        function getDefaultGalleryCols() {
+            if (window.innerWidth <= 480) return 1;
+            if (window.innerWidth <= 768) return 2;
+            return 3;
+        }
+        window.getDefaultGalleryCols = getDefaultGalleryCols;
+
+        let currentGalleryCols = getDefaultGalleryCols();
         window.currentGalleryCols = currentGalleryCols;
 
         window.changeGalleryColumns = function (delta) {
-            currentGalleryCols += delta;
+            currentGalleryCols = (window.currentGalleryCols || getDefaultGalleryCols()) + delta;
             if (currentGalleryCols < 1) currentGalleryCols = 1;
             if (currentGalleryCols > 6) currentGalleryCols = 6;
             window.currentGalleryCols = currentGalleryCols;
@@ -172,22 +179,49 @@
 
                 if (items.length === 0) return;
 
-                // 2. Determine Column Count ( Force > Class > Default )
-                let colCount = forceCols || 3;
-                if (!forceCols) {
-                    if (gallery.classList.contains('cols-2')) colCount = 2;
-                    if (gallery.classList.contains('cols-4')) colCount = 4;
-                    if (gallery.classList.contains('cols-5')) colCount = 5;
+                // 2. Determine Column Count ( Force > User Override > Class > Responsive Default )
+                let colCount = forceCols;
+                if (!colCount) {
+                    if (gallery.hasAttribute('data-user-cols')) {
+                        colCount = parseInt(gallery.getAttribute('data-user-cols'), 10) || getDefaultGalleryCols();
+                    } else if (gallery.classList.contains('cols-2')) {
+                        colCount = 2;
+                    } else if (gallery.classList.contains('cols-4')) {
+                        colCount = 4;
+                    } else if (gallery.classList.contains('cols-5')) {
+                        colCount = 5;
+                    } else {
+                        colCount = getDefaultGalleryCols();
+                    }
                 }
 
-                // 3. Create columns
+                if (forceCols) {
+                    gallery.setAttribute('data-user-cols', colCount);
+                }
+
+                // Sync global column counter with active column count
+                currentGalleryCols = colCount;
+                window.currentGalleryCols = colCount;
+
+                // Ensure parent gallery has zero margin/padding/border
+                gallery.style.setProperty('margin', '0', 'important');
+                gallery.style.setProperty('padding', '0', 'important');
+                gallery.style.setProperty('border', 'none', 'important');
+                gallery.style.setProperty('width', '100%', 'important');
+                gallery.style.setProperty('gap', '0', 'important');
+
+                // 3. Create columns with strict inline styles ensuring mobile responsiveness & zero gaps
                 const cols = [];
+                const colPct = (100 / colCount);
                 for (let i = 0; i < colCount; i++) {
                     const div = document.createElement('div');
                     div.className = 'retro-gallery-col';
-                    // Dynamic width for flexible resizing
-                    div.style.flex = (100 / colCount) + '%';
-                    div.style.maxWidth = (100 / colCount) + '%';
+                    div.style.setProperty('flex', `0 0 ${colPct}%`, 'important');
+                    div.style.setProperty('max-width', `${colPct}%`, 'important');
+                    div.style.setProperty('width', `${colPct}%`, 'important');
+                    div.style.setProperty('padding', '0', 'important');
+                    div.style.setProperty('margin', '0', 'important');
+                    div.style.setProperty('border', 'none', 'important');
                     cols.push(div);
                 }
 
@@ -223,7 +257,7 @@
                     if (caption) {
                         const captionEl = document.createElement('div');
                         captionEl.className = 'gallery-caption';
-                        captionEl.textContent = caption;
+                        captionEl.innerHTML = caption;
                         wrapper.appendChild(captionEl);
                     }
 
@@ -240,8 +274,23 @@
             if (window.Layout && window.Layout.checkGalleryPresence) {
                 window.Layout.checkGalleryPresence();
             }
+            if (window.Layout && window.Layout.updateGalleryColsIndicator) {
+                window.Layout.updateGalleryColsIndicator(window.currentGalleryCols);
+            }
         }
         window.formatGalleries = formatGalleries;
+
+        // Auto-adapt gallery columns on screen resize if user has not manually customized columns
+        window.addEventListener('resize', () => {
+            if (!document.querySelector('.retro-gallery[data-user-cols]')) {
+                const defaultCols = getDefaultGalleryCols();
+                if (defaultCols !== window.currentGalleryCols) {
+                    currentGalleryCols = defaultCols;
+                    window.currentGalleryCols = defaultCols;
+                    formatGalleries();
+                }
+            }
+        });
 
         async function deleteArticle() {
             if (!currentMeta) return;

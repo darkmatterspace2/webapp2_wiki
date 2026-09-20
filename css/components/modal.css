@@ -330,16 +330,9 @@ body.lightbox-open {
         scrollbar-width: none;
         box-sizing: border-box !important;
         z-index: 2015 !important;
-        opacity: 0.96 !important;
-        visibility: visible !important;
-        pointer-events: auto !important;
-    }
-
-    /* On mobile viewports, keep toolbar always accessible */
-    .lightbox-modal.hud-hidden .lightbox-controls {
-        opacity: 0.96 !important;
-        visibility: visible !important;
-        pointer-events: auto !important;
+        opacity: 0.96;
+        visibility: visible;
+        pointer-events: auto;
     }
 
     .lightbox-controls::-webkit-scrollbar {

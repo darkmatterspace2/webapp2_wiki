@@ -282,9 +282,9 @@ function initLayout() {
                 <!-- Gallery Column Controls (shown if gallery present) -->
                 <div class="float-gallery-group" id="float-gallery-group">
                     <div class="float-divider"></div>
-                    <button onclick="Layout.changeGalleryCols(-1)" title="Fewer Columns (Larger Images)" class="btn-float-action">−</button>
-                    <div class="float-gallery-cols" id="float-gallery-cols" onclick="Layout.resetGalleryCols()" title="Columns (Click to reset to 3)">3C</div>
-                    <button onclick="Layout.changeGalleryCols(1)" title="More Columns (Smaller Images)" class="btn-float-action">+</button>
+                    <button type="button" onclick="Layout.changeGalleryCols(-1)" title="Fewer Columns (Larger Images)" class="btn-float-action">−</button>
+                    <div class="float-gallery-cols" id="float-gallery-cols" onclick="Layout.resetGalleryCols()" title="Columns (Click to reset to default)">3C</div>
+                    <button type="button" onclick="Layout.changeGalleryCols(1)" title="More Columns (Smaller Images)" class="btn-float-action">+</button>
                 </div>
 
                 <div class="float-divider"></div>
@@ -726,11 +726,19 @@ function scrollToBottom() {
 // GALLERY COLS LOGIC
 // ==========================================
 
+function getResponsiveDefaultCols() {
+    if (window.getDefaultGalleryCols) return window.getDefaultGalleryCols();
+    if (window.innerWidth <= 480) return 1;
+    if (window.innerWidth <= 768) return 2;
+    return 3;
+}
+
 function changeGalleryCols(delta) {
     if (window.changeGalleryColumns) {
         window.changeGalleryColumns(delta);
     } else {
-        const cols = (window.currentGalleryCols || 3) + delta;
+        const defaultCols = getResponsiveDefaultCols();
+        const cols = (window.currentGalleryCols || defaultCols) + delta;
         const clamped = Math.min(Math.max(cols, 1), 6);
         window.currentGalleryCols = clamped;
         updateGalleryColsIndicator(clamped);
@@ -738,19 +746,21 @@ function changeGalleryCols(delta) {
 }
 
 function resetGalleryCols() {
+    const defaultCols = getResponsiveDefaultCols();
     if (window.changeGalleryColumns) {
-        const current = window.currentGalleryCols || 3;
-        window.changeGalleryColumns(3 - current);
+        const current = window.currentGalleryCols || defaultCols;
+        window.changeGalleryColumns(defaultCols - current);
     } else {
-        window.currentGalleryCols = 3;
-        updateGalleryColsIndicator(3);
+        window.currentGalleryCols = defaultCols;
+        updateGalleryColsIndicator(defaultCols);
     }
 }
 
 function updateGalleryColsIndicator(cols) {
     const el = document.getElementById('float-gallery-cols');
     if (el) {
-        const val = cols || window.currentGalleryCols || 3;
+        const defaultCols = getResponsiveDefaultCols();
+        const val = (cols !== undefined && cols !== null) ? cols : (window.currentGalleryCols || defaultCols);
         el.textContent = val + 'C';
     }
 }

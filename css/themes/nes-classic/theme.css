@@ -1,151 +1,198 @@
-/* THEME: NES CLASSIC - 8-bit Nintendo Entertainment System Inspired */
+/* ==========================================================================
+   THEME: NES CLASSIC (FAMICOM & 8-BIT NES MASTER EDITION)
+   Authentic 2C02 PPU Color Palette, Pixel-Art Aesthetics & Dual-Typography
+   ========================================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Silkscreen:wght@400;700&family=VT323&display=swap');
 
-/* NES Color Palette - Authentic 2C02 PPU Colors */
+/* ==========================================================================
+   1. AUTHENTIC NES 2C02 PPU DESIGN SYSTEM & COLOR TOKENS
+   ========================================================================== */
 :root {
-    /* Core NES Palette */
-    --nes-black: #0d0d0d;
-    --nes-dark-grey: #6d6d6d;
-    --nes-light-grey: #b8b8b8;
+    /* Authentic NES 2C02 PPU Palette */
+    --nes-black: #07070b;
+    --nes-bg-dark: #0c0c16;
+    --nes-chassis: #252532;
+    --nes-dark-grey: #464656;
+    --nes-mid-grey: #7a7a8e;
+    --nes-light-grey: #b8b8cc;
     --nes-white: #fcfcfc;
 
     /* NES Blues */
-    --nes-blue-dark: #0000bc;
+    --nes-blue-dark: #0000a8;
     --nes-blue: #0078f8;
     --nes-blue-light: #3cbcfc;
+    --nes-blue-sky: #88d8f8;
 
     /* NES Reds */
-    --nes-red-dark: #a81000;
+    --nes-red-dark: #880000;
     --nes-red: #f83800;
     --nes-red-light: #f87858;
 
     /* NES Greens */
-    --nes-green-dark: #005800;
+    --nes-green-dark: #005000;
     --nes-green: #00a800;
     --nes-green-light: #58d854;
 
-    /* NES Yellows/Golds */
+    /* NES Yellows / Golds */
     --nes-gold: #f8b800;
     --nes-yellow: #fcfc00;
-
-    /* NES Browns */
-    --nes-brown-dark: #503000;
-    --nes-brown: #ac7c00;
     --nes-tan: #f8b878;
 
-    /* Mapped Variables */
-    --bg-color: var(--nes-black);
-    --text-color: var(--nes-white);
+    /* NES Purples & Magentas */
+    --nes-purple-dark: #380054;
+    --nes-purple: #6844fc;
+    --nes-purple-light: #9878f8;
+    --nes-pink: #f85898;
+
+    /* NES Browns */
+    --nes-brown-dark: #442400;
+    --nes-brown: #a86400;
+
+    /* Semantic Variable Mapping */
+    --bg-color: var(--nes-bg-dark);
+    --text-color: #f0f0f8;
+    --text-muted: var(--nes-light-grey);
     --header-bg: var(--nes-blue-dark);
-    --sidebar-bg: #1a1a40;
+    --sidebar-bg: #121222;
+    --card-bg: #161628;
     --border-color: var(--nes-white);
+    --border-light: var(--nes-light-grey);
+    --border-dark: #040408;
     --link-color: var(--nes-blue-light);
-    --visited-color: var(--nes-red-light);
+    --visited-color: var(--nes-purple-light);
+    --accent-green: var(--nes-green-light);
+    --accent-green-glow: rgba(88, 216, 84, 0.4);
+    --accent-gold: var(--nes-gold);
+    --accent-danger: var(--nes-red);
     --input-bg: var(--nes-black);
     --input-text: var(--nes-white);
+    --btn-bg: #2b2b3c;
+    --btn-hover: var(--nes-red);
+    --btn-active: var(--nes-red-dark);
 
-    /* Typography */
-    --font-main: 'Press Start 2P', cursive;
+    /* Typography Hierarchy */
+    --font-title: 'Press Start 2P', cursive;
+    --font-ui: 'Press Start 2P', cursive;
+    --font-body: 'VT323', monospace;
+    --font-mono: 'VT323', monospace;
+    --font-main: 'VT323', monospace;
+
+    /* Pixel Art Box-Shadow Borders */
+    --pixel-box: 0 -4px 0 0 #000, 0 4px 0 0 #000, -4px 0 0 0 #000, 4px 0 0 0 #000;
+    --pixel-box-sm: 0 -2px 0 0 #000, 0 2px 0 0 #000, -2px 0 0 0 #000, 2px 0 0 0 #000;
+    --pixel-box-gold: 0 -3px 0 0 var(--nes-gold), 0 3px 0 0 var(--nes-gold), -3px 0 0 0 var(--nes-gold), 3px 0 0 0 var(--nes-gold);
+    --pixel-box-red: 0 -3px 0 0 var(--nes-red), 0 3px 0 0 var(--nes-red), -3px 0 0 0 var(--nes-red), 3px 0 0 0 var(--nes-red);
 }
 
-/* Light Mode */
+/* Light Mode / Game Boy Pocket Grey Palette */
 [data-theme="light"] {
-    --bg-color: var(--nes-light-grey);
-    --text-color: var(--nes-black);
-    --sidebar-bg: #d8d8e8;
+    --bg-color: #c8c8d8;
+    --text-color: #121218;
+    --text-muted: #48485a;
+    --sidebar-bg: #b0b0c4;
     --header-bg: var(--nes-blue);
+    --card-bg: #dcdce8;
+    --input-bg: #e8e8f4;
+    --input-text: #08080c;
+    --border-color: #121218;
+    --btn-bg: #9c9cb0;
 }
 
-/* Pixelation Enforcement */
+/* ==========================================================================
+   2. PIXELATION ENFORCEMENT & CRT SCANLINE RASTER
+   ========================================================================== */
 * {
-    image-rendering: pixelated;
-    image-rendering: -moz-crisp-edges;
-    image-rendering: crisp-edges;
+    image-rendering: pixelated !important;
+    image-rendering: -moz-crisp-edges !important;
+    image-rendering: crisp-edges !important;
     box-sizing: border-box;
 }
 
 body {
     background-color: var(--bg-color);
-    /* CRT Scanline Effect */
+    /* Subtle 8-bit TV raster scanline background */
     background-image:
+        radial-gradient(ellipse at center, rgba(16, 20, 40, 0.4) 0%, rgba(4, 4, 8, 0.95) 100%),
         repeating-linear-gradient(0deg,
             transparent,
             transparent 2px,
-            rgba(0, 0, 0, 0.15) 2px,
-            rgba(0, 0, 0, 0.15) 4px);
+            rgba(0, 0, 0, 0.28) 2px,
+            rgba(0, 0, 0, 0.28) 4px);
+    background-attachment: fixed;
     color: var(--text-color);
-    font-family: var(--font-main);
+    font-family: var(--font-body);
+    font-size: 19px;
+    line-height: 1.5;
     margin: 0;
     padding: 0;
-    font-size: 12px;
-    line-height: 2;
+    letter-spacing: 0.5px;
+    text-rendering: geometricPrecision;
 }
 
-/* Links - Classic 8-bit style */
+/* Enhanced CRT Filter */
+body.crt-effect::before {
+    content: " ";
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background:
+        linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.35) 50%),
+        linear-gradient(90deg, rgba(255, 0, 0, 0.04), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.04));
+    z-index: 99990;
+    background-size: 100% 4px, 6px 100%;
+    pointer-events: none;
+    opacity: 0.75;
+}
+
+/* Segmented 8-bit Health/Energy Reading Bar */
+#reading-progress-bar {
+    height: 6px !important;
+    background: repeating-linear-gradient(90deg,
+        var(--nes-green) 0px,
+        var(--nes-green) 8px,
+        var(--nes-green-light) 8px,
+        var(--nes-green-light) 12px,
+        #000 12px,
+        #000 14px) !important;
+    box-shadow: 0 0 10px rgba(88, 216, 84, 0.8), 0 2px 4px rgba(0, 0, 0, 0.8) !important;
+}
+
+/* Links */
 a {
     color: var(--link-color);
     text-decoration: none;
+    transition: color 0.1s ease;
 }
 
 a:hover {
     color: var(--nes-yellow);
-    text-shadow: 2px 2px 0 var(--nes-red);
+    text-shadow: 2px 2px 0 var(--nes-red-dark);
 }
 
 a:visited {
     color: var(--visited-color);
 }
 
-/* Headers - NES Title Card Style */
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-    font-family: var(--font-main);
-    font-weight: normal;
-    margin-bottom: 1.5rem;
-    color: var(--nes-gold);
-    text-shadow:
-        3px 3px 0 var(--nes-brown-dark),
-        -1px -1px 0 var(--nes-brown);
-    border-bottom: 4px solid var(--nes-gold);
-    padding-bottom: 8px;
-    text-transform: uppercase;
-}
-
-h1 {
-    font-size: 18px;
-    text-align: center;
-}
-
-h2 {
-    font-size: 14px;
-}
-
-h3,
-h4,
-h5,
-h6 {
-    font-size: 12px;
-}
-
-/* LAYOUT TABLE - Game Frame */
+/* ==========================================================================
+   3. GAME CONSOLE FRAME & MAIN LAYOUT
+   ========================================================================== */
 table.main-layout {
     width: 100%;
-    max-width: 1200px;
+    max-width: 1360px;
     margin: 0 auto;
-    height: 100vh;
+    min-height: 100vh;
     border-collapse: separate;
     border-spacing: 0;
-    /* NES Controller-style border pattern */
-    border: 8px solid var(--nes-dark-grey);
+    border: 6px solid var(--nes-dark-grey);
     box-shadow:
         inset 4px 4px 0 var(--nes-light-grey),
         inset -4px -4px 0 var(--nes-black),
-        0 0 0 4px var(--nes-black);
+        0 0 0 4px var(--nes-black),
+        0 8px 30px rgba(0, 0, 0, 0.85);
     background: var(--bg-color);
 }
 
@@ -154,220 +201,347 @@ td {
     padding: 0;
 }
 
-/* HEADER - Title Screen */
+/* ==========================================================================
+   4. TITLE SCREEN HEADER & LOGO
+   ========================================================================== */
 .header-cell {
     background: var(--header-bg);
-    /* Starfield pattern */
+    /* Classic 8-bit starfield background */
     background-image:
         radial-gradient(var(--nes-white) 1px, transparent 1px),
-        radial-gradient(var(--nes-white) 1px, transparent 1px);
-    background-size: 40px 40px;
-    background-position: 0 0, 20px 20px;
-    border-bottom: 8px solid var(--nes-black);
-    height: 80px;
-    padding: 15px 20px;
+        radial-gradient(rgba(255, 255, 255, 0.6) 1px, transparent 1px),
+        repeating-linear-gradient(90deg,
+            rgba(0, 0, 0, 0.1) 0px,
+            rgba(0, 0, 0, 0.1) 4px,
+            transparent 4px,
+            transparent 8px);
+    background-size: 64px 64px, 32px 32px, 8px 8px;
+    background-position: 0 0, 16px 16px, 0 0;
+    border-bottom: 6px solid var(--nes-black);
+    padding: 12px 18px 24px 18px;
     position: relative;
+    height: auto;
+    min-height: 76px;
 }
 
-/* Brick Pattern Overlay */
+/* Brick Wall Trim along Header Base */
 .header-cell::before {
     content: '';
     position: absolute;
     bottom: 0;
     left: 0;
     right: 0;
-    height: 16px;
+    height: 14px;
     background: repeating-linear-gradient(90deg,
-            var(--nes-brown) 0px,
-            var(--nes-brown) 30px,
-            var(--nes-brown-dark) 30px,
-            var(--nes-brown-dark) 32px);
+        var(--nes-brown) 0px,
+        var(--nes-brown) 28px,
+        var(--nes-brown-dark) 28px,
+        var(--nes-brown-dark) 32px);
     border-top: 2px solid var(--nes-tan);
+    border-bottom: 2px solid var(--nes-black);
 }
 
 .header-content {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    height: 100%;
+    flex-wrap: wrap;
+    gap: 12px;
+    position: relative;
+    z-index: 2;
 }
 
+/* Logo & Title */
 .header-content h1,
-.header-content span {
-    font-family: var(--font-main);
-    color: var(--nes-white);
+.header-content span[style*="font-size: 24px"],
+.header-content span.logo-text {
+    font-family: var(--font-title) !important;
+    font-size: 16px !important;
+    color: var(--nes-yellow) !important;
     text-shadow:
-        3px 3px 0 var(--nes-red-dark),
-        -1px -1px 0 var(--nes-red);
-    font-size: 16px;
-    border: none;
+        3px 3px 0 var(--nes-red),
+        5px 5px 0 var(--nes-black),
+        -1px -1px 0 var(--nes-gold) !important;
+    letter-spacing: 1px;
     margin: 0;
+    text-transform: uppercase;
 }
 
-/* SIDEBAR - Menu Select */
+.header-content span[style*="vertical-align: super"] {
+    font-family: var(--font-title) !important;
+    font-size: 8px !important;
+    color: var(--nes-green-light) !important;
+    text-shadow: 1px 1px 0 var(--nes-black);
+    margin-left: 4px;
+}
+
+/* Header Action Buttons Container */
+.header-content>div:last-child {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+/* ==========================================================================
+   5. CONTROLLER BUTTONS & TACTILE UI (A/B BUTTONS, D-PAD, PILL SHAPES)
+   ========================================================================== */
+button,
+.btn-header,
+.btn-random-article,
+.index-tab-btn,
+.view-mode-btn,
+.archive-month-btn {
+    font-family: var(--font-ui) !important;
+    font-size: 10px !important;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    position: relative;
+    padding: 7px 12px !important;
+    margin: 2px;
+    background: var(--btn-bg) !important;
+    color: var(--nes-white) !important;
+    border: 3px solid var(--nes-light-grey) !important;
+    border-top-color: var(--nes-white) !important;
+    border-left-color: var(--nes-white) !important;
+    border-right-color: var(--nes-black) !important;
+    border-bottom-color: var(--nes-black) !important;
+    box-shadow: 2px 2px 0 var(--nes-black);
+    text-shadow: 1px 1px 0 var(--nes-black);
+    transition: transform 0.08s ease, background 0.1s ease;
+    user-select: none;
+}
+
+/* Hover State - Classic Controller Cherry Red */
+button:hover,
+.btn-header:hover,
+.index-tab-btn:hover,
+.view-mode-btn:hover,
+.archive-month-btn:hover {
+    background: var(--nes-red) !important;
+    color: var(--nes-white) !important;
+    border-top-color: var(--nes-red-light) !important;
+    border-left-color: var(--nes-red-light) !important;
+    border-right-color: var(--nes-red-dark) !important;
+    border-bottom-color: var(--nes-red-dark) !important;
+    text-shadow: 1px 1px 0 var(--nes-red-dark);
+}
+
+/* Active Press: Inverted Bevel */
+button:active,
+.btn-header:active,
+.index-tab-btn:active,
+.view-mode-btn:active {
+    background: var(--nes-red-dark) !important;
+    border-top-color: var(--nes-black) !important;
+    border-left-color: var(--nes-black) !important;
+    border-right-color: var(--nes-white) !important;
+    border-bottom-color: var(--nes-white) !important;
+    transform: translate(2px, 2px);
+    box-shadow: none;
+}
+
+/* Active Highlight (Green Level Cleared) */
+button.active,
+.btn-header.active,
+.index-tab-btn.active,
+.view-mode-btn.active {
+    background: var(--nes-green) !important;
+    color: var(--nes-white) !important;
+    border-top-color: var(--nes-green-light) !important;
+    border-left-color: var(--nes-green-light) !important;
+    border-right-color: var(--nes-green-dark) !important;
+    border-bottom-color: var(--nes-green-dark) !important;
+}
+
+/* Random Article Button - Super Star Gold Power-Up */
+.btn-random-article {
+    background: var(--nes-gold) !important;
+    color: #000 !important;
+    text-shadow: 1px 1px 0 var(--nes-yellow) !important;
+    border-top-color: var(--nes-yellow) !important;
+    border-left-color: var(--nes-yellow) !important;
+    border-right-color: var(--nes-brown-dark) !important;
+    border-bottom-color: var(--nes-brown-dark) !important;
+}
+
+.btn-random-article:hover {
+    background: var(--nes-yellow) !important;
+    color: #000 !important;
+    box-shadow: 0 0 10px rgba(248, 184, 0, 0.8), 2px 2px 0 #000;
+}
+
+/* Delete / Danger Button */
+.btn-delete,
+button[onclick*="delete"] {
+    background: var(--nes-red-dark) !important;
+    border-color: var(--nes-red-light) !important;
+    color: var(--nes-white) !important;
+}
+
+/* Mobile Hamburger Menu Button */
+.btn-hamburger {
+    background: var(--nes-red) !important;
+    color: var(--nes-white) !important;
+    border: 3px solid var(--nes-white) !important;
+    border-right-color: var(--nes-black) !important;
+    border-bottom-color: var(--nes-black) !important;
+    font-size: 14px !important;
+    padding: 6px 10px !important;
+}
+
+/* ==========================================================================
+   6. ARCADE TOP HUD STATUS BAR
+   ========================================================================== */
+.index-stats-bar {
+    background: var(--nes-black) !important;
+    border: 4px solid var(--nes-dark-grey) !important;
+    border-top-color: var(--nes-light-grey) !important;
+    border-left-color: var(--nes-light-grey) !important;
+    box-shadow: inset 2px 2px 0 #000, 0 4px 0 #000;
+    padding: 8px 14px !important;
+    margin-bottom: 16px !important;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-family: var(--font-title) !important;
+    font-size: 9px !important;
+    color: var(--nes-light-grey) !important;
+    letter-spacing: 1px;
+}
+
+.stat-badge {
+    color: var(--nes-yellow) !important;
+    text-shadow: 1px 1px 0 var(--nes-brown-dark);
+}
+
+/* ==========================================================================
+   7. STAGE SELECT SIDEBAR & BLINKING CURSOR
+   ========================================================================== */
 .sidebar-cell {
-    width: 220px;
+    width: 240px;
     background-color: var(--sidebar-bg);
-    border-right: 4px solid var(--nes-blue-dark);
-    font-size: 10px;
-    padding: 15px;
-    /* Grid pattern */
+    border-right: 4px solid var(--nes-black);
+    box-shadow: inset -3px 0 0 var(--nes-dark-grey);
+    padding: 16px 14px;
+    font-family: var(--font-body);
+    font-size: 20px;
+    line-height: 1.4;
+    /* Cartridge cooling vent grid pattern */
     background-image:
-        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-    background-size: 16px 16px;
+        repeating-linear-gradient(0deg,
+            transparent,
+            transparent 6px,
+            rgba(0, 0, 0, 0.25) 6px,
+            rgba(0, 0, 0, 0.25) 8px);
 }
 
 .sidebar-cell b {
+    font-family: var(--font-title);
+    font-size: 10px;
     color: var(--nes-gold);
     display: block;
+    margin-top: 12px;
     margin-bottom: 8px;
     padding-bottom: 4px;
-    border-bottom: 2px solid var(--nes-gold);
+    border-bottom: 3px solid var(--nes-gold);
+    text-shadow: 1px 1px 0 var(--nes-brown-dark);
+    letter-spacing: 1px;
+    text-transform: uppercase;
 }
 
 .sidebar-cell ul {
     list-style: none;
     padding: 0;
-    margin: 0 0 15px 0;
+    margin: 0 0 16px 0;
 }
 
 .sidebar-cell li {
     margin-bottom: 4px;
-    padding: 4px 4px 4px 16px;
+    padding: 2px 4px 2px 18px;
     position: relative;
-}
-
-/* Menu Arrow Cursor */
-.sidebar-cell li:hover::before {
-    content: '▶';
-    position: absolute;
-    left: 0;
-    color: var(--nes-white);
-    animation: blink 0.5s infinite;
-}
-
-@keyframes blink {
-
-    0%,
-    49% {
-        opacity: 1;
-    }
-
-    50%,
-    100% {
-        opacity: 0;
-    }
+    border-bottom: 1px dotted rgba(255, 255, 255, 0.1);
 }
 
 .sidebar-cell a {
     color: var(--nes-white);
+    display: inline-block;
+    transition: color 0.1s;
 }
 
-.sidebar-cell a:hover {
+/* Blinking 8-Bit Menu Cursor '▶' */
+.sidebar-cell li:hover::before {
+    content: '▶';
+    position: absolute;
+    left: 2px;
     color: var(--nes-yellow);
-    text-shadow: none;
+    font-family: monospace;
+    font-size: 16px;
+    animation: nes-cursor-blink 0.4s steps(2, start) infinite;
 }
 
-/* MAIN CONTENT */
+@keyframes nes-cursor-blink {
+    to {
+        visibility: hidden;
+    }
+}
+
+.sidebar-cell li:hover a {
+    color: var(--nes-yellow);
+    text-shadow: 1px 1px 0 var(--nes-red-dark);
+}
+
+/* Active Category indicator */
+.sidebar-cell li.active a {
+    color: var(--nes-green-light);
+    font-weight: bold;
+}
+
+/* ==========================================================================
+   8. MAIN CONTENT CELL
+   ========================================================================== */
 .content-cell {
-    padding: 20px;
+    padding: 24px;
     background-color: var(--bg-color);
-    /* Subtle tile pattern */
     background-image:
-        linear-gradient(45deg, rgba(255, 255, 255, 0.02) 25%, transparent 25%),
-        linear-gradient(-45deg, rgba(255, 255, 255, 0.02) 25%, transparent 25%),
-        linear-gradient(45deg, transparent 75%, rgba(255, 255, 255, 0.02) 75%),
-        linear-gradient(-45deg, transparent 75%, rgba(255, 255, 255, 0.02) 75%);
-    background-size: 16px 16px;
+        radial-gradient(circle at top right, rgba(0, 120, 248, 0.05) 0%, transparent 60%),
+        repeating-linear-gradient(0deg,
+            transparent,
+            transparent 3px,
+            rgba(0, 0, 0, 0.15) 3px,
+            rgba(0, 0, 0, 0.15) 6px);
 }
 
-/* HIDE SIDEBAR (ZEN MODE) */
+/* Zen Mode Sidebar Collapse */
 body.zen-mode .sidebar-cell {
-    display: none;
+    display: none !important;
 }
 
-/* SEARCH BOX */
-.search-box {
-    margin-bottom: 20px;
-    width: 100%;
+/* Exit Zen Mode Button */
+#btn-exit-zen {
+    font-family: var(--font-title) !important;
+    font-size: 9px !important;
+    background: var(--nes-red) !important;
+    color: var(--nes-white) !important;
+    border: 3px solid var(--nes-white) !important;
+    box-shadow: 3px 3px 0 #000 !important;
 }
 
-/* INPUTS - Command Input */
-input,
-textarea,
-select {
-    background: var(--nes-black);
-    color: var(--nes-white);
-    border: 4px solid var(--nes-dark-grey);
-    border-top-color: var(--nes-black);
-    border-left-color: var(--nes-black);
-    border-right-color: var(--nes-light-grey);
-    border-bottom-color: var(--nes-light-grey);
-    padding: 8px 12px;
-    font-family: var(--font-main);
-    font-size: 10px;
-    width: 100%;
-    outline: none;
-}
-
-input:focus,
-textarea:focus {
-    border-color: var(--nes-blue-light);
-    box-shadow: 0 0 0 2px var(--nes-blue);
-}
-
-/* BUTTONS - NES Controller Button Style */
-button,
-.btn-header {
-    background: var(--nes-dark-grey);
-    color: var(--nes-white);
-    font-family: var(--font-main);
-    font-size: 10px;
-    padding: 8px 16px;
-    cursor: pointer;
-    text-shadow: 1px 1px 0 var(--nes-black);
-    border: 4px solid var(--nes-light-grey);
-    border-top-color: var(--nes-white);
-    border-left-color: var(--nes-white);
-    border-right-color: var(--nes-black);
-    border-bottom-color: var(--nes-black);
-    margin: 4px;
-    position: relative;
-    text-transform: uppercase;
-}
-
-button:hover,
-.btn-header:hover {
-    background: var(--nes-red);
-    color: var(--nes-white);
-}
-
-button:active,
-.btn-header:active {
-    border-top-color: var(--nes-black);
-    border-left-color: var(--nes-black);
-    border-right-color: var(--nes-white);
-    border-bottom-color: var(--nes-white);
-}
-
-button.active,
-.btn-header.active {
-    background: var(--nes-green);
-    color: var(--nes-white);
-}
-
-/* JUMP LINKS - Power-Up Blocks */
+/* ==========================================================================
+   9. QUESTION MARK [?] POWER-UP BLOCK JUMP LINKS
+   ========================================================================== */
 .jump-links {
     margin-bottom: 20px;
-    font-family: var(--font-main);
-    font-size: 10px;
-    text-align: center;
     padding: 10px;
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    gap: 4px;
+    gap: 6px;
+    background: rgba(0, 0, 0, 0.4);
+    border: 3px solid var(--nes-dark-grey);
 }
 
 .jump-links a {
@@ -378,562 +552,608 @@ button.active,
     border: 3px solid var(--nes-tan);
     border-right-color: var(--nes-brown-dark);
     border-bottom-color: var(--nes-brown-dark);
+    box-shadow: 2px 2px 0 var(--nes-black);
     align-items: center;
     justify-content: center;
-    text-decoration: none;
     color: var(--nes-yellow);
+    font-family: var(--font-title);
+    font-size: 11px;
     font-weight: bold;
+    text-shadow: 1px 1px 0 var(--nes-brown-dark);
+    transition: transform 0.1s ease;
 }
 
+/* Question block bouncing animation on hover */
 .jump-links a:hover {
     background: var(--nes-gold);
     color: var(--nes-white);
-    text-shadow: none;
-    animation: bounce 0.3s infinite alternate;
+    transform: translateY(-4px);
+    box-shadow: 2px 6px 0 var(--nes-black);
+    animation: block-bounce 0.25s infinite alternate ease-in-out;
 }
 
-@keyframes bounce {
+@keyframes block-bounce {
     from {
-        transform: translateY(0);
+        transform: translateY(-2px);
     }
-
     to {
-        transform: translateY(-4px);
+        transform: translateY(-6px);
     }
 }
 
-/* ARTICLE LIST */
-.article-list-item {
-    margin-bottom: 8px;
-    padding: 4px 0;
-    border-bottom: 2px dotted var(--nes-dark-grey);
-}
-
-/* ARTICLE VIEW */
-.article-meta {
-    font-size: 10px;
-    color: var(--nes-light-grey);
-    margin-bottom: 16px;
-    border-bottom: 4px solid var(--nes-dark-grey);
-    padding-bottom: 8px;
-}
-
-.article-content {
-    margin-top: 16px;
+/* ==========================================================================
+   10. SEARCH BOX & GAME GENIE QUICK SEARCH
+   ========================================================================== */
+.search-box {
+    margin-bottom: 20px;
     width: 100%;
 }
 
-/* Code blocks - Castle Wall Style */
-.article-content pre {
-    background: var(--nes-dark-grey);
-    border: 4px solid var(--nes-light-grey);
-    border-left: 8px solid var(--nes-blue);
-    padding: 16px;
-    color: var(--nes-white);
-    font-family: var(--font-main);
-    font-size: 10px;
-    overflow-x: auto;
-}
-
-.article-content code {
-    background: var(--nes-black);
-    color: var(--nes-green-light);
-    padding: 2px 6px;
-    font-family: var(--font-main);
-    font-size: 10px;
-}
-
-/* FOOTER - Game Over Screen */
-.footer-cell {
-    height: 60px;
-    background: var(--nes-black);
-    color: var(--nes-white);
-    border-top: 8px solid var(--nes-dark-grey);
-    text-align: center;
-    font-family: var(--font-main);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 10px;
-    /* Brick pattern */
-    background-image: repeating-linear-gradient(90deg,
-            var(--nes-brown-dark) 0px,
-            var(--nes-brown-dark) 30px,
-            var(--nes-black) 30px,
-            var(--nes-black) 32px);
-}
-
-/* VISITOR COUNTER - Score Display */
-.visitor-counter {
-    background: transparent;
-    color: var(--nes-yellow);
-    padding: 0 12px;
-    font-family: var(--font-main);
-    font-size: 14px;
-    text-shadow: 2px 2px 0 var(--nes-brown-dark);
-    border: none;
-    display: inline-block;
-    letter-spacing: 4px;
-}
-
-/* LOADING - PRESS START */
-#loading-indicator {
-    background: var(--nes-black);
-    color: var(--nes-white);
-    padding: 16px;
-    font-family: var(--font-main);
-    border: 4px solid var(--nes-white);
-    animation: blink 1s infinite;
-}
-
-/* EDITOR */
-textarea.editor {
+input,
+textarea,
+select {
+    background: var(--input-bg) !important;
+    color: var(--nes-white) !important;
+    border: 3px solid var(--nes-dark-grey) !important;
+    border-top-color: var(--nes-black) !important;
+    border-left-color: var(--nes-black) !important;
+    border-right-color: var(--nes-light-grey) !important;
+    border-bottom-color: var(--nes-light-grey) !important;
+    padding: 8px 12px !important;
+    font-family: var(--font-mono) !important;
+    font-size: 20px !important;
     width: 100%;
-    height: 400px;
-    font-family: var(--font-main);
-    background: var(--nes-black);
-    color: var(--nes-green-light);
-    border: 4px solid var(--nes-dark-grey);
-    padding: 16px;
-    font-size: 10px;
+    outline: none;
+    box-shadow: inset 2px 2px 0 var(--nes-black);
 }
 
-/* TAGS - Power-Up Items (Colorful!) */
-.article-tags {
-    margin-bottom: 16px;
-    font-size: 10px;
+input:focus,
+textarea:focus,
+select:focus {
+    border-color: var(--nes-blue-light) !important;
+    box-shadow: inset 2px 2px 0 var(--nes-black), 0 0 0 2px var(--nes-blue) !important;
 }
 
-.article-tags a {
-    display: inline-block;
-    border: 3px solid;
-    padding: 4px 8px;
-    margin: 2px;
-    text-decoration: none;
-    font-family: var(--font-main);
-    transition: transform 0.1s;
+/* Game Genie Quick Search Modal */
+.retro-quick-search-box {
+    background: var(--nes-chassis) !important;
+    border: 6px solid var(--nes-white) !important;
+    box-shadow:
+        inset 4px 4px 0 var(--nes-light-grey),
+        inset -4px -4px 0 var(--nes-black),
+        0 0 0 4px var(--nes-black),
+        0 10px 40px rgba(0, 0, 0, 0.95) !important;
+    border-radius: 0 !important;
+    padding: 16px !important;
 }
 
-/* Colorful tag variations */
-.article-tags a:nth-child(6n+1) {
-    background: var(--nes-red);
-    border-color: var(--nes-red-light);
-    color: var(--nes-white);
+.search-command-hint {
+    font-family: var(--font-title) !important;
+    font-size: 8px !important;
+    color: var(--nes-gold) !important;
+    background: var(--nes-black) !important;
+    border: 2px solid var(--nes-dark-grey) !important;
+    padding: 2px 6px !important;
 }
 
-.article-tags a:nth-child(6n+2) {
-    background: var(--nes-green);
-    border-color: var(--nes-green-light);
-    color: var(--nes-white);
-}
-
-.article-tags a:nth-child(6n+3) {
-    background: var(--nes-blue);
-    border-color: var(--nes-blue-light);
-    color: var(--nes-white);
-}
-
-.article-tags a:nth-child(6n+4) {
-    background: var(--nes-gold);
-    border-color: var(--nes-yellow);
-    color: var(--nes-black);
-}
-
-.article-tags a:nth-child(6n+5) {
-    background: #9878f8;
-    /* NES Purple */
-    border-color: #d8b8f8;
-    color: var(--nes-white);
-}
-
-.article-tags a:nth-child(6n+6) {
-    background: #00a844;
-    /* NES Teal */
-    border-color: #58f898;
-    color: var(--nes-white);
-}
-
-.article-tags a:hover {
-    transform: scale(1.1);
-    box-shadow: 2px 2px 0 var(--nes-black);
-}
-
-/* ARTICLE CARDS - Level Select (Colorful!) */
+/* ==========================================================================
+   11. LEVEL SELECT ARTICLE CARDS & STAGE TILES
+   ========================================================================== */
 .article-cards {
     width: 100%;
-    border-spacing: 0 12px;
+    border-spacing: 0 14px;
 }
 
 .article-card {
     display: table;
     width: 100%;
+    margin-bottom: 14px;
+    background: var(--card-bg);
     border: 4px solid var(--nes-white);
-    margin-bottom: 12px;
-    color: var(--nes-white);
+    border-right-color: var(--nes-dark-grey);
+    border-bottom-color: var(--nes-dark-grey);
     box-shadow: 4px 4px 0 var(--nes-black);
+    color: var(--nes-white);
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
 }
 
-/* Alternating card colors - like level worlds */
+.article-card:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 var(--nes-black);
+}
+
+/* World Themed Accents */
 .article-card:nth-child(6n+1) {
-    background: var(--nes-blue-dark);
-    border-left: 8px solid var(--nes-blue-light);
+    border-left: 10px solid var(--nes-blue-light) !important;
 }
 
 .article-card:nth-child(6n+2) {
-    background: #380050;
-    /* Purple world */
-    border-left: 8px solid #9878f8;
+    border-left: 10px solid var(--nes-purple-light) !important;
 }
 
 .article-card:nth-child(6n+3) {
-    background: var(--nes-green-dark);
-    border-left: 8px solid var(--nes-green-light);
+    border-left: 10px solid var(--nes-green-light) !important;
 }
 
 .article-card:nth-child(6n+4) {
-    background: var(--nes-red-dark);
-    border-left: 8px solid var(--nes-red-light);
+    border-left: 10px solid var(--nes-red-light) !important;
 }
 
 .article-card:nth-child(6n+5) {
-    background: #503000;
-    /* Brown/desert world */
-    border-left: 8px solid var(--nes-tan);
+    border-left: 10px solid var(--nes-gold) !important;
 }
 
 .article-card:nth-child(6n+6) {
-    background: #004058;
-    /* Teal/water world */
-    border-left: 8px solid var(--nes-blue-light);
+    border-left: 10px solid #00f0a8 !important;
 }
 
 .article-card .card-main {
     display: table-cell;
-    padding: 12px;
+    padding: 14px 16px;
     vertical-align: top;
 }
 
-/* Card titles - Colorful per card type */
 .article-card .card-title {
-    font-size: 12px;
-    font-weight: bold;
+    font-family: var(--font-title);
+    font-size: 13px;
     margin-bottom: 8px;
-    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
-}
-
-.article-card:nth-child(6n+1) .card-title,
-.article-card:nth-child(6n+1) .card-title a {
-    color: var(--nes-yellow);
-}
-
-.article-card:nth-child(6n+2) .card-title,
-.article-card:nth-child(6n+2) .card-title a {
-    color: #d8b8f8;
-    /* Light purple */
-}
-
-.article-card:nth-child(6n+3) .card-title,
-.article-card:nth-child(6n+3) .card-title a {
-    color: var(--nes-green-light);
-}
-
-.article-card:nth-child(6n+4) .card-title,
-.article-card:nth-child(6n+4) .card-title a {
-    color: var(--nes-red-light);
-}
-
-.article-card:nth-child(6n+5) .card-title,
-.article-card:nth-child(6n+5) .card-title a {
-    color: var(--nes-gold);
-}
-
-.article-card:nth-child(6n+6) .card-title,
-.article-card:nth-child(6n+6) .card-title a {
-    color: var(--nes-blue-light);
+    letter-spacing: 0.5px;
+    line-height: 1.4;
 }
 
 .article-card .card-title a {
+    color: var(--nes-yellow);
     text-decoration: none;
+    text-shadow: 2px 2px 0 var(--nes-black);
 }
 
 .article-card .card-title a:hover {
     color: var(--nes-white) !important;
-    text-shadow: 0 0 8px currentColor;
+    text-shadow: 2px 2px 0 var(--nes-red-dark);
 }
 
-/* Category styling in meta */
 .article-card .card-meta {
-    font-size: 10px;
+    font-family: var(--font-body);
+    font-size: 18px;
     color: var(--nes-light-grey);
 }
 
 .article-card .card-meta strong {
-    color: var(--nes-yellow);
-    background: rgba(0, 0, 0, 0.3);
-    padding: 2px 6px;
+    font-family: var(--font-title);
+    font-size: 9px;
+    color: var(--nes-white);
+    background: var(--nes-black);
+    padding: 3px 6px;
     border: 2px solid var(--nes-gold);
-}
-
-.article-card .card-meta a {
-    color: var(--nes-blue-light);
-}
-
-.article-card .card-meta a:hover {
-    color: var(--nes-yellow);
+    display: inline-block;
+    margin-right: 6px;
 }
 
 .article-card .card-right {
     display: table-cell;
-    width: 80px;
-    padding: 8px;
+    width: 90px;
+    padding: 10px;
     vertical-align: middle;
     text-align: center;
-    border-left: 4px solid rgba(255, 255, 255, 0.3);
-    background: rgba(0, 0, 0, 0.2);
+    border-left: 3px solid rgba(255, 255, 255, 0.15);
+    background: rgba(0, 0, 0, 0.35);
+    font-family: var(--font-title);
+    font-size: 10px;
+    color: var(--nes-gold);
 }
 
-/* Scrollbar - NES Cartridge Style */
-::-webkit-scrollbar {
-    width: 16px;
+/* ==========================================================================
+   12. ARTICLE VIEW & HEADINGS (HIGH LEGIBILITY DUAL-TYPOGRAPHY)
+   ========================================================================== */
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-title);
+    font-weight: normal;
+    color: var(--nes-gold);
+    text-shadow:
+        2px 2px 0 var(--nes-brown-dark),
+        -1px -1px 0 var(--nes-black);
+    border-bottom: 4px solid var(--nes-gold);
+    padding-bottom: 6px;
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
-::-webkit-scrollbar-track {
-    background: var(--nes-dark-grey);
-    border-left: 4px solid var(--nes-black);
+h1 { font-size: 18px; line-height: 1.4; }
+h2 { font-size: 14px; border-bottom-width: 3px; }
+h3 { font-size: 12px; border-bottom-width: 2px; }
+h4, h5, h6 { font-size: 11px; }
+
+/* Article Paragraphs - Highly Legible Retro Font */
+.article-content {
+    font-family: var(--font-body);
+    font-size: 21px;
+    line-height: 1.6;
+    color: var(--text-color);
 }
 
-::-webkit-scrollbar-thumb {
-    background: var(--nes-light-grey);
-    border: 2px solid var(--nes-white);
-    border-right-color: var(--nes-black);
-    border-bottom-color: var(--nes-black);
+.article-content p {
+    margin-bottom: 1.2rem;
 }
 
-::-webkit-scrollbar-thumb:hover {
-    background: var(--nes-red);
-}
-
-/* UTILS */
-.hidden {
-    display: none !important;
-}
-
-/* Selection - Player Highlight */
-::selection {
-    background: var(--nes-red);
-    color: var(--nes-white);
-}
-
-/* Gallery Controls */
-.gallery-float-controls {
-    background: var(--nes-dark-grey);
-    border: 4px solid var(--nes-light-grey);
-    border-top-color: var(--nes-white);
-    border-left-color: var(--nes-white);
-    border-right-color: var(--nes-black);
-    border-bottom-color: var(--nes-black);
-}
-
-.gallery-float-controls button {
-    font-size: 14px;
-}
-
-/* Back to Top */
-#back-to-top {
-    background: var(--nes-red);
-    color: var(--nes-white);
+/* NPC Dialogue Box Style Blockquote */
+.article-content blockquote {
+    background: var(--nes-black);
     border: 4px solid var(--nes-white);
-    font-family: var(--font-main);
+    box-shadow: 4px 4px 0 var(--nes-dark-grey);
+    padding: 14px 18px;
+    margin: 1.5rem 0;
+    position: relative;
+    font-size: 20px;
+    color: var(--nes-yellow);
+}
+
+.article-content blockquote::before {
+    content: "💬";
+    position: absolute;
+    top: -14px;
+    left: 14px;
     font-size: 16px;
+    background: var(--nes-black);
+    padding: 0 4px;
 }
 
-#back-to-top:hover {
-    background: var(--nes-gold);
-    color: var(--nes-black);
+/* Dungeon Stone Wall Code Blocks */
+.article-content pre {
+    background: var(--nes-black);
+    border: 4px solid var(--nes-dark-grey);
+    border-left: 8px solid var(--nes-blue);
+    box-shadow: inset 2px 2px 0 #000, 3px 3px 0 #000;
+    padding: 14px 16px;
+    color: var(--nes-green-light);
+    font-family: var(--font-mono);
+    font-size: 18px;
+    overflow-x: auto;
+    line-height: 1.4;
 }
 
-/* Mobile Hamburger */
-.btn-hamburger {
-    font-size: 16px;
+.article-content code {
+    background: var(--nes-black);
+    color: var(--nes-green-light);
+    border: 1px solid var(--nes-dark-grey);
+    padding: 1px 6px;
+    font-family: var(--font-mono);
+    font-size: 18px;
 }
 
-/* HR - Pipe Style */
+/* Warp Pipe Divider */
 hr {
     border: none;
     height: 8px;
     background: var(--nes-green);
     border-top: 2px solid var(--nes-green-light);
     border-bottom: 2px solid var(--nes-green-dark);
-    margin: 16px 0;
+    margin: 20px 0;
+    box-shadow: 0 2px 0 var(--nes-black);
 }
 
-/* ======================================== */
-/* HEADER LAYOUT & BUTTON ALIGNMENT FIXES  */
-/* ======================================== */
-
-/* Header Content - Improved Flexbox */
-.header-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 100%;
-    flex-wrap: wrap;
-    gap: 8px;
-    padding-bottom: 20px;
-    /* Space for brick overlay */
-    position: relative;
-    z-index: 1;
+/* Power-Up Item Tags */
+.article-tags,
+.editor-tags-list {
+    margin-bottom: 16px;
 }
 
-/* Left side - Logo and hamburger */
-.header-content>div:first-child {
-    display: flex;
-    align-items: center;
-    flex-shrink: 0;
-    gap: 8px;
-}
-
-/* Right side - Button container */
-.header-content>div:last-child {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 4px;
-    justify-content: flex-end;
-}
-
-/* Header buttons - Smaller and tighter */
-.header-content .btn-header {
-    padding: 4px 8px;
-    font-size: 8px;
-    margin: 2px;
-    white-space: nowrap;
-}
-
-/* Header title font size */
-.header-content span[style*="font-size: 24px"] {
-    font-size: 14px !important;
-}
-
-.header-content span[style*="font-size: 10px"] {
+.article-tags a,
+.editor-tag-pill {
+    display: inline-block;
+    padding: 3px 8px;
+    margin: 3px;
+    font-family: var(--font-title) !important;
     font-size: 8px !important;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: 2px solid var(--nes-white);
+    box-shadow: 2px 2px 0 var(--nes-black);
+    transition: transform 0.1s;
 }
 
-/* Header cell height adjustment */
-.header-cell {
-    height: auto;
-    min-height: 70px;
-    padding: 12px 15px 24px 15px;
+.article-tags a:nth-child(4n+1) { background: var(--nes-red); color: #fff; }
+.article-tags a:nth-child(4n+2) { background: var(--nes-green); color: #fff; }
+.article-tags a:nth-child(4n+3) { background: var(--nes-blue); color: #fff; }
+.article-tags a:nth-child(4n+4) { background: var(--nes-gold); color: #000; }
+
+.article-tags a:hover {
+    transform: translateY(-2px);
+    box-shadow: 2px 4px 0 var(--nes-black);
 }
 
-/* ======================================== */
-/* MOBILE RESPONSIVE STYLES (NES THEME)    */
-/* ======================================== */
+/* ==========================================================================
+   13. LIGHTBOX MODAL & PAUSE SUB-SCREEN HUD
+   ========================================================================== */
+.lightbox-modal {
+    background-color: rgba(6, 6, 12, 0.95) !important;
+    /* Sub-screen grid backdrop */
+    background-image:
+        radial-gradient(rgba(255, 255, 255, 0.12) 1px, transparent 1px),
+        repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 0, 0, 0.3) 2px, rgba(0, 0, 0, 0.3) 4px) !important;
+    background-size: 32px 32px, 100% 4px !important;
+}
 
+.lightbox-counter {
+    background: var(--nes-black) !important;
+    color: var(--nes-yellow) !important;
+    font-family: var(--font-title) !important;
+    font-size: 10px !important;
+    border: 3px solid var(--nes-white) !important;
+    box-shadow: 3px 3px 0 var(--nes-black) !important;
+}
+
+.lightbox-close-btn {
+    font-family: var(--font-title) !important;
+    font-size: 9px !important;
+    background: var(--nes-red) !important;
+    color: var(--nes-white) !important;
+    border: 3px solid var(--nes-white) !important;
+    box-shadow: 3px 3px 0 var(--nes-black) !important;
+}
+
+/* Directional D-Pad Chevrons: Rock-solid, zero hover flicker */
+.lightbox-nav-btn,
+.lightbox-nav-btn:hover,
+.lightbox-nav-btn:focus {
+    position: absolute !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    background: rgba(14, 14, 24, 0.9) !important;
+    color: var(--nes-yellow) !important;
+    border: 3px solid var(--nes-white) !important;
+    box-shadow: 3px 3px 0 var(--nes-black) !important;
+    font-family: monospace !important;
+    font-size: 26px !important;
+    width: 44px !important;
+    height: 60px !important;
+}
+
+.lightbox-nav-btn:active {
+    top: 50% !important;
+    transform: translateY(-50%) scale(0.95) !important;
+    background: var(--nes-red) !important;
+    color: #fff !important;
+}
+
+/* Lightbox HUD Toolbar */
+.lightbox-controls {
+    background: var(--nes-chassis) !important;
+    border: 4px solid var(--nes-white) !important;
+    box-shadow:
+        inset 2px 2px 0 var(--nes-light-grey),
+        inset -2px -2px 0 var(--nes-black),
+        0 4px 15px rgba(0, 0, 0, 0.9) !important;
+    padding: 6px 10px !important;
+}
+
+.lightbox-controls .lb-btn {
+    font-family: var(--font-title) !important;
+    font-size: 10px !important;
+    background: #181824 !important;
+    color: var(--nes-white) !important;
+    border: 2px solid var(--nes-light-grey) !important;
+    border-top-color: var(--nes-white) !important;
+    border-left-color: var(--nes-white) !important;
+    border-right-color: var(--nes-black) !important;
+    border-bottom-color: var(--nes-black) !important;
+}
+
+.lightbox-controls .lb-btn:hover {
+    background: var(--nes-red) !important;
+    color: var(--nes-white) !important;
+}
+
+.lightbox-controls .lb-btn.active {
+    background: var(--nes-green) !important;
+    color: var(--nes-white) !important;
+    border-color: var(--nes-green-light) !important;
+}
+
+.lightbox-caption {
+    background: var(--nes-black) !important;
+    border: 3px solid var(--nes-gold) !important;
+    color: var(--nes-white) !important;
+    font-family: var(--font-body) !important;
+    font-size: 18px !important;
+    box-shadow: 3px 3px 0 var(--nes-black) !important;
+}
+
+/* ==========================================================================
+   14. FLOATING CONTROLS DOCK (GAMEPAD ACCESSORY)
+   ========================================================================== */
+.gallery-float-controls {
+    background: var(--nes-chassis) !important;
+    border: 3px solid var(--nes-white) !important;
+    box-shadow:
+        inset 2px 2px 0 var(--nes-light-grey),
+        inset -2px -2px 0 var(--nes-black),
+        0 4px 15px rgba(0, 0, 0, 0.8) !important;
+    border-radius: 0 !important;
+}
+
+.gallery-float-controls .btn-float-handle {
+    font-family: var(--font-title) !important;
+    font-size: 9px !important;
+    background: var(--nes-red) !important;
+    color: var(--nes-white) !important;
+    border: 2px solid var(--nes-white) !important;
+    border-radius: 0 !important;
+}
+
+.gallery-float-controls button.btn-float-action {
+    font-family: var(--font-title) !important;
+    font-size: 10px !important;
+    background: #181824 !important;
+    color: var(--nes-yellow) !important;
+    border: 2px solid var(--nes-light-grey) !important;
+    border-radius: 0 !important;
+}
+
+/* ==========================================================================
+   15. GAME OVER & CONTINUE FOOTER SCREEN
+   ========================================================================== */
+.footer-cell {
+    background: var(--nes-black);
+    border-top: 6px solid var(--nes-dark-grey);
+    padding: 16px 20px;
+    font-family: var(--font-title);
+    font-size: 10px;
+    color: var(--nes-white);
+    letter-spacing: 1px;
+    /* Brick footer trim */
+    background-image: repeating-linear-gradient(90deg,
+        var(--nes-brown-dark) 0px,
+        var(--nes-brown-dark) 28px,
+        var(--nes-black) 28px,
+        var(--nes-black) 32px);
+}
+
+.footer-cell a {
+    color: var(--nes-blue-light);
+}
+
+.footer-cell a:hover {
+    color: var(--nes-yellow);
+}
+
+/* Visitor Counter (Hi-Score) */
+.visitor-counter {
+    background: var(--nes-black);
+    color: var(--nes-yellow);
+    padding: 4px 12px;
+    font-family: var(--font-title);
+    font-size: 12px;
+    border: 2px solid var(--nes-gold);
+    letter-spacing: 3px;
+    display: inline-block;
+    box-shadow: 2px 2px 0 #000;
+}
+
+/* ==========================================================================
+   16. CUSTOM 8-BIT SCROLLBAR
+   ========================================================================== */
+::-webkit-scrollbar {
+    width: 14px;
+    height: 14px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--nes-black);
+    border-left: 2px solid var(--nes-dark-grey);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--nes-dark-grey);
+    border: 2px solid var(--nes-light-grey);
+    border-right-color: #000;
+    border-bottom-color: #000;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--nes-red);
+    border-color: var(--nes-red-light);
+}
+
+/* Text Selection */
+::selection {
+    background: var(--nes-red);
+    color: var(--nes-white);
+}
+
+/* Back to Top */
+#back-to-top {
+    background: var(--nes-red) !important;
+    color: var(--nes-white) !important;
+    border: 3px solid var(--nes-white) !important;
+    box-shadow: 3px 3px 0 var(--nes-black) !important;
+    font-family: var(--font-title) !important;
+    font-size: 12px !important;
+}
+
+#back-to-top:hover {
+    background: var(--nes-gold) !important;
+    color: #000 !important;
+}
+
+/* ==========================================================================
+   17. MOBILE & RESPONSIVE REFINEMENTS
+   ========================================================================== */
 @media screen and (max-width: 768px) {
-
-    /* Header - Stack layout on mobile */
-    .header-cell {
-        height: auto;
-        min-height: 60px;
-        padding: 10px 10px 28px 10px;
-    }
-
-    .header-content {
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: nowrap;
-        gap: 6px;
-    }
-
-    /* Left side stays compact */
-    .header-content>div:first-child {
-        flex-shrink: 0;
-    }
-
-    /* Title - smaller on mobile */
-    .header-content span[style*="font-size: 24px"],
-    .header-content span[style*="font-size"] {
-        font-size: 10px !important;
-    }
-
-    .header-content span[style*="font-size: 10px"],
-    .header-content span[style*="vertical-align: super"] {
-        font-size: 6px !important;
-    }
-
-    /* Right side buttons - wrap nicely */
-    .header-content>div:last-child {
-        flex-wrap: wrap;
-        justify-content: flex-end;
-        gap: 2px;
-    }
-
-    /* Smaller buttons on mobile */
-    .header-content .btn-header {
-        padding: 3px 6px;
-        font-size: 7px;
-        margin: 1px;
-    }
-
-    /* Hamburger button - visible and clear */
-    .btn-hamburger {
-        font-size: 14px !important;
-        padding: 6px 10px !important;
-        background: var(--nes-red) !important;
-    }
-
-    /* Table layout fix */
     table.main-layout {
         border-width: 4px;
     }
+
+    .header-cell {
+        padding: 10px 12px 22px 12px;
+    }
+
+    .header-content h1,
+    .header-content span[style*="font-size: 24px"],
+    .header-content span.logo-text {
+        font-size: 12px !important;
+    }
+
+    .header-content .btn-header {
+        font-size: 8px !important;
+        padding: 5px 8px !important;
+    }
+
+    .sidebar-cell {
+        width: 100% !important;
+        border-right: none !important;
+        border-bottom: 4px solid var(--nes-black) !important;
+    }
+
+    .content-cell {
+        padding: 14px !important;
+    }
+
+    .article-content {
+        font-size: 19px !important;
+    }
+
+    .jump-links a {
+        width: 28px;
+        height: 28px;
+        font-size: 10px;
+    }
+
+    .index-stats-bar {
+        font-size: 8px !important;
+        padding: 6px 10px !important;
+    }
 }
 
-/* Extra small screens */
 @media screen and (max-width: 480px) {
-    .header-cell {
-        padding: 8px 8px 24px 8px;
+    table.main-layout {
+        border-width: 3px;
+        box-shadow: none;
     }
 
-    .header-content {
-        gap: 4px;
-    }
-
-    /* Tiny buttons on very small screens */
-    .header-content .btn-header {
-        padding: 2px 4px;
-        font-size: 6px;
-        border-width: 2px;
-    }
-
-    /* Even smaller title */
+    .header-content h1,
     .header-content span[style*="font-size: 24px"],
-    .header-content span[style*="font-size"] {
-        font-size: 8px !important;
+    .header-content span.logo-text {
+        font-size: 10px !important;
+    }
+
+    .header-content .btn-header {
+        font-size: 7px !important;
+        padding: 4px 6px !important;
     }
 
     .header-content span[style*="vertical-align: super"] {
         display: none;
-        /* Hide version number on tiny screens */
     }
 
-    /* Hamburger stays visible */
-    .btn-hamburger {
-        font-size: 12px !important;
-        padding: 4px 8px !important;
+    .jump-links a {
+        width: 24px;
+        height: 24px;
+        font-size: 9px;
     }
 
-    /* Reduce border sizes */
-    table.main-layout {
-        border-width: 2px;
-        box-shadow:
-            inset 2px 2px 0 var(--nes-light-grey),
-            inset -2px -2px 0 var(--nes-black),
-            0 0 0 2px var(--nes-black);
-    }
-
-    .header-cell::before {
-        height: 12px;
+    .article-content {
+        font-size: 18px !important;
     }
 }

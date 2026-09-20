@@ -76,6 +76,15 @@ window.insertGallery = function (cols = 3) {
     window.insertText(snippet);
 };
 
+window.insertVideoGallery = function () {
+    const snippet = `\n<div class="retro-gallery">\n` +
+        `  <video src="https://video.com/placeholder_1.mp4" poster="https://url/pic1.jpg" controls data-caption="<b>Video 1</b> video Description 1. <a href='https://video.com/placeholder_1' target='_blank'>Source</a>"></video>\n\n` +
+        `  <video src="https://video.com/placeholder_2.mp4" poster="https://url/pic2.jpg" controls data-caption="<b>Video 2</b> video Description 2. <a href='https://video.com/placeholder_2' target='_blank'>Source</a>"></video>\n\n` +
+        `  <video src="https://video.com/placeholder_3.mp4" poster="https://url/pic3.jpg" controls data-caption="<b>Video 3</b> video Description 3. <a href='https://video.com/placeholder_3' target='_blank'>Source</a>"></video>\n` +
+        `</div>\n`;
+    window.insertText(snippet);
+};
+
 window.insertCallout = function (type = 'note') {
     const title = type === 'warning' ? 'WARNING' : (type === 'tip' ? 'PRO-TIP' : 'NOTE');
     const snippet = `\n<div style="border: 2px outset var(--border-color); background: rgba(0,255,102,0.07); padding: 10px 12px; margin: 12px 0; border-left: 5px solid #00ff66;">\n` +
