@@ -461,9 +461,11 @@
    EDITOR STYLES (Admin & Authoring)
    ========================================== */
 
-.editor-wrapper {
-    max-width: 960px;
-    margin: 0 auto;
+.editor-wrapper,
+#view-editor {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
     padding: 10px;
     box-sizing: border-box;
 }
@@ -642,7 +644,8 @@
 }
 
 @media (max-width: 640px) {
-    .editor-wrapper {
+    .editor-wrapper,
+    #view-editor {
         padding: 5px;
     }
     

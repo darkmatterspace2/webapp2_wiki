@@ -48,7 +48,9 @@ body.zen-mode #view-article,
 body.zen-mode #article-view,
 body.zen-mode .article-content,
 body.zen-mode #article-content,
-body.zen-mode .article-header {
+body.zen-mode .article-header,
+body.zen-mode #view-editor,
+body.zen-mode .editor-wrapper {
     width: 100% !important;
     max-width: 100% !important;
     margin: 0 !important;

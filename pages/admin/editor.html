@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editor - RetroWiki</title>
     <link rel="stylesheet" href="../../css/main.css">
+    <link rel="stylesheet" href="../../css/components/wysiwyg.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <!-- Config -->
     <script src="../../src/config/app.config.js"></script>
@@ -28,6 +29,15 @@
     <script src="modules/editor.wysiwyg.js"></script>
 
     <style>
+        /* Maximum Available Width Container */
+        #view-editor,
+        .editor-wrapper {
+            width: 100% !important;
+            max-width: 100% !important;
+            margin: 0 !important;
+            box-sizing: border-box !important;
+        }
+
         /* Tab Styles */
         .tab-nav {
             display: flex;
@@ -221,29 +231,128 @@
                     </div>
 
                     <!-- Tab: WYSIWYG (Visual Mode) -->
-                    <div id="tab-content-wysiwyg" class="tab-content">
-                        <!-- WYSIWYG Toolbar -->
-                        <div style="background: var(--header-bg); border: 2px solid var(--border-color); padding: 8px; margin-bottom: 10px; display: flex; gap: 6px; flex-wrap: wrap; align-items: center;">
-                            <button type="button" onclick="execWysiwygCmd('bold')" title="Bold" style="min-width: 30px;"><b>B</b></button>
-                            <button type="button" onclick="execWysiwygCmd('italic')" title="Italic" style="min-width: 30px;"><i>I</i></button>
-                            <button type="button" onclick="execWysiwygCmd('underline')" title="Underline"><u>U</u></button>
-                            <span style="border-left: 2px solid var(--border-color); height: 20px; margin: 0 4px;"></span>
-                            <button type="button" onclick="execWysiwygCmd('formatBlock', '<h2>')" title="Header 2">H2</button>
-                            <button type="button" onclick="execWysiwygCmd('formatBlock', '<h3>')" title="Header 3">H3</button>
-                            <button type="button" onclick="execWysiwygCmd('formatBlock', '<p>')" title="Paragraph">P</button>
-                            <span style="border-left: 2px solid var(--border-color); height: 20px; margin: 0 4px;"></span>
-                            <button type="button" onclick="execWysiwygCmd('insertOrderedList')" title="Ordered List">1.</button>
-                            <button type="button" onclick="execWysiwygCmd('insertUnorderedList')" title="Unordered List">•</button>
-                            <span style="flex-grow: 1;"></span>
-                            <button type="button" onclick="toggleSourceView()" title="Switch to Source View">Source View</button>
-                        </div>
+                    <div id="tab-content-wysiwyg" class="tab-content" style="display: none;">
+                        <div class="wysiwyg-container">
+                            <!-- Microsoft Word Style Ribbon Toolbar -->
+                            <div class="wysiwyg-ribbon">
+                                <!-- History Group -->
+                                <div class="wysiwyg-ribbon-group" title="Undo / Redo">
+                                    <button type="button" class="wysiwyg-btn" onclick="execWysiwygCmd('undo')" title="Undo (Ctrl+Z)">⎌</button>
+                                    <button type="button" class="wysiwyg-btn" onclick="execWysiwygCmd('redo')" title="Redo (Ctrl+Y)">↷</button>
+                                </div>
 
-                        <!-- Fluid WYSIWYG Container -->
-                        <div id="wysiwyg-editor" contenteditable="true"
-                            style="width: 100%; min-height: 450px; box-sizing: border-box; padding: 15px; border: 2px solid var(--border-color); overflow-y: auto; background: #fff; color: #111;">
-                            <!-- Content Syncs Here -->
+                                <!-- Font & Headings -->
+                                <div class="wysiwyg-ribbon-group" title="Typography & Styles">
+                                    <select class="wysiwyg-select" onchange="setWysiwygFontFamily(this.value)" title="Font Family">
+                                        <option value="var(--font-main, sans-serif)">Default Sans</option>
+                                        <option value="'Courier New', monospace">Retro Monospace</option>
+                                        <option value="Georgia, serif">Classic Serif</option>
+                                        <option value="Impact, fantasy">Impact Retro</option>
+                                        <option value="'Press Start 2P', monospace">Pixel Arcade</option>
+                                    </select>
+                                    <select class="wysiwyg-select" onchange="setWysiwygFontSize(this.value)" title="Font Size">
+                                        <option value="">Size</option>
+                                        <option value="12px">12px Small</option>
+                                        <option value="14px">14px Body</option>
+                                        <option value="16px">16px Large</option>
+                                        <option value="20px">20px H3</option>
+                                        <option value="24px">24px H2</option>
+                                        <option value="32px">32px Title</option>
+                                    </select>
+                                    <select class="wysiwyg-select" onchange="setWysiwygHeading(this.value)" title="Format Style">
+                                        <option value="p">Paragraph</option>
+                                        <option value="h1">Heading 1</option>
+                                        <option value="h2">Heading 2</option>
+                                        <option value="h3">Heading 3</option>
+                                        <option value="h4">Heading 4</option>
+                                        <option value="pre">Code Block</option>
+                                    </select>
+                                </div>
+
+                                <!-- Character Formatting -->
+                                <div class="wysiwyg-ribbon-group" title="Character Styling">
+                                    <button type="button" id="wysiwyg-btn-bold" class="wysiwyg-btn" onclick="execWysiwygCmd('bold')" title="Bold (Ctrl+B)"><b>B</b></button>
+                                    <button type="button" id="wysiwyg-btn-italic" class="wysiwyg-btn" onclick="execWysiwygCmd('italic')" title="Italic (Ctrl+I)"><i>I</i></button>
+                                    <button type="button" id="wysiwyg-btn-underline" class="wysiwyg-btn" onclick="execWysiwygCmd('underline')" title="Underline (Ctrl+U)"><u>U</u></button>
+                                    <button type="button" class="wysiwyg-btn" onclick="execWysiwygCmd('strikeThrough')" title="Strikethrough"><s>S</s></button>
+                                    <button type="button" class="wysiwyg-btn" onclick="execWysiwygCmd('subscript')" title="Subscript">X₂</button>
+                                    <button type="button" class="wysiwyg-btn" onclick="execWysiwygCmd('superscript')" title="Superscript">X²</button>
+                                    <label class="wysiwyg-color-btn" title="Text Color">🎨<input type="color" class="wysiwyg-color-input" onchange="execWysiwygCmd('foreColor', this.value)"></label>
+                                    <label class="wysiwyg-color-btn" title="Highlight / Fill Color">🖍️<input type="color" class="wysiwyg-color-input" value="#ffff00" onchange="execWysiwygCmd('hiliteColor', this.value)"></label>
+                                    <button type="button" class="wysiwyg-btn" onclick="execWysiwygCmd('removeFormat')" title="Clear Formatting">🧹</button>
+                                </div>
+
+                                <!-- Alignment -->
+                                <div class="wysiwyg-ribbon-group" title="Paragraph Alignment">
+                                    <button type="button" class="wysiwyg-btn" onclick="execWysiwygCmd('justifyLeft')" title="Align Left">⫷</button>
+                                    <button type="button" class="wysiwyg-btn" onclick="execWysiwygCmd('justifyCenter')" title="Center">≡</button>
+                                    <button type="button" class="wysiwyg-btn" onclick="execWysiwygCmd('justifyRight')" title="Align Right">⫸</button>
+                                    <button type="button" class="wysiwyg-btn" onclick="execWysiwygCmd('justifyFull')" title="Justify">☰</button>
+                                </div>
+
+                                <!-- Lists & Indent -->
+                                <div class="wysiwyg-ribbon-group" title="Lists & Indentation">
+                                    <button type="button" class="wysiwyg-btn" onclick="execWysiwygCmd('insertUnorderedList')" title="Bullet List">•≡</button>
+                                    <button type="button" class="wysiwyg-btn" onclick="execWysiwygCmd('insertOrderedList')" title="Numbered List">1≡</button>
+                                    <button type="button" class="wysiwyg-btn" onclick="execWysiwygCmd('outdent')" title="Decrease Indent">⇤</button>
+                                    <button type="button" class="wysiwyg-btn" onclick="execWysiwygCmd('indent')" title="Increase Indent">⇥</button>
+                                    <button type="button" class="wysiwyg-btn" onclick="execWysiwygCmd('insertHorizontalRule')" title="Divider Line">—</button>
+                                </div>
+
+                                <!-- Insert Multimedia & Objects -->
+                                <div class="wysiwyg-ribbon-group" title="Insert Multimedia & Elements">
+                                    <button type="button" class="wysiwyg-btn highlight" onclick="openWysiwygModal('modal-wysiwyg-image')" title="Insert Image">🖼️ Image</button>
+                                    <button type="button" class="wysiwyg-btn highlight" onclick="openWysiwygModal('modal-wysiwyg-video')" title="Insert Video / Embed">🎥 Video</button>
+                                    <button type="button" class="wysiwyg-btn highlight" onclick="openWysiwygModal('modal-wysiwyg-gallery')" title="Insert Retro Media Gallery">🎞️ Gallery</button>
+                                    <button type="button" class="wysiwyg-btn" onclick="openWysiwygModal('modal-wysiwyg-table')" title="Insert Word Table">📊 Table</button>
+                                    <button type="button" class="wysiwyg-btn" onclick="openWysiwygModal('modal-wysiwyg-link')" title="Insert Link (Ctrl+K)">🔗 Link</button>
+                                    <select class="wysiwyg-select" onchange="if(this.value){ insertWysiwygCallout(this.value); this.value=''; }" title="Insert Callout Box">
+                                        <option value="">💡 Callout...</option>
+                                        <option value="note">💡 Note Box</option>
+                                        <option value="tip">🌟 Pro-Tip Box</option>
+                                        <option value="warning">⚠️ Warning Box</option>
+                                    </select>
+                                </div>
+
+                                <div class="wysiwyg-ribbon-separator"></div>
+
+                                <!-- Canvas Controls & Mode Switch -->
+                                <div class="wysiwyg-ribbon-group" style="margin-left: auto;">
+                                    <button type="button" id="btn-canvas-theme" class="wysiwyg-btn" onclick="toggleCanvasTheme()" title="Toggle Paper / Dark Canvas">🌙 Dark Canvas</button>
+                                    <button type="button" id="btn-canvas-width" class="wysiwyg-btn" onclick="toggleCanvasWidth()" title="Toggle Page Margin Width">↔ Full Screen</button>
+                                    <button type="button" class="wysiwyg-btn" onclick="switchTab('editor')" title="Switch to Source Code">Source View</button>
+                                </div>
+                            </div>
+
+                            <!-- Document Viewport Canvas -->
+                            <div class="wysiwyg-viewport">
+                                <!-- Floating Media Inspector Toolbar -->
+                                <div id="wysiwyg-media-toolbar" style="display: none;">
+                                    <button type="button" class="wysiwyg-mini-btn" onclick="setMediaAlignment('left')" title="Float Left Wrap">⫷ Float L</button>
+                                    <button type="button" class="wysiwyg-mini-btn" onclick="setMediaAlignment('center')" title="Center">≡ Center</button>
+                                    <button type="button" class="wysiwyg-mini-btn" onclick="setMediaAlignment('right')" title="Float Right Wrap">⫸ Float R</button>
+                                    <button type="button" class="wysiwyg-mini-btn" onclick="setMediaAlignment('full')" title="Full Bleed Width">↔ Full</button>
+                                    <div class="wysiwyg-mini-divider"></div>
+                                    <button type="button" class="wysiwyg-mini-btn" onclick="setMediaWidth('25%')">25%</button>
+                                    <button type="button" class="wysiwyg-mini-btn" onclick="setMediaWidth('50%')">50%</button>
+                                    <button type="button" class="wysiwyg-mini-btn" onclick="setMediaWidth('75%')">75%</button>
+                                    <button type="button" class="wysiwyg-mini-btn" onclick="setMediaWidth('100%')">100%</button>
+                                    <div class="wysiwyg-mini-divider"></div>
+                                    <button type="button" class="wysiwyg-mini-btn" onclick="promptMediaCaption()" title="Edit Caption">💬 Caption</button>
+                                    <button type="button" class="wysiwyg-mini-btn" onclick="editSelectedMediaUrl()" title="Edit Source Link">🔗 Link</button>
+                                    <button type="button" class="wysiwyg-mini-btn btn-danger" onclick="deleteSelectedMedia()" title="Delete Media">🗑️</button>
+                                </div>
+
+                                <!-- Realistic Word Page Paper -->
+                                <div id="wysiwyg-editor" class="wysiwyg-page" contenteditable="true" spellcheck="true"></div>
+                            </div>
+
+                            <!-- Status HUD Bar -->
+                            <div class="wysiwyg-status-bar">
+                                <div id="wysiwyg-metrics">WORDS: <b>0</b> &nbsp;|&nbsp; CHARS: <b>0</b> &nbsp;|&nbsp; READ TIME: <b>~1 min</b></div>
+                                <div>PAGE: <b>1 OF 1</b> &nbsp;|&nbsp; <span style="color: var(--accent-green, #00ff88);">ADVANCED SUITE READY</span></div>
+                            </div>
                         </div>
-                        <div style="text-align: right; font-size: 11px; margin-top: 5px; opacity: 0.7;">Visual Editor Mode</div>
                     </div>
 
                     <!-- Tab: Fetch URL -->
@@ -308,6 +417,183 @@
                     style="border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px;">
                 </div>
                 <div id="preview-body" class="article-content"></div>
+            </div>
+        </div>
+
+        <!-- ==========================================
+             WYSIWYG INTERACTIVE MODAL DIALOGS
+             ========================================== -->
+
+        <!-- Modal: Insert Image -->
+        <div id="modal-wysiwyg-image" class="wysiwyg-modal-backdrop">
+            <div class="wysiwyg-dialog">
+                <div class="wysiwyg-dialog-header">
+                    <h3>🖼️ Insert Image</h3>
+                    <button type="button" class="wysiwyg-btn" onclick="closeWysiwygModal('modal-wysiwyg-image')">✕</button>
+                </div>
+                <form onsubmit="submitInsertImage(event)">
+                    <div class="wysiwyg-dialog-body">
+                        <div class="wysiwyg-form-group">
+                            <label for="wysiwyg-img-url">Image URL *</label>
+                            <input type="url" id="wysiwyg-img-url" class="wysiwyg-form-input" placeholder="https://example.com/photo.jpg" required>
+                        </div>
+                        <div class="wysiwyg-form-group">
+                            <label for="wysiwyg-img-alt">Alt Description</label>
+                            <input type="text" id="wysiwyg-img-alt" class="wysiwyg-form-input" placeholder="Descriptive text for accessibility">
+                        </div>
+                        <div class="wysiwyg-form-group">
+                            <label for="wysiwyg-img-caption">Caption (Optional)</label>
+                            <input type="text" id="wysiwyg-img-caption" class="wysiwyg-form-input" placeholder="Figure caption text displayed below">
+                        </div>
+                        <div class="wysiwyg-form-group">
+                            <label for="wysiwyg-img-align">Alignment / Text Wrap</label>
+                            <select id="wysiwyg-img-align" class="wysiwyg-form-input">
+                                <option value="">Default Inline</option>
+                                <option value="center">Center</option>
+                                <option value="left">Float Left (Text wraps right)</option>
+                                <option value="right">Float Right (Text wraps left)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="wysiwyg-dialog-footer">
+                        <button type="button" class="wysiwyg-btn" onclick="closeWysiwygModal('modal-wysiwyg-image')">Cancel</button>
+                        <button type="submit" class="wysiwyg-btn highlight">Insert Image</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal: Insert Video -->
+        <div id="modal-wysiwyg-video" class="wysiwyg-modal-backdrop">
+            <div class="wysiwyg-dialog">
+                <div class="wysiwyg-dialog-header">
+                    <h3>🎥 Insert Video / Embed</h3>
+                    <button type="button" class="wysiwyg-btn" onclick="closeWysiwygModal('modal-wysiwyg-video')">✕</button>
+                </div>
+                <form onsubmit="submitInsertVideo(event)">
+                    <div class="wysiwyg-dialog-body">
+                        <div class="wysiwyg-form-group">
+                            <label for="wysiwyg-vid-url">Video or Embed URL *</label>
+                            <input type="url" id="wysiwyg-vid-url" class="wysiwyg-form-input" placeholder="Direct MP4/WebM URL or YouTube/Vimeo link" required>
+                        </div>
+                        <div class="wysiwyg-form-group">
+                            <label for="wysiwyg-vid-poster">Poster Thumbnail URL (Optional)</label>
+                            <input type="url" id="wysiwyg-vid-poster" class="wysiwyg-form-input" placeholder="https://example.com/poster.jpg">
+                        </div>
+                        <div class="wysiwyg-form-group">
+                            <label for="wysiwyg-vid-caption">Caption</label>
+                            <input type="text" id="wysiwyg-vid-caption" class="wysiwyg-form-input" placeholder="Video description or source attribution">
+                        </div>
+                        <div class="wysiwyg-form-group">
+                            <label for="wysiwyg-vid-align">Alignment</label>
+                            <select id="wysiwyg-vid-align" class="wysiwyg-form-input">
+                                <option value="center">Center</option>
+                                <option value="left">Float Left</option>
+                                <option value="right">Float Right</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="wysiwyg-dialog-footer">
+                        <button type="button" class="wysiwyg-btn" onclick="closeWysiwygModal('modal-wysiwyg-video')">Cancel</button>
+                        <button type="submit" class="wysiwyg-btn highlight">Insert Video</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal: Insert Retro Media Gallery -->
+        <div id="modal-wysiwyg-gallery" class="wysiwyg-modal-backdrop">
+            <div class="wysiwyg-dialog">
+                <div class="wysiwyg-dialog-header">
+                    <h3>🎞️ Insert Retro Media Gallery</h3>
+                    <button type="button" class="wysiwyg-btn" onclick="closeWysiwygModal('modal-wysiwyg-gallery')">✕</button>
+                </div>
+                <form onsubmit="submitInsertGallery(event)">
+                    <div class="wysiwyg-dialog-body">
+                        <div class="wysiwyg-form-group">
+                            <label for="wysiwyg-gal-cols">Grid Columns</label>
+                            <select id="wysiwyg-gal-cols" class="wysiwyg-form-input">
+                                <option value="2">2 Columns</option>
+                                <option value="3" selected>3 Columns (Default)</option>
+                                <option value="4">4 Columns</option>
+                            </select>
+                        </div>
+                        <div class="wysiwyg-form-group">
+                            <label for="wysiwyg-gal-urls">Media URLs (One per line) *</label>
+                            <textarea id="wysiwyg-gal-urls" class="wysiwyg-form-input" style="height: 110px; font-family: monospace;" placeholder="https://example.com/image1.jpg&#10;https://example.com/video1.mp4&#10;https://example.com/image2.jpg" required></textarea>
+                        </div>
+                    </div>
+                    <div class="wysiwyg-dialog-footer">
+                        <button type="button" class="wysiwyg-btn" onclick="closeWysiwygModal('modal-wysiwyg-gallery')">Cancel</button>
+                        <button type="submit" class="wysiwyg-btn highlight">Create Gallery</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal: Insert Table -->
+        <div id="modal-wysiwyg-table" class="wysiwyg-modal-backdrop">
+            <div class="wysiwyg-dialog">
+                <div class="wysiwyg-dialog-header">
+                    <h3>📊 Insert Table</h3>
+                    <button type="button" class="wysiwyg-btn" onclick="closeWysiwygModal('modal-wysiwyg-table')">✕</button>
+                </div>
+                <form onsubmit="submitInsertTable(event)">
+                    <div class="wysiwyg-dialog-body">
+                        <div style="display: flex; gap: 15px;">
+                            <div class="wysiwyg-form-group" style="flex: 1;">
+                                <label for="wysiwyg-tbl-rows">Rows</label>
+                                <input type="number" id="wysiwyg-tbl-rows" class="wysiwyg-form-input" min="1" max="50" value="3" required>
+                            </div>
+                            <div class="wysiwyg-form-group" style="flex: 1;">
+                                <label for="wysiwyg-tbl-cols">Columns</label>
+                                <input type="number" id="wysiwyg-tbl-cols" class="wysiwyg-form-input" min="1" max="15" value="3" required>
+                            </div>
+                        </div>
+                        <div class="wysiwyg-form-group">
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                <input type="checkbox" id="wysiwyg-tbl-header" checked>
+                                <span>Include Header Row</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="wysiwyg-dialog-footer">
+                        <button type="button" class="wysiwyg-btn" onclick="closeWysiwygModal('modal-wysiwyg-table')">Cancel</button>
+                        <button type="submit" class="wysiwyg-btn highlight">Insert Table</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal: Insert Link -->
+        <div id="modal-wysiwyg-link" class="wysiwyg-modal-backdrop">
+            <div class="wysiwyg-dialog">
+                <div class="wysiwyg-dialog-header">
+                    <h3>🔗 Insert Hyperlink</h3>
+                    <button type="button" class="wysiwyg-btn" onclick="closeWysiwygModal('modal-wysiwyg-link')">✕</button>
+                </div>
+                <form onsubmit="submitInsertLink(event)">
+                    <div class="wysiwyg-dialog-body">
+                        <div class="wysiwyg-form-group">
+                            <label for="wysiwyg-link-url">URL / Destination *</label>
+                            <input type="url" id="wysiwyg-link-url" class="wysiwyg-form-input" placeholder="https://..." required>
+                        </div>
+                        <div class="wysiwyg-form-group">
+                            <label for="wysiwyg-link-text">Display Text (Optional)</label>
+                            <input type="text" id="wysiwyg-link-text" class="wysiwyg-form-input" placeholder="Leave empty to use URL">
+                        </div>
+                        <div class="wysiwyg-form-group">
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                <input type="checkbox" id="wysiwyg-link-blank" checked>
+                                <span>Open in new browser tab</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="wysiwyg-dialog-footer">
+                        <button type="button" class="wysiwyg-btn" onclick="closeWysiwygModal('modal-wysiwyg-link')">Cancel</button>
+                        <button type="submit" class="wysiwyg-btn highlight">Insert Link</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
