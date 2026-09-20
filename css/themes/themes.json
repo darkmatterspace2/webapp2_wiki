@@ -38,15 +38,9 @@
         },
         {
             "id": "raunchy",
-            "name": "Raunchy",
-            "description": "Bold and edgy aesthetic",
+            "name": "Raunchy (Unified)",
+            "description": "The definitive unified erotic neon-pink and velvet theme with reworked 60fps animations",
             "css": "raunchy/theme.css"
-        },
-        {
-            "id": "raunchy-3",
-            "name": "Raunchy III",
-            "description": "Ultra-light neon pink edition - works everywhere",
-            "css": "raunchy-3/theme.css"
         },
         {
             "id": "raunchy-4",

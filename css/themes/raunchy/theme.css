@@ -1,404 +1,714 @@
-/* RESET & BASE STYLES - DRIPPING WITH FILTHY LUST 💦🍆 */
+/* ==========================================================================
+   RAUNCHY UNIFIED: THE DEFINITIVE HORNICORN EXPERIENCE 💦🍆💖
+   Combined & Supercharged Edition (Merging "raunchy" & "raunchy-4")
+   Features:
+   - Deep erotic velvet-purple & shocking neon-pink palette with golden lust trim
+   - Reworked 60fps hardware-accelerated fluid animations:
+     * Heartbeat throbbing rhythm (ambient lust pulse)
+     * Juicy neon moan glows & shimmering headings
+     * Seductive wet-drip ripple link interactions
+     * Bouncy jelly-thrust button physics with glossy sheen sweeps
+     * Wet-gush animated input focus borders
+     * Pleasure-meter visitor counter & floating levitation
+   - Complete responsive layout support for mobile, tablet, and widescreen Zen mode
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Bangers&family=Permanent+Marker&family=Segoe+UI:ital,wght@0,400;0,600;0,700;1,400&family=Consolas:wght@400;700&display=swap');
+
+/* --------------------------------------------------------------------------
+   1. SEDUCTIVE COLOR PALETTE & TOKENS
+   -------------------------------------------------------------------------- */
 :root {
-    --bg-color: #0d001a;
-    /* Deep purple midnight fuck session */
-    --text-color: #ff00ff;
-    /* Electric magenta cum glow */
-    --link-color: #ff69b4;
-    /* Hot pink throbbing cock */
-    --visited-color: #ffb6c1;
-    /* Soft pink after bukkake facial */
-    --header-bg: #4b0082;
-    /* Indigo dominance gangbang */
-    --sidebar-bg: #1c0028;
-    /* Shadowy creampie depths */
-    --border-color: #ff1493;
-    /* Deep pink squirt streams */
-    --input-bg: #2a0040;
-    /* Violet pussy juice slick */
-    --input-text: #ffd700;
-    /* Golden piss shine */
-    --font-main: 'Permanent Marker', cursive;
-    /* Handwritten moan script */
-    --font-mono: 'Creepster', cursive;
-    /* Horrific hentai horror */
-}
+    /* Deep Velvet & Slut-Pink Base Surfaces */
+    --bg-dark: #0f0017;
+    --bg-mid: #1d0028;
+    --bg-light: #2e003d;
+    --bg-color: #0f0017;
+    --surface-header: rgba(45, 0, 42, 0.88);
+    --header-bg: #4a0044;
+    --sidebar-bg: rgba(26, 0, 36, 0.94);
+    --content-bg: #0f0017;
+    --card-bg: rgba(29, 0, 40, 0.85);
+    --card-bg-hover: rgba(48, 0, 64, 0.95);
 
-[data-theme="light"] {
-    --bg-color: #ffe4e1;
-    /* Misty rose blushed skin */
-    --text-color: #8b008b;
-    /* Dark magenta hardcore thrust */
+    /* Electric Neon Accents */
+    --text-color: #ff69b4;
+    --text-main: #ff69b4;
+    --text-bright: #ffffff;
+    --text-light: #ffc0cb;
+    --text-muted: #d46baf;
+
+    /* Seductive Links & Highlights */
     --link-color: #ff1493;
-    /* Deep pink clit tease */
-    --visited-color: #ff69b4;
-    /* Hot pink cum covered */
-    --header-bg: #ffc0cb;
-    /* Pink gangbang flush */
-    --sidebar-bg: #fff0f5;
-    /* Lavender blush fingering glow */
-    --border-color: #ff00ff;
-    /* Magenta ahegao eyes */
-    --input-bg: #fdfd96;
-    /* Pale goldenrod piss play */
-    --input-text: #4b0082;
-    /* Indigo deep throat */
+    --link-pink: #ff1493;
+    --link-deep: #ff007f;
+    --link-hover: #ffffff;
+    --visited-color: #ffb6c1;
+    --gold: #ffd700;
+    --accent-gold: #ffd700;
+    --blood-red: #ff0055;
+    --border-pink: #ff1493;
+    --border-color: #ff1493;
+
+    /* Form & Input */
+    --input-bg: #220030;
+    --input-text: #ffd700;
+
+    /* Fonts */
+    --font-main: 'Segoe UI', -apple-system, BlinkMacSystemFont, Tahoma, sans-serif;
+    --font-display: 'Bangers', 'Permanent Marker', Impact, sans-serif;
+    --font-mono: 'Consolas', 'Courier New', monospace;
 }
 
-/* HIGH CONTRAST DARK MODE - INTENSE BUKKAKE BLAST */
-body.dark-mode {
-    --link-color: #ffd700;
-    /* Golden cum shots */
-    --visited-color: #ff4500;
-    /* Orange red scat heat */
+/* --------------------------------------------------------------------------
+   2. REWORKED FLUID ANIMATIONS (60fps Keyframes)
+   -------------------------------------------------------------------------- */
+
+/* A. Ambient Heartbeat & Erotic Pulsing Canvas */
+@keyframes ambientLustBreathing {
+    0%, 100% {
+        background-color: #0d0016;
+        filter: hue-rotate(0deg);
+    }
+    50% {
+        background-color: #170022;
+        filter: hue-rotate(8deg);
+    }
 }
 
-body {
-    background-color: var(--bg-color);
-    background-image: url('https://thumbs.dreamstime.com/z/colorful-pattern-hearts-emojis-various-expressions-pink-background-perfect-cheerful-designs-crafts-bright-376307750.jpg'), linear-gradient(to bottom, rgba(255, 0, 255, 0.2), rgba(139, 0, 139, 0.3));
-    background-size: cover, auto;
-    background-blend-mode: overlay;
-    color: var(--text-color);
-    font-family: var(--font-main);
-    margin: 0;
-    padding: 20px;
-    font-size: 18px;
-    line-height: 1.8;
-    transition: all 0.6s ease-in-out;
-    animation: throb 4s infinite alternate;
+/* B. Double-Thump Erotic Heartbeat Rhythm (80bpm natural rhythm) */
+@keyframes eroticHeartbeat {
+    0%   { transform: scale(1); }
+    12%  { transform: scale(1.03); }
+    24%  { transform: scale(1.01); }
+    36%  { transform: scale(1.04); }
+    55%  { transform: scale(1); }
+    100% { transform: scale(1); }
 }
 
-@keyframes throb {
+/* C. Shimmering Neon Moan Glow (For Headings & Badges) */
+@keyframes neonMoanGlow {
+    0%, 100% {
+        text-shadow: 
+            0 0 6px #ff1493,
+            0 0 15px #ff00ff,
+            0 0 28px rgba(255, 20, 147, 0.7);
+    }
+    50% {
+        text-shadow: 
+            0 0 10px #ffd700,
+            0 0 22px #ff1493,
+            0 0 40px #ff007f,
+            0 0 60px rgba(255, 0, 128, 0.8);
+    }
+}
+
+/* D. Seductive Link Drip & Squirt Ripple */
+@keyframes wetDripRipple {
     0% {
-        background-position: 0 0;
+        letter-spacing: normal;
+        transform: translateY(0);
     }
-
+    30% {
+        letter-spacing: 0.8px;
+        transform: translateY(-2px);
+    }
+    70% {
+        letter-spacing: 0.4px;
+        transform: translateY(1px);
+    }
     100% {
-        background-position: 100% 100%;
+        letter-spacing: 0.6px;
+        transform: translateY(0);
     }
 }
 
+/* E. Bouncy Jelly-Thrust Button Physics */
+@keyframes jellyThrust {
+    0%   { transform: scale(1, 1); }
+    30%  { transform: scale(1.12, 0.9); }
+    50%  { transform: scale(0.95, 1.08); }
+    70%  { transform: scale(1.05, 0.97); }
+    100% { transform: scale(1.04, 1.04); }
+}
+
+/* F. Wet-Gush Focus Aura for Inputs */
+@keyframes wetGushFocus {
+    0% {
+        box-shadow: 0 0 8px #ff1493, inset 0 0 6px rgba(255, 20, 147, 0.3);
+        border-color: #ff1493;
+    }
+    50% {
+        box-shadow: 0 0 20px #ffd700, 0 0 35px #ff007f, inset 0 0 12px rgba(255, 215, 0, 0.4);
+        border-color: #ffd700;
+    }
+    100% {
+        box-shadow: 0 0 8px #ff1493, inset 0 0 6px rgba(255, 20, 147, 0.3);
+        border-color: #ff1493;
+    }
+}
+
+/* G. Sensual Levitation for Floating Dock & Badges */
+@keyframes sensualFloat {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+/* H. Lust Shimmer Sweep */
+@keyframes lustSheenSweep {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   3. BASE & BODY CANVAS
+   -------------------------------------------------------------------------- */
+body,
+body[data-theme="raunchy"],
+body[data-theme="raunchy-4"] {
+    background-color: var(--bg-dark) !important;
+    background-image: 
+        radial-gradient(circle at 20% 20%, rgba(255, 20, 147, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(139, 0, 139, 0.2) 0%, transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(255, 215, 0, 0.06) 0%, transparent 60%),
+        url('https://thumbs.dreamstime.com/z/colorful-pattern-hearts-emojis-various-expressions-pink-background-perfect-cheerful-designs-crafts-bright-376307750.jpg') !important;
+    background-size: 100% 100%, 100% 100%, 100% 100%, cover !important;
+    background-attachment: fixed !important;
+    background-blend-mode: screen, multiply, normal, overlay !important;
+    color: var(--text-main) !important;
+    font-family: var(--font-main) !important;
+    margin: 0;
+    padding: 10px;
+    font-size: 15px;
+    line-height: 1.65;
+    text-shadow: 0 0 6px rgba(255, 105, 180, 0.5);
+    animation: ambientLustBreathing 12s ease-in-out infinite alternate;
+}
+
+/* Juicy Pink Selection */
+::selection {
+    background: #ff007f !important;
+    color: #ffd700 !important;
+    text-shadow: 0 0 8px #fff !important;
+}
+
+/* --------------------------------------------------------------------------
+   4. EROTIC HYPERLINKS
+   -------------------------------------------------------------------------- */
 a {
-    color: var(--link-color);
-    text-decoration: underline dotted #ffd700;
-    transition: all 0.4s ease;
-    font-weight: bold;
+    color: var(--link-pink) !important;
+    text-decoration: underline dotted var(--gold) !important;
+    font-weight: 700 !important;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    display: inline-block;
 }
 
 a:hover {
-    color: #fff;
-    text-shadow: 0 0 10px #ff00ff;
-    animation: squirt 0.5s ease;
-}
-
-@keyframes squirt {
-
-    0%,
-    100% {
-        transform: translateX(0);
-    }
-
-    25% {
-        transform: translateX(-5px);
-    }
-
-    75% {
-        transform: translateX(5px);
-    }
+    color: #ffffff !important;
+    text-shadow: 0 0 10px #ff69b4, 0 0 20px #ff1493, 0 0 35px #ffd700 !important;
+    text-decoration: underline solid #ffd700 !important;
+    animation: wetDripRipple 0.6s ease-out forwards;
 }
 
 a:visited {
-    color: var(--visited-color);
+    color: var(--visited-color) !important;
 }
 
-a:active {
-    color: #ff4500;
+/* --------------------------------------------------------------------------
+   5. AHEGAO THROBBING HEADINGS
+   -------------------------------------------------------------------------- */
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display) !important;
+    color: #ffffff !important;
+    text-align: center !important;
+    letter-spacing: 1px !important;
+    margin: 1.1em 0 0.6em !important;
+    padding: 14px 18px !important;
+    border-bottom: 4px dashed var(--border-pink) !important;
+    border-top: 2px dashed rgba(255, 215, 0, 0.6) !important;
+    border-radius: 12px !important;
+    background: 
+        linear-gradient(rgba(255, 20, 147, 0.3), rgba(75, 0, 130, 0.45)), 
+        url('https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Ahegao_Belle_Delphine.gif/250px-Ahegao_Belle_Delphine.gif') center no-repeat !important;
+    background-size: contain !important;
+    box-shadow: 0 0 20px rgba(255, 20, 147, 0.35), inset 0 0 15px rgba(255, 0, 128, 0.2) !important;
+    animation: neonMoanGlow 3s ease-in-out infinite;
+    position: relative;
+    overflow: hidden;
 }
 
-/* HEADINGS - AHEGAO MOANS 😍💦 */
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-    font-family: 'Bangers', cursive;
-    margin-bottom: 0.8em;
-    border-bottom: 4px dashed var(--border-color);
-    text-align: center;
-    text-shadow: 3px 3px 6px #000, 0 0 15px #ff00ff;
-    background: url('https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Ahegao_Belle_Delphine.gif/250px-Ahegao_Belle_Delphine.gif') center no-repeat;
-    background-size: contain;
-    padding: 20px;
-    animation: ahegaoPulse 2s infinite;
+h1 { font-size: 2em !important; }
+h2 { font-size: 1.6em !important; }
+h3 { font-size: 1.3em !important; }
+h4 { font-size: 1.1em !important; }
+
+/* Subtle Ahegao Breathing on Hover */
+h1:hover, h2:hover, h3:hover {
+    animation: eroticHeartbeat 1.5s ease-in-out infinite, neonMoanGlow 1.5s infinite;
 }
 
-@keyframes ahegaoPulse {
-    0% {
-        transform: scale(1);
-    }
-
-    50% {
-        transform: scale(1.1);
-    }
-
-    100% {
-        transform: scale(1);
-    }
-}
-
-/* LAYOUT TABLE - GANGBANG ORGY TABLE DECORATED WITH CUM BORDERS 🍆🍆🍆 */
+/* --------------------------------------------------------------------------
+   6. MAIN LAYOUT & GANGBANG TABLE FRAME
+   -------------------------------------------------------------------------- */
 table.main-layout {
-    width: 100%;
-    height: 100vh;
-    border-collapse: separate;
-    border-spacing: 5px;
-    border: 5px ridge var(--border-color);
-    box-shadow: 0 0 30px #ff00ff;
-    background: rgba(0, 0, 0, 0.5) url('https://media.istockphoto.com/id/1091144208/vector/heart-shape-icons.jpg') repeat;
+    width: 100% !important;
+    min-height: 98vh;
+    border-collapse: separate !important;
+    border-spacing: 6px !important;
+    border: 5px ridge var(--border-pink) !important;
+    border-radius: 14px !important;
+    box-shadow: 
+        0 0 35px rgba(255, 20, 147, 0.7),
+        0 0 60px rgba(255, 0, 128, 0.4),
+        inset 0 0 25px rgba(255, 215, 0, 0.15) !important;
+    background: rgba(10, 0, 16, 0.75) url('https://media.istockphoto.com/id/1091144208/vector/heart-shape-icons.jpg') repeat !important;
+    overflow: hidden;
 }
 
 td {
     vertical-align: top;
-    padding: 15px;
-    border: 3px groove #ffd700;
-    background: rgba(255, 20, 147, 0.2);
-    transition: all 0.5s ease;
+    padding: 14px !important;
+    border: 3px groove var(--gold) !important;
+    border-radius: 10px !important;
+    background: rgba(255, 20, 147, 0.16) !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+    transition: all 0.35s ease;
 }
 
 td:hover {
-    transform: scale(1.05);
-    box-shadow: inset 0 0 20px #ff69b4;
-    background: rgba(255, 255, 0, 0.3);
-    /* Golden piss glow */
+    box-shadow: inset 0 0 25px rgba(255, 105, 180, 0.5);
+    background: rgba(255, 20, 147, 0.22) !important;
 }
 
-/* HEADER - BUKKAKE FACIAL HEADER */
+/* --------------------------------------------------------------------------
+   7. BUKKAKE FACIAL HEADER
+   -------------------------------------------------------------------------- */
 .header-cell {
-    background: var(--header-bg) url('https://i.ytimg.com/vi/pd8ll8HHTM0/mqdefault.jpg') center/cover no-repeat;
-    border-bottom: 5px solid #ffd700;
-    height: 80px;
-    padding: 20px;
+    background: 
+        linear-gradient(180deg, rgba(74, 0, 68, 0.82) 0%, rgba(26, 0, 36, 0.95) 100%),
+        url('https://i.ytimg.com/vi/pd8ll8HHTM0/mqdefault.jpg') center/cover no-repeat !important;
+    border-bottom: 5px solid var(--gold) !important;
+    padding: 16px 20px !important;
     text-align: center;
-    font-size: 2em;
-    color: #fff;
-    text-shadow: 4px 4px 8px #000;
+    color: #ffffff !important;
+    text-shadow: 2px 2px 6px #000, 0 0 15px #ff1493 !important;
+    box-shadow: 0 4px 20px rgba(255, 20, 147, 0.5) !important;
 }
 
-/* SIDEBAR - FINGERING TEASE SIDEBAR */
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.header-brand {
+    font-family: var(--font-display) !important;
+    font-size: 1.8em !important;
+    color: #ffffff !important;
+    text-shadow: 0 0 10px #ff00ff, 0 0 25px #ff1493, 2px 2px 4px #000 !important;
+}
+
+/* --------------------------------------------------------------------------
+   8. WET FINGERING SIDEBAR
+   -------------------------------------------------------------------------- */
 .sidebar-cell {
-    width: 250px;
-    background: var(--sidebar-bg) url('https://i.ytimg.com/vi/AnuV065OcMI/maxresdefault.jpg') top/cover;
-    border-right: 5px double var(--border-color);
-    font-size: 16px;
+    width: 220px !important;
+    background: 
+        linear-gradient(rgba(29, 0, 40, 0.85), rgba(15, 0, 23, 0.95)),
+        url('https://myteenwebcam.com/fapp/gifs/8b06f5b1e00237ab0016f809c52a14e5.gif') top/cover !important;
+    border-right: 4px double var(--border-pink) !important;
+    font-size: 13px !important;
 }
 
-/* MAIN CONTENT - DEEP GANGBANG PENETRATION */
-.content-cell {
-    padding: 30px;
-    background: var(--bg-color);
-}
-
-/* COMPONENTS - WET PUSSY INPUTS */
-input,
-textarea,
-select {
-    background: var(--input-bg);
-    color: var(--input-text);
-    border: 4px ridge #ff00ff;
-    padding: 10px;
-    font-family: 'Indie Flower', cursive;
-    border-radius: 20px;
-    box-shadow: 0 0 15px #ffd700;
-}
-
-input:focus,
-textarea:focus {
-    box-shadow: 0 0 25px #ff1493;
-    animation: gush 1s infinite;
-}
-
-@keyframes gush {
-    0% {
-        border-color: #ff00ff;
-    }
-
-    50% {
-        border-color: #ffd700;
-    }
-
-    100% {
-        border-color: #ff00ff;
-    }
-}
-
-button {
-    background: linear-gradient(to bottom, #ff1493, #8b008b);
-    color: #fff;
-    border: 5px outset #ffd700;
-    padding: 10px 20px;
-    cursor: pointer;
-    font-family: 'Bangers', cursive;
-    font-size: 1.2em;
-    border-radius: 30px;
-    transition: all 0.4s;
-    background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Ahegao_Belle_Delphine.gif/250px-Ahegao_Belle_Delphine.gif');
-    background-size: cover;
-}
-
-button:hover {
-    transform: scale(1.2) rotate(5deg);
-    box-shadow: 0 0 30px #ff69b4;
-}
-
-button:active {
-    border-style: inset;
-    animation: cumshot 0.3s;
-}
-
-@keyframes cumshot {
-    0% {
-        transform: translateY(0);
-    }
-
-    100% {
-        transform: translateY(10px);
-    }
-}
-
-/* JUMP LINKS - QUICKIE NAV */
-.jump-links {
-    border: 4px dashed #ffd700;
-    padding: 15px;
-    background: rgba(255, 105, 180, 0.4);
-    text-align: center;
-    border-radius: 20px;
-}
-
-/* ARTICLE LIST - CUM DRIPPING LIST */
-.article-list-item {
-    margin-bottom: 15px;
-    padding: 10px;
-    border-bottom: 2px dotted #ff00ff;
-    transition: all 0.3s;
-}
-
-.article-list-item:hover {
-    background: rgba(255, 215, 0, 0.2);
-}
-
-/* ARTICLE VIEW - FULL GOKKUN SWALLOW */
-.article-meta {
-    color: #ffd700;
-    border-bottom: 3px solid #ff1493;
-    padding-bottom: 10px;
-}
-
-.article-content {
-    margin-top: 30px;
-}
-
-/* FOOTER - SCAT AFTERPLAY */
-.footer-cell {
-    background: var(--sidebar-bg);
-    border-top: 5px ridge #ff4500;
-    text-align: center;
-    padding: 20px;
-    font-size: 14px;
-}
-
-/* VISITOR COUNTER - CUM COUNTER */
-.visitor-counter {
-    border: 3px solid #ffd700;
-    background: #000;
-    color: #ff00ff;
-    padding: 10px;
-    font-family: 'Creepster', cursive;
-    animation: drip 2s infinite;
-}
-
-@keyframes drip {
-    0% {
-        text-shadow: 0 0 10px #ffd700;
-    }
-
-    50% {
-        text-shadow: 0 20px 20px #ffd700;
-    }
-
-    100% {
-        text-shadow: 0 0 10px #ffd700;
-    }
-}
-
-/* HIDDEN */
-.hidden {
+/* Zen Mode Support */
+body.zen-mode .sidebar-cell {
     display: none !important;
 }
 
-/* LOADING - ANTICIPATION BUILDUP */
-#loading-indicator {
-    color: #ff00ff;
-    background: #4b0082;
-    padding: 15px;
-    animation: throb 1s infinite;
-}
-
-/* EDITOR - HENTAI TYPING */
-textarea.editor {
-    height: 500px;
-    background: url('https://thumbs.dreamstime.com/z/colorful-pattern-hearts-emojis-various-expressions-pink-background-perfect-cheerful-designs-crafts-bright-376307750.jpg');
-}
-
-/* TAGS - FETISH LABELS */
-.article-tags a {
-    border: 3px solid #ffd700;
-    padding: 8px 15px;
-    margin: 5px;
-    background: linear-gradient(to right, #ff1493, #ff69b4);
-    border-radius: 50px;
-    color: #fff;
-    transition: all 0.4s;
-}
-
-.article-tags a:hover {
-    transform: rotate(10deg) scale(1.3);
-    box-shadow: 0 0 20px #ff00ff;
-}
-
-/* ARTICLE CARDS - PORN THUMBNAILS */
-.article-card {
-    border: 5px groove #ff00ff;
-    margin-bottom: 20px;
-    background: url('https://media.istockphoto.com/id/1091144208/vector/heart-shape-icons.jpg') center/cover;
-    border-radius: 30px;
+.sidebar-accordion {
+    margin-bottom: 10px;
+    background: rgba(255, 20, 147, 0.18);
+    border: 2px solid var(--border-pink);
+    border-radius: 8px;
     overflow: hidden;
-    transition: all 0.5s;
+    transition: all 0.25s ease;
+}
+
+.sidebar-accordion:hover {
+    border-color: var(--gold);
+    box-shadow: 0 0 12px rgba(255, 215, 0, 0.4);
+}
+
+.sidebar-accordion summary {
+    background: linear-gradient(to right, #ff1493, #8b008b) !important;
+    color: #ffffff !important;
+    padding: 8px 12px !important;
+    font-family: var(--font-display) !important;
+    font-size: 14px !important;
+    letter-spacing: 0.5px;
+    cursor: pointer !important;
+    text-shadow: 1px 1px 3px #000;
+}
+
+.sidebar-cell a {
+    color: #ffc0cb !important;
+    padding: 5px 8px;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.2s ease;
+}
+
+.sidebar-cell a:hover {
+    background: rgba(255, 20, 147, 0.35) !important;
+    color: #ffffff !important;
+    transform: translateX(4px);
+    text-decoration: none !important;
+    box-shadow: 0 0 10px rgba(255, 20, 147, 0.6);
+}
+
+/* --------------------------------------------------------------------------
+   9. CONTENT CELL & PENETRATION AREA
+   -------------------------------------------------------------------------- */
+.content-cell {
+    padding: 20px 24px !important;
+    background: rgba(15, 0, 23, 0.88) !important;
+}
+
+/* --------------------------------------------------------------------------
+   10. BOUNCY JELLY-THRUST BUTTONS
+   -------------------------------------------------------------------------- */
+button,
+.btn-header,
+.btn-random-article,
+.index-tab-btn,
+.view-mode-btn,
+.archive-month-btn,
+.tab-btn {
+    background: linear-gradient(180deg, #ff007f 0%, #ff1493 50%, #8b008b 100%) !important;
+    color: #ffffff !important;
+    border: 3px outset var(--gold) !important;
+    padding: 7px 16px !important;
+    cursor: pointer !important;
+    font-family: var(--font-display) !important;
+    font-size: 13px !important;
+    letter-spacing: 0.5px !important;
+    border-radius: 25px !important;
+    text-shadow: 1px 1px 3px #000, 0 0 8px #ff1493 !important;
+    box-shadow: 
+        0 4px 12px rgba(255, 20, 147, 0.5), 
+        inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+    transition: all 0.25s cubic-bezier(0.68, -0.55, 0.27, 1.55) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    user-select: none !important;
+}
+
+/* Jelly Thrust Hover Physics */
+button:hover,
+.btn-header:hover,
+.btn-random-article:hover,
+.index-tab-btn:hover,
+.view-mode-btn:hover,
+.archive-month-btn:hover,
+.tab-btn:hover {
+    background: linear-gradient(180deg, #ff1493 0%, #ff007f 50%, #ba00ba 100%) !important;
+    border-color: #ffffff !important;
+    box-shadow: 
+        0 0 25px #ff1493, 
+        0 0 45px #ff00ff, 
+        0 0 15px #ffd700 !important;
+    animation: jellyThrust 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
+}
+
+button:active,
+.btn-header:active,
+.btn-random-article:active {
+    border-style: inset !important;
+    transform: scale(0.94) translateY(2px) !important;
+}
+
+/* Active Highlight Buttons */
+.btn-header.active,
+.index-tab-btn.active,
+.view-mode-btn.active,
+.archive-month-btn.active,
+.tab-btn.active {
+    background: linear-gradient(180deg, #ffd700 0%, #ff8c00 100%) !important;
+    color: #12001a !important;
+    border-color: #ffffff !important;
+    text-shadow: none !important;
+    font-weight: 800 !important;
+    box-shadow: 0 0 20px #ffd700, 0 0 35px #ff1493 !important;
+}
+
+/* Delete Button */
+.btn-delete,
+.btn-header.btn-delete,
+.filter-pill-remove {
+    background: linear-gradient(180deg, #ff0055 0%, #8b0000 100%) !important;
+    border-color: var(--gold) !important;
+    color: #fff !important;
+}
+
+.btn-delete:hover,
+.filter-pill-remove:hover {
+    box-shadow: 0 0 25px #ff0055, 0 0 40px #ff0000 !important;
+}
+
+/* --------------------------------------------------------------------------
+   11. WET-GUSH INPUTS & TEXTAREAS
+   -------------------------------------------------------------------------- */
+input[type="text"],
+input[type="url"],
+input[type="number"],
+input[type="search"],
+input[type="password"],
+textarea,
+select,
+.editor-input,
+.editor-select,
+.sidebar-filter-input {
+    background: var(--input-bg) !important;
+    color: var(--input-text) !important;
+    border: 3px ridge var(--border-pink) !important;
+    padding: 8px 14px !important;
+    font-family: inherit !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    border-radius: 14px !important;
+    box-shadow: inset 0 0 10px rgba(255, 20, 147, 0.4) !important;
+    box-sizing: border-box;
+    transition: all 0.25s ease !important;
+}
+
+input:focus,
+textarea:focus,
+select:focus,
+.editor-input:focus,
+.editor-select:focus,
+.sidebar-filter-input:focus {
+    outline: none !important;
+    animation: wetGushFocus 1.8s ease-in-out infinite;
+}
+
+/* --------------------------------------------------------------------------
+   12. FRESHLY USED ARTICLE CARDS (Heartbeat Hover Lift)
+   -------------------------------------------------------------------------- */
+.article-card {
+    border: 4px groove var(--border-pink) !important;
+    margin-bottom: 14px !important;
+    background: 
+        linear-gradient(rgba(29, 0, 40, 0.92), rgba(15, 0, 23, 0.95)),
+        url('https://media.istockphoto.com/id/1091144208/vector/heart-shape-icons.jpg') center/cover !important;
+    border-radius: 16px !important;
+    overflow: hidden;
+    box-shadow: 0 0 18px rgba(255, 20, 147, 0.45) !important;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
 .article-card:hover {
-    transform: translateY(-20px) rotate(3deg);
-    box-shadow: 0 20px 40px rgba(255, 0, 255, 0.8);
+    border-color: var(--gold) !important;
+    transform: translateY(-3px) scale(1.01) !important;
+    box-shadow: 
+        0 10px 30px rgba(255, 20, 147, 0.6), 
+        0 0 25px rgba(255, 215, 0, 0.45) !important;
 }
 
 .article-card .card-main {
-    padding: 20px;
+    padding: 14px 16px !important;
+    background: rgba(0, 0, 0, 0.55);
 }
 
 .article-card .card-title {
-    font-size: 1.8em;
-    text-shadow: 2px 2px 5px #000;
+    font-size: 1.4em !important;
+    font-family: var(--font-display) !important;
+    letter-spacing: 0.5px;
+    text-shadow: 1px 1px 3px #000, 0 0 10px #ff69b4;
+}
+
+.article-card .card-title a {
+    color: var(--link-pink) !important;
+}
+
+.article-card .card-title a:hover {
+    color: #ffffff !important;
+    text-shadow: 0 0 14px #ff1493, 0 0 25px #ffd700 !important;
 }
 
 .article-card .card-right {
-    border-left: 4px dashed #ffd700;
-    background: rgba(255, 20, 147, 0.3);
+    border-left: 3px dashed var(--gold) !important;
+    background: rgba(255, 20, 147, 0.25) !important;
 }
 
-body.zen-mode .sidebar-cell {
-    display: none;
+.article-card .card-meta {
+    color: var(--text-light) !important;
+    font-size: 12px !important;
 }
 
-.search-box {
-    width: 95%;
+/* --------------------------------------------------------------------------
+   13. CUM-PINK BADGES & TAGS (Sensual Wobble)
+   -------------------------------------------------------------------------- */
+.article-tags a,
+.tag-chip,
+.category-pill,
+.category-count-badge,
+.tag-badge {
+    border: 2px solid var(--gold) !important;
+    padding: 4px 12px !important;
+    margin: 3px !important;
+    background: linear-gradient(135deg, var(--link-deep), var(--link-pink)) !important;
+    border-radius: 25px !important;
+    color: #ffffff !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    box-shadow: 0 0 10px rgba(255, 105, 180, 0.55) !important;
+    transition: all 0.2s cubic-bezier(0.68, -0.55, 0.27, 1.55) !important;
+}
+
+.article-tags a:hover,
+.tag-chip:hover,
+.category-pill:hover {
+    background: linear-gradient(135deg, var(--gold), #ff1493) !important;
+    color: #000000 !important;
+    border-color: #ffffff !important;
+    transform: scale(1.12) rotate(-3deg) !important;
+    box-shadow: 0 0 20px #ffd700, 0 0 35px #ff1493 !important;
+    text-decoration: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   14. RETRO MEDIA GALLERY (Gapless Lust Tile)
+   -------------------------------------------------------------------------- */
+.retro-gallery {
+    border: 4px ridge var(--border-pink) !important;
+    border-radius: 12px;
+    box-shadow: 0 0 25px rgba(255, 20, 147, 0.6) !important;
+    background: #000;
+}
+
+.retro-gallery figure figcaption {
+    background: linear-gradient(180deg, rgba(74, 0, 68, 0.88), rgba(26, 0, 36, 0.98)) !important;
+    backdrop-filter: blur(14px) !important;
+    -webkit-backdrop-filter: blur(14px) !important;
+    color: #ffffff !important;
+    border-bottom: 2px solid var(--gold) !important;
+    text-shadow: 0 0 8px #ff1493;
+}
+
+.retro-gallery figure figcaption a {
+    color: var(--gold) !important;
+    background: rgba(255, 20, 147, 0.3) !important;
+    border: 1px solid var(--gold) !important;
+    border-radius: 12px !important;
+    padding: 2px 10px !important;
+}
+
+/* --------------------------------------------------------------------------
+   15. PLEASURE-METER VISITOR COUNTER & FOOTER
+   -------------------------------------------------------------------------- */
+.footer-cell {
+    background: var(--header-bg) !important;
+    border-top: 5px solid var(--gold) !important;
+    color: var(--text-light) !important;
+    padding: 16px !important;
+    text-align: center;
+    box-shadow: 0 -4px 25px rgba(255, 20, 147, 0.4) !important;
+}
+
+.visitor-counter {
+    background: #0d0016 !important;
+    color: var(--gold) !important;
+    border: 3px ridge #ff1493 !important;
+    border-radius: 10px !important;
+    padding: 5px 14px !important;
+    font-family: var(--font-mono) !important;
+    font-size: 16px !important;
+    font-weight: 800 !important;
+    letter-spacing: 3px !important;
+    box-shadow: 0 0 20px #ffd700, inset 0 0 10px #ff007f !important;
+    animation: eroticHeartbeat 2.4s ease-in-out infinite;
+    display: inline-block;
+}
+
+/* --------------------------------------------------------------------------
+   16. FLOATING DOCK & LEVITATING CONTROLS
+   -------------------------------------------------------------------------- */
+.gallery-float-controls {
+    background: rgba(45, 0, 60, 0.88) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    border: 2px solid var(--gold) !important;
+    border-radius: 30px !important;
+    box-shadow: 0 8px 30px rgba(255, 20, 147, 0.6) !important;
+    animation: sensualFloat 4s ease-in-out infinite;
+}
+
+.btn-float-handle,
+.btn-float-action {
+    color: #ffd700 !important;
+    text-shadow: 0 0 8px #ff1493;
+}
+
+.btn-float-action:hover,
+.btn-float-handle:hover {
+    color: #ffffff !important;
+    background: rgba(255, 20, 147, 0.45) !important;
+    box-shadow: 0 0 12px #ff1493;
+}
+
+/* Quick Search Box */
+.retro-quick-search-box {
+    background: rgba(26, 0, 36, 0.96) !important;
+    border: 3px ridge var(--gold) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9), 0 0 35px #ff1493 !important;
+}
+
+/* --------------------------------------------------------------------------
+   17. RESPONSIVE MOBILE TWEAKS
+   -------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+    body {
+        padding: 5px;
+        font-size: 14px;
+    }
+
+    table.main-layout {
+        border-spacing: 3px !important;
+    }
+
+    .header-cell {
+        padding: 10px !important;
+    }
+
+    .content-cell {
+        padding: 10px !important;
+    }
+
+    .article-card .card-main {
+        padding: 10px !important;
+    }
+
+    button,
+    .btn-header {
+        padding: 5px 10px !important;
+        font-size: 11px !important;
+    }
 }
