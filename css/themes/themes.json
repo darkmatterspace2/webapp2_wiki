@@ -62,9 +62,15 @@
         },
         {
             "id": "dark-theme",
-            "name": "Dark Theme",
-            "description": "Premium glassmorphism dark theme with Inter font and cyan accents",
+            "name": "Obsidian Deep Space",
+            "description": "State-of-the-art cosmic obsidian glassmorphism dark theme with Plus Jakarta Sans and luminous cyan glow",
             "css": "dark-theme/theme.css"
+        },
+        {
+            "id": "windows-vista",
+            "name": "Windows Vista Aero",
+            "description": "Authentic Windows Vista Aero Glass with Aurora wallpaper, smoky translucency, and cyan glowing buttons",
+            "css": "windows-vista/theme.css"
         }
     ],
     "default": "default"

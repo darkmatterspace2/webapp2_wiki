@@ -171,6 +171,8 @@ function initLayout() {
                                     <option value="retro-green">Cyberpunk Terminal</option>
                                     <option value="light-mode">Light Mode</option>
                                     <option value="windows-98">Windows 98</option>
+                                    <option value="windows-vista">Windows Vista Aero</option>
+                                    <option value="dark-theme">Obsidian Deep Space</option>
                                     <option value="minecraft">Minecraft</option>
                                 </select>
                                 
