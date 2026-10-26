@@ -59,6 +59,12 @@ const ThemeLoader = {
 
     // Initialize theme immediately
     init() {
+        if (!document.querySelector('meta[name="referrer"]')) {
+            const meta = document.createElement('meta');
+            meta.name = 'referrer';
+            meta.content = 'no-referrer';
+            document.head.appendChild(meta);
+        }
         const saved = localStorage.getItem('selected-theme');
         if (saved && saved !== 'default') {
             this.applyTheme(saved);

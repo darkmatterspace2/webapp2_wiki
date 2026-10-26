@@ -45,3 +45,8 @@ admin/editor.html
 Standalone editor page.
 Checks Auth on load (redirects to login if null).
 Handles Create and Edit (via ?id=UUID).
+
+
+await io.gemini.antigravity.history.importLegacyProtoDirectory("C:\\Users\\Manny\
+
+await io.gemini.antigravity.history.importLegacyProtoDirectory("C:\\Users\\Manny\\.gemini\\antigravity\\conversations")

@@ -2,25 +2,45 @@
 input,
 textarea,
 select {
-    background: var(--input-bg);
-    color: var(--input-text);
-    border: 2px inset var(--border-color);
-    padding: 3px var(--space-sm);
-    /* Using variables */
-    /* Compact padding */
+    background: var(--input-bg, #0b0f14);
+    color: var(--input-text, #e1e7ec);
+    border-top: 2px solid var(--border-dark, #10141b);
+    border-left: 2px solid var(--border-dark, #10141b);
+    border-right: 2px solid var(--border-light, #3e4c60);
+    border-bottom: 2px solid var(--border-light, #3e4c60);
+    padding: 4px var(--space-sm, 6px);
     min-height: auto;
-    /* Remove large touch target enforcement */
-    font-size: var(--font-size-base);
-    /* 13px via token */
-    /* Match button size */
+    font-size: var(--font-size-base, 13px);
     font-family: var(--font-main);
     box-sizing: border-box;
-    /* Ensure padding doesn't affect width calculations oddly */
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    border-color: var(--accent-green, #00ff88);
+    outline: none;
+    box-shadow: 0 0 6px var(--accent-green-glow, rgba(0, 255, 136, 0.3));
+}
+
+select option {
+    background-color: var(--surface-header, #141a23);
+    color: var(--text-color, #e1e7ec);
+}
+
+/* Checkbox & Radio Accents */
+input[type="checkbox"],
+input[type="radio"] {
+    accent-color: var(--accent-green, #00ff88);
+    cursor: pointer;
 }
 
 /* EDITOR SPECIFIC */
 textarea.editor {
     width: 100%;
     height: 400px;
-    font-family: "Courier New", monospace;
+    font-family: var(--font-mono, "Courier New", monospace);
+    line-height: 1.5;
+    tab-size: 4;
 }

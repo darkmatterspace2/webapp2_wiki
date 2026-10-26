@@ -1,219 +1,509 @@
-/* RETRO MASONRY GALLERY (Ultra Light Weight) */
+/* RETRO MASONRY & VIDEO GALLERY (Seamless Zero-Gap & High-Performance) */
 .retro-gallery {
     display: flex;
     flex-wrap: wrap;
-    padding: 0;
-    margin: 0;
-    width: 100%;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    gap: 0 !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    box-sizing: border-box !important;
 }
 
 .retro-gallery-col {
-    flex: 33.33%;
-    max-width: 33.33%;
-    padding: 0;
-}
-
-.retro-gallery-col img,
-.retro-gallery-col video {
-    margin-top: 0 !important;
-    margin-bottom: 0 !important;
-    width: 100%;
-    display: block;
-}
-
-/* GALLERY ITEM WRAPPER (for caption support) */
-.gallery-item {
-    position: relative;
-    overflow: hidden;
-    display: block;
-}
-
-.gallery-item img,
-.gallery-item video {
-    width: 100%;
-    display: block;
+    flex: 33.333%;
+    max-width: 33.333%;
+    width: 33.333%;
+    padding: 0 !important;
     margin: 0 !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    box-sizing: border-box !important;
+    line-height: 0 !important;
+    font-size: 0 !important;
+    display: flex;
+    flex-direction: column;
 }
 
-/* FIGURE ELEMENT SUPPORT IN GALLERY */
+/* CARDS & FIGURE CONTAINER (Seamless, Gapless, Zero Boundary) */
+.retro-gallery figure,
 .retro-gallery-col figure,
-.gallery-item figure {
-    margin: 0;
-    padding: 0;
-    position: relative;
-    overflow: hidden;
-}
-
-.retro-gallery-col figure img,
-.retro-gallery-col figure video {
-    width: 100%;
-    display: block;
+.gallery-item {
     margin: 0 !important;
+    padding: 0 !important;
+    position: relative;
+    background: transparent !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    overflow: hidden;
+    display: block;
+    box-sizing: border-box !important;
+    line-height: 0 !important;
+    font-size: 0 !important;
+    content-visibility: auto;
+    contain-intrinsic-size: 250px;
 }
 
-/* CAPTION OVERLAY (appears on hover - positioned at top to avoid video controls) */
-.gallery-caption,
+.retro-gallery figure:hover img,
+.retro-gallery-col figure:hover img,
+.gallery-item:hover img,
+.retro-gallery figure:hover video,
+.retro-gallery-col figure:hover video,
+.gallery-item:hover video {
+    filter: brightness(1.08);
+}
+
+/* MEDIA ELEMENTS (VIDEO & IMAGES) */
+.retro-gallery img,
+.retro-gallery video,
+.retro-gallery iframe,
+.retro-gallery-col img,
+.retro-gallery-col video,
+.retro-gallery-col iframe,
+.gallery-item img,
+.gallery-item video,
+.gallery-item iframe {
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    outline: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    width: 100% !important;
+    height: auto;
+    display: block !important;
+    vertical-align: bottom !important;
+    background: transparent;
+    box-sizing: border-box !important;
+    transition: filter 0.15s ease;
+}
+
+/* UNIFORM ASPECT RATIO OPTIONS */
+.retro-gallery.uniform-16-9 video,
+.retro-gallery.uniform-16-9 figure video,
+.retro-gallery.uniform-16-9 .gallery-item video,
+.retro-gallery.uniform-16-9 img,
+.retro-gallery.uniform-16-9 figure img,
+.retro-gallery.uniform-16-9 .gallery-item img {
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    background: #000;
+}
+
+.retro-gallery.uniform-9-16 video,
+.retro-gallery.uniform-9-16 figure video,
+.retro-gallery.uniform-9-16 .gallery-item video,
+.retro-gallery.uniform-9-16 img,
+.retro-gallery.uniform-9-16 figure img,
+.retro-gallery.uniform-9-16 .gallery-item img {
+    aspect-ratio: 9 / 16;
+    object-fit: cover;
+    background: #000;
+}
+
+.retro-gallery.uniform-1-1 video,
+.retro-gallery.uniform-1-1 figure video,
+.retro-gallery.uniform-1-1 .gallery-item video,
+.retro-gallery.uniform-1-1 img,
+.retro-gallery.uniform-1-1 figure img,
+.retro-gallery.uniform-1-1 .gallery-item img {
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    background: #000;
+}
+
+/* FLOATING OVERLAY CAPTIONS (Transparent Glassmorphic look above video/image, appears only on hover) */
+.retro-gallery figcaption,
+.retro-gallery .gallery-caption,
 .retro-gallery-col figure figcaption,
-.gallery-item figcaption {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    background: rgba(0, 0, 0, 0.7);
-    color: #fff;
-    padding: 8px 10px;
-    font-size: 12px;
-    line-height: 1.4;
-    text-align: center;
-
-    /* Hidden by default, slide down on hover */
-    transform: translateY(-100%);
+.retro-gallery-col .gallery-item .gallery-caption,
+.retro-gallery .gallery-item figcaption,
+.retro-gallery-col .gallery-item figcaption {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 9px 14px;
+    margin: 0 !important;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.14) 0%, rgba(15, 23, 42, 0.42) 100%) !important;
+    backdrop-filter: blur(14px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(14px) saturate(180%) !important;
+    border: none !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.22) !important;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
+    color: #f1f5f9;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85);
+    font-family: var(--font-main, monospace);
+    font-size: 12px !important;
+    line-height: 1.4 !important;
+    text-align: left;
+    box-sizing: border-box;
+    width: 100% !important;
     opacity: 0;
-    transition: transform 0.25s ease, opacity 0.25s ease;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(-100%);
+    transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.22s ease, visibility 0.22s ease;
 }
 
-.gallery-item:hover .gallery-caption,
+/* Hover & Focus-within Trigger */
+.retro-gallery figure:hover figcaption,
+.retro-gallery figure:focus-within figcaption,
 .retro-gallery-col figure:hover figcaption,
-.gallery-item:hover figcaption {
-    transform: translateY(0);
+.retro-gallery-col figure:focus-within figcaption,
+.retro-gallery .gallery-item:hover .gallery-caption,
+.retro-gallery .gallery-item:focus-within .gallery-caption,
+.retro-gallery-col .gallery-item:hover .gallery-caption,
+.retro-gallery-col .gallery-item:focus-within .gallery-caption,
+.retro-gallery .gallery-item:hover figcaption,
+.retro-gallery .gallery-item:focus-within figcaption,
+.retro-gallery-col .gallery-item:hover figcaption,
+.retro-gallery-col .gallery-item:focus-within figcaption {
     opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateY(0);
 }
 
-/* Responsive Gallery */
-@media screen and (max-width: 400px) {
-    .retro-gallery-col {
+.gallery-caption b,
+.retro-gallery figcaption b,
+.gallery-item figcaption b {
+    color: #38ef7d;
+    text-shadow: 0 0 8px rgba(56, 239, 125, 0.5), 0 1px 2px rgba(0, 0, 0, 0.9);
+}
+
+.gallery-caption a,
+.retro-gallery figcaption a,
+.gallery-item figcaption a {
+    color: #67e8f9;
+    font-weight: bold;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 9px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    border-radius: 4px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+    transition: all 0.15s ease-in-out;
+}
+
+.gallery-caption a:hover,
+.retro-gallery figcaption a:hover,
+.gallery-item figcaption a:hover {
+    background: rgba(255, 255, 255, 0.32);
+    border-color: rgba(255, 255, 255, 0.55);
+    color: #ffffff;
+    box-shadow: 0 0 10px rgba(103, 232, 249, 0.4);
+}
+
+/* Bottom overlay alternative class (.caption-bottom) */
+.retro-gallery.caption-bottom figcaption,
+.retro-gallery.caption-bottom .gallery-caption,
+.retro-gallery .caption-bottom figcaption,
+.retro-gallery .caption-bottom .gallery-caption {
+    top: auto !important;
+    bottom: 0 !important;
+    border-bottom: none !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.22) !important;
+    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.28), inset 0 -1px 0 rgba(255, 255, 255, 0.2) !important;
+    background: linear-gradient(0deg, rgba(255, 255, 255, 0.14) 0%, rgba(15, 23, 42, 0.42) 100%) !important;
+    transform: translateY(100%);
+}
+
+.retro-gallery.caption-bottom figure:hover figcaption,
+.retro-gallery.caption-bottom figure:focus-within figcaption,
+.retro-gallery.caption-bottom .gallery-item:hover .gallery-caption,
+.retro-gallery.caption-bottom .gallery-item:focus-within .gallery-caption,
+.retro-gallery .caption-bottom:hover figcaption,
+.retro-gallery .caption-bottom:hover .gallery-caption {
+    transform: translateY(0);
+}
+
+/* Static footer alternative class (.caption-static) */
+.retro-gallery.caption-static figcaption,
+.retro-gallery.caption-static .gallery-caption,
+.retro-gallery .caption-static figcaption,
+.retro-gallery .caption-static .gallery-caption {
+    position: static !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    transform: none !important;
+    border-top: 1px solid var(--border-color, #2b3544) !important;
+    border-bottom: none !important;
+}
+
+/* Responsive Gallery Columns (default when not overridden by user selection) */
+@media screen and (max-width: 768px) {
+    .retro-gallery:not([data-user-cols]) .retro-gallery-col {
         flex: 50%;
         max-width: 50%;
     }
 }
 
-@media screen and (max-width: 600px) {
-    .retro-gallery-col {
+@media screen and (max-width: 480px) {
+    .retro-gallery:not([data-user-cols]) .retro-gallery-col {
         flex: 100%;
         max-width: 100%;
     }
 }
 
-/* Gallery Column Overrides */
-.retro-gallery.cols-2 .retro-gallery-col {
+/* Gallery Column Overrides (applied when user hasn't interactively adjusted columns) */
+.retro-gallery.cols-2:not([data-user-cols]) .retro-gallery-col {
     flex: 50%;
     max-width: 50%;
 }
 
-.retro-gallery.cols-4 .retro-gallery-col {
+.retro-gallery.cols-4:not([data-user-cols]) .retro-gallery-col {
     flex: 25%;
     max-width: 25%;
 }
 
-.retro-gallery.cols-5 .retro-gallery-col {
+.retro-gallery.cols-5:not([data-user-cols]) .retro-gallery-col {
     flex: 20%;
     max-width: 20%;
 }
 
-/* FLOATING GALLERY CONTROLS (Bottom Right) */
+/* FLOATING CONTROLS DOCK (Bottom Right) */
 .gallery-float-controls {
     position: fixed;
-    bottom: 70px;
-    right: 70px;
+    bottom: 20px;
+    right: 20px;
     z-index: 1100;
-    /* Above hamburger (1000) */
-    background: rgba(0, 0, 0, 0.6);
+    background: rgba(18, 24, 33, 0.92);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
     padding: 3px;
     border-radius: 4px;
-    border: 1px solid #666;
+    border: 2px outset var(--border-light, #3e4c60);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
     height: auto;
-
-    /* Vertical Slim Layout */
+    width: 34px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 24px;
-    /* Narrower */
-
-    /* Fade Effect: low opacity by default */
-    opacity: 0.3;
-    transition: opacity 0.4s ease-in-out;
+    opacity: 0.85;
+    transition: opacity 0.3s ease-in-out, transform 0.2s ease-in-out;
+    user-select: none;
 }
 
-.gallery-float-controls:hover {
+.gallery-float-controls.dock-idle {
+    opacity: 0.25;
+}
+
+.gallery-float-controls:hover,
+.gallery-float-controls:active,
+.gallery-float-controls:focus-within {
+    opacity: 1.0 !important;
+}
+
+/* Minimize/Expand Toggle Handle */
+.gallery-float-controls .btn-float-handle {
+    background: var(--btn-active, #0b0f14);
+    color: var(--accent-amber, #ffb86c);
+    border: 1px outset var(--border-color, #2b3544);
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: bold;
+    padding: 4px 0;
+    width: 100%;
+    text-align: center;
+    line-height: 1;
+    margin-bottom: 2px;
+    border-radius: 2px;
+    transition: all 0.15s ease-in-out;
+}
+
+.gallery-float-controls .btn-float-handle:hover {
+    background: var(--btn-hover, #222d3d);
+    color: #fff;
+    border-color: var(--border-light, #3e4c60);
+}
+
+.gallery-float-controls .btn-float-handle:active {
+    background: #000;
+    border: 1px inset var(--border-color, #2b3544);
+}
+
+/* Float Dock Content Wrapper */
+.gallery-float-controls .float-dock-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+/* Action Buttons */
+.gallery-float-controls button.btn-float-action {
+    background: var(--btn-bg, #1a222e);
+    color: var(--text-color, #e1e7ec);
+    border: 1px outset var(--border-light, #3e4c60);
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: bold;
+    font-family: var(--font-main, monospace);
+    padding: 6px 0;
+    margin: 2px 0;
+    width: 100%;
+    min-height: 28px;
+    text-align: center;
+    line-height: 1;
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease-in-out;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.gallery-float-controls button.btn-float-action:hover {
+    background: var(--btn-hover, #222d3d);
+    color: #fff;
+    border: 1px outset var(--border-light, #52637c);
+}
+
+.gallery-float-controls button.btn-float-action:active {
+    background: var(--btn-active, #0b0f14);
+    border: 1px inset var(--border-light, #3e4c60);
+}
+
+/* Active State (Zen Mode, Light Mode, etc.) */
+.gallery-float-controls button.btn-float-action.active {
+    background: var(--btn-active, #0b0f14);
+    color: var(--accent-green, #00ff88);
+    border: 1px inset var(--accent-green, #00ff88);
+    text-shadow: 0 0 4px var(--accent-green-glow, rgba(0, 255, 136, 0.6));
+}
+
+/* Dividers */
+.gallery-float-controls .float-divider {
+    width: 80%;
+    height: 1px;
+    background: var(--border-color, #2b3544);
+    margin: 3px 0;
+}
+
+/* Gallery Controls Group */
+.gallery-float-controls .float-gallery-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.gallery-float-controls .float-gallery-cols {
+    color: var(--accent-green, #00ff88);
+    font-size: 10px;
+    font-weight: bold;
+    font-family: var(--font-main, monospace);
+    margin: 2px 0;
+    cursor: pointer;
+    text-align: center;
+    padding: 1px 0;
+    user-select: none;
+    text-shadow: 0 0 3px var(--accent-green-glow, rgba(0, 255, 136, 0.5));
+    width: 100%;
+}
+
+.gallery-float-controls .float-gallery-cols:hover {
+    text-decoration: underline;
+    color: #fff;
+}
+
+/* Minimized Dock State */
+.gallery-float-controls.minimized .float-dock-content {
+    display: none;
+}
+
+.gallery-float-controls.minimized {
+    padding: 2px;
+    opacity: 0.5;
+}
+
+.gallery-float-controls.minimized:hover {
     opacity: 1.0;
 }
 
-.gallery-float-controls button {
-    background: #ccc;
-    color: #000;
-    border: 1px solid #fff;
-    border-right: 1px solid #555;
-    border-bottom: 1px solid #555;
-    cursor: pointer;
-    font-size: 14px;
-    /* Larger font for icon */
-    font-weight: bold;
-    font-family: inherit;
-    padding: 8px 0;
-    /* Taller */
-    margin: 2px 0;
-    width: 100%;
-    text-align: center;
-    line-height: 10px;
-}
-
-.gallery-float-controls button:active {
-    border: 1px solid #555;
-    border-right: 1px solid #fff;
-    border-bottom: 1px solid #fff;
-    background: #aaa;
-}
-
-/* BACK TO TOP BUTTON */
-/* Including here as it's often used with gallery, but could be separate */
+/* BACK TO TOP BUTTON (Stand-alone fallback or styled consistently) */
 #back-to-top {
     display: none;
     position: fixed;
     bottom: 20px;
-    right: 70px;
-    z-index: 1100;
-    /* Above hamburger */
-
-    /* Match gallery-float-controls aesthetic */
-    background: rgba(0, 0, 0, 0.6);
-    color: #fff;
-    border: 1px solid #666;
+    right: 62px;
+    z-index: 1099;
+    background: rgba(18, 24, 33, 0.92);
+    color: var(--text-color, #e1e7ec);
+    border: 2px outset var(--border-light, #3e4c60);
     border-radius: 4px;
-    padding: 8px 0;
-
+    padding: 6px 0;
     cursor: pointer;
-    font-family: inherit;
+    font-family: var(--font-main, monospace);
     font-size: 12px;
-
-    /* Fade Effect */
-    opacity: 0.3;
-    transition: opacity 0.4s ease-in-out;
-    /* Vertical Slim Layout */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 30px;
-    /* Narrower */
+    font-weight: bold;
+    opacity: 0.4;
+    transition: opacity 0.3s ease-in-out;
+    width: 32px;
+    text-align: center;
 }
 
 #back-to-top:hover {
     opacity: 1.0;
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(27, 35, 48, 0.95);
+    border-color: var(--border-light, #52637c);
 }
 
-/* MOBILE VIEW POSITIONING FIX */
-body.mobile-view .gallery-float-controls {
-    position: absolute;
-    bottom: 20px;
-    right: 10px;
-    z-index: 1100;
-}
+/* RESPONSIVE / MOBILE ADJUSTMENTS */
+@media screen and (max-width: 768px) {
+    .gallery-float-controls {
+        bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+        right: 10px;
+        width: 38px;
+        padding: 3px;
+        opacity: 0.85;
+    }
 
-body.mobile-view #back-to-top {
-    position: absolute;
-    bottom: 120px;
-    /* Above gallery controls */
-    right: 10px;
-    z-index: 1100;
-}
+    .gallery-float-controls:hover,
+    .gallery-float-controls:active {
+        opacity: 1.0;
+    }
+
+    .gallery-float-controls button.btn-float-action {
+        min-height: 36px;
+        font-size: 15px;
+        margin: 2px 0;
+        touch-action: manipulation;
+    }
+
+    .gallery-float-controls .float-gallery-cols {
+        touch-action: manipulation;
+        padding: 3px 0;
+        font-size: 11px;
+    }
+
+    .gallery-float-controls .btn-float-handle {
+        padding: 6px 0;
+        font-size: 14px;
+        touch-action: manipulation;
+    }
+
+    #back-to-top {
+        display: none !important;
+    }
+}
