@@ -1,298 +1,326 @@
-# Retro Wiki App - Project Context & Technical Blueprint
+# RetroWiki 2k25 — Comprehensive Project Context & Architecture
 
-## 1. Project Identity & Vision
-
-- **Name**: RetroWiki 2k25 (`webapp2_wiki`)
-- **Version**: v3.0
-- **Aesthetic**: Authentic late-90s / early-2000s web (inspired by classic Wikipedia, Craigslist, and vintage forum archives). Brutalist, utilitarian, standard blue/purple links, `<hr>` dividers, web-safe system fonts, and HTML `<table>` page layouts.
-- **Tech Stack**: Vanilla HTML5, CSS3, ES6 JavaScript, and Supabase.
-- **Philosophy**: **Zero build tools, zero bundlers, zero framework dependencies.** Everything executes natively in the browser. Instant development cycle: edit file → refresh browser.
+> **Aesthetic & Vision**: A brutalist, late-90s / early-2000s serverless wiki application designed with HTML `<table>` layouts, monospaced typography, zero border-radii, classic hyperlink styling, and multi-theme personalization, powered by vanilla web technologies and Supabase.
 
 ---
 
-## 2. Repository & Directory Structure
+## 1. Project Overview & Guiding Principles
+
+### Core Identity
+- **Name**: RetroWiki 2k25 (v3.0)
+- **Tech Stack**: Vanilla HTML5, Vanilla CSS3 (Custom Properties), Vanilla ES6+ JavaScript, and **Supabase** (PostgreSQL Database + Object Storage + GoTrue Auth).
+- **Zero Build Tools**: No webpack, Vite, bundlers, Babel, npm dependencies, or runtime compilers. Every file runs directly in the browser.
+
+### Key Architectural & Design Rules
+1. **Layout Rule**: Core page layout must rely on HTML `<table>` elements (`.main-layout`). **Never** use CSS Flexbox or Grid for the outer page shell. Flexbox is permitted only for micro-components (e.g., toolbar ribbon, masonry gallery flex columns).
+2. **Retro Brutalist Aesthetics**:
+   - **Zero Border-Radius**: All buttons, inputs, tables, containers, and dialogs must have `border-radius: 0`.
+   - **Classic Hyperlinks**: Blue (`#0000ee`) unvisited, Purple (`#551a8b`) visited, standard underline, or theme-scoped retro palette.
+   - **Monospaced & Web-Safe Typography**: Courier New, Lucida Console, Monaco, system monospaced, and fallbacks.
+   - **Vintage Controls**: Bracketed buttons (e.g., `[ Edit ]`, `[+]`, `[-]`, `[X]`), inset/outset beveled borders, and scanline terminal aesthetics.
+3. **Two-Phase Article Storage**:
+   - **Always** upload the raw HTML payload to Supabase Storage (`wiki-content` bucket) **first**.
+   - Obtain the generated `bucket_path`.
+   - **Then** insert or update the article metadata record in the `wiki_articles` database table with the `bucket_path`.
+4. **Centralized Service Access**: Never execute raw Supabase queries directly inside inline HTML event handlers. Always route through `ArticleService`, `StorageService`, `CategoryService`, or `AppUtils`.
+5. **Path Portability**: All pages and layout scripts must resolve relative roots using `APP_CONFIG.getDepth()` so the app runs identically from root (`index.html`), subdirectories (`pages/`), or sub-subdirectories (`pages/admin/`, `pages/other/`).
+
+---
+
+## 2. Directory & File Structure
 
 ```
 webapp2_wiki/
-├── index.html                      ← Public Home & Article Index (search, A-Z jump links, pagination)
-├── CONTEXT.md                      ← Detailed project context, rules, and technical architecture
-├── CONTEXT_old.md                  ← Archived previous context
-├── readme_1.md                     ← Original architecture migration notes
-├── generate-config.ps1             ← PowerShell script: generates supabase.config.js from .devops/.env
-├── generate-config.sh              ← Bash script: generates supabase.config.js from .devops/.env
-│
-├── .devops/                        ← Environment & local secrets
-│   └── .env                        ← API keys & Supabase credentials (git-ignored)
-│
-├── css/                            ← Modular Stylesheet Architecture
-│   ├── main.css                    ← Master stylesheet importing core/ and components/
+├── index.html                      # Public Home: Booru search, A-Z jump bar, category filters, paginated list
+├── CONTEXT.md                      # Primary project context & documentation (this file)
+├── generate-config.ps1             # PowerShell script: compiles .devops/.env into src/config/supabase.config.js
+├── generate-config.sh              # Bash script: compiles .devops/.env into src/config/supabase.config.js
+├── .devops/
+│   └── .env                        # Local environment variables & API keys (gitignored)
+├── css/
+│   ├── main.css                    # Master stylesheet importing core/ and components/
 │   ├── core/
-│   │   ├── tokens.css              ← CSS custom properties (colors, borders, fonts)
-│   │   ├── reset.css               ← Base element reset & typography fallbacks
-│   │   ├── layout.css              ← Table layout styles, Zen mode, zoom levels
-│   │   └── utilities.css           ← Spacing, text helpers, responsive helpers
+│   │   ├── tokens.css              # Global CSS custom properties (colors, borders, fonts)
+│   │   ├── reset.css               # HTML reset enforcing zero border-radius & box-sizing
+│   │   ├── layout.css              # Main table layout structure, zen mode, zoom rules
+│   │   └── utilities.css           # Utility classes (text alignments, visibilities, helpers)
 │   ├── components/
-│   │   ├── header.css              ← Vintage header bar & control buttons
-│   │   ├── sidebar.css             ← Sidebar navigation, category/tag lists
-│   │   ├── content.css             ← Main content cell & typography
-│   │   ├── articles.css            ← Article card index & search results
-│   │   ├── forms.css               ← Retro form inputs, textareas, selects
-│   │   ├── buttons.css             ← 3D bevel buttons and vintage toggles
-│   │   ├── gallery.css             ← Retro masonry gallery & lightbox styling
-│   │   ├── modal.css               ← Dialogs & popup overlays
-│   │   └── footer.css              ← Footer text, hit counter, version badges
-│   └── themes/                     ← Dynamic Theming System
-│       ├── themes.json             ← Registry of all available themes
-│       ├── default/theme.css       ← Retro Classic (Dark default)
-│       ├── retro-green/theme.css   ← Cyberpunk Terminal (Green CRT scanlines)
-│       ├── light-mode/theme.css    ← Clean Light Mode
-│       ├── windows-98/theme.css    ← Windows 98 desktop & 3D beveled windows
-│       ├── luxury/theme.css        ← Luxury Vogue (Dark elegant gold)
-│       ├── medieval/theme.css      ← Medieval Scroll (Parchment & fantasy RPG)
-│       ├── raunchy/theme.css       ← Raunchy (Edgy neon aesthetic)
-│       ├── raunchy-3/theme.css     ← Raunchy III (Ultra-light neon pink)
-│       ├── raunchy-4/theme.css     ← Raunchy 4 (Refined neon edition)
-│       ├── nes-classic/theme.css   ← NES Classic (8-bit Nintendo palette)
-│       └── dark-theme/theme.css    ← Modern glassmorphism dark theme
-│
-├── pages/                          ← Application Views
-│   ├── article.html                ← Public single article viewer (?id=UUID)
+│   │   ├── header.css              # Header bar, branding, zoom, and theme toggles
+│   │   ├── sidebar.css             # Left sidebar navigation, category lists, mobile drawer
+│   │   ├── content.css             # Main article content area styling
+│   │   ├── articles.css            # Article card items, jump links, pagination indicators
+│   │   ├── forms.css               # Form inputs, selects, textareas, checkboxes
+│   │   ├── buttons.css             # Retro bracketed and beveled button variants
+│   │   ├── gallery.css             # Masonry gallery layout (.retro-gallery), captions, float controls
+│   │   ├── modal.css               # Preview overlays, confirmation dialogs, lightbox modal
+│   │   └── footer.css              # Footer layout and copyright notices
+│   └── themes/
+│       ├── themes.json             # Registry of all installed themes
+│       ├── default/theme.css       # Retro Classic (dark retro aesthetic)
+│       ├── dark-theme/theme.css    # Premium glassmorphism dark theme with cyan accents
+│       ├── light-mode/theme.css    # Clean high-contrast light theme
+│       ├── windows-98/theme.css    # Classic Win98 3D beveled borders & teal desktop
+│       ├── retro-green/theme.css   # Cyberpunk green-on-black CRT terminal with scanlines
+│       ├── nes-classic/theme.css   # 8-bit Nintendo pixel-art styling
+│       ├── medieval/theme.css      # Ancient RPG parchment scroll theme
+│       ├── luxury/theme.css        # Elegant dark luxury theme
+│       ├── raunchy/theme.css       # Bold neon palette
+│       ├── raunchy-3/theme.css     # Neon pink edition III
+│       └── raunchy-4/theme.css     # Neon pink edition IV
+├── pages/
+│   ├── article.html                # Public article view: fetches HTML body, lightbox, views counter
 │   ├── other/
-│   │   └── tags.html               ← Interactive tag cloud & directory
-│   └── admin/                      ← Admin Portal (Requires Supabase Auth)
-│       ├── login.html              ← Admin authentication (login / signup)
-│       ├── editor.html             ← Modular article creator & WYSIWYG editor (?id=UUID for edit)
-│       ├── editor_bkp.html         ← Legacy monolithic editor backup
-│       ├── ai-creator.html         ← Fast AI article generator (Google Gemini)
-│       ├── advanced-ai-creator.html← Multi-model AI studio (Gemini, GPT-4o, Claude 3.5, Grok) + Quill
-│       ├── json-importer.html      ← Batch article importer via structured JSON
-│       └── modules/                ← Modular Editor Sub-components
-│           ├── editor.core.js      ← Form lifecycle, tags pill manager, rating toggle, save logic
-│           ├── editor.wysiwyg.js   ← ContentEditable commands, tables, images, video embeds
-│           ├── editor.toolbar.js   ← Action buttons & formatting bar
-│           ├── editor.preview.js   ← Live preview generator & synchronization
-│           ├── editor.tabs.js      ← Switching between Editor, HTML Source, and Preview
-│           └── editor.fetch.js     ← Loading existing article data for editing
-│
-├── src/                            ← Centralized Business Logic & Utilities
+│   │   └── tags.html               # Tag cloud page with frequency sizing and alphabetical grouping
+│   └── admin/
+│       ├── login.html              # Admin login & signup (Supabase GoTrue Auth)
+│       ├── editor.html             # Advanced article editor (Raw HTML, WYSIWYG, Preview, Scraping)
+│       ├── editor_bkp.html         # Editor fallback backup
+│       ├── ai-creator.html         # Basic AI generator (Google Gemini)
+│       ├── advanced-ai-creator.html# Multi-provider AI Studio (Gemini, GPT-4o, Claude 3.5, Grok)
+│       ├── json-importer.html      # Batch JSON import with Wikipedia infobox prompt templates
+│       └── modules/
+│           ├── editor.core.js      # State, auth guard, auto-save, categories, tag chips, save lifecycle
+│           ├── editor.wysiwyg.js   # Word-style WYSIWYG ribbon, floating media inspector, clipboard paste
+│           ├── editor.toolbar.js   # HTML snippet insertion toolbar (Bold, Header, Table, Media, etc.)
+│           ├── editor.preview.js   # Live preview renderer with dynamic gallery column calculation
+│           ├── editor.tabs.js      # Tab switching between Editor, WYSIWYG, Fetch, and AI
+│           └── editor.fetch.js     # Image extractor tool from pasted HTML sources
+├── src/
 │   ├── config/
-│   │   ├── app.config.js           ← Path resolution (`getDepth()`), feature flags
-│   │   ├── supabase.config.js      ← Runtime Supabase & LLM API keys (generated, git-ignored)
-│   │   └── supabase.config.example.js ← Template for configuration
-│   ├── services/                   ← Data Access Layer (DAL)
-│   │   ├── article.service.js      ← CRUD, Booru search parsing, view increment, tag normalizer
-│   │   ├── storage.service.js      ← Supabase Storage uploads/downloads (`wiki-content` bucket)
-│   │   └── category.service.js     ← Dynamic category retrieval & aggregation
-│   └── shared/                     ← Global Shared Modules
-│       ├── utils.js                ← Supabase client init, auth verification, URL params, dates
-│       ├── layout.js               ← Table layout DOM injector, Zen mode, Zoom, responsive menu
-│       ├── theme-loader.js         ← FOUC-free dynamic stylesheet switcher & registry loader
-│       └── lightbox.js             ← Singleton image/video lightbox with pan, zoom, fit modes
-│
-├── Readme/                         ← Project Documentation, Instructions & Prompts
-│   ├── INSTRUCTIONS.md             ← Step-by-step Supabase table & storage bucket setup guide
-│   ├── Founding_prompt.md          ← Original design prompt & aesthetic requirements
-│   ├── gallery_lightbox_controls.md← Spec for the retro masonry gallery & lightbox module
-│   ├── gallery_lightbox_controls_2.md
-│   ├── prompt_1_initial_refinement.md
-│   ├── prompt_1_initial_refinement_output.md
-│   └── prompt_2_AI_assisted_articles.md
-│
-└── tmp/                            ← Offline Utility & Scratch Scripts
-    ├── html_to_gallery_converter.html ← Converts raw images into retro gallery HTML
-    ├── video_gallery_figure_edit_v2.html ← Video gallery markup builder
-    ├── generate_seq.html           ← Sequence generator
-    ├── html_editor.html            ← Standalone scratch editor
-    ├── table.html                  ← Retro table experiments
-    └── theme.css                   ← Theme scratchpad
+│   │   ├── app.config.js           # Feature flags, basePath, dynamic depth calculator (APP_CONFIG)
+│   │   ├── supabase.config.js      # Generated runtime config (Supabase URL, Anon Key, AI keys)
+│   │   └── supabase.config.example.js # Template for environment config
+│   ├── services/
+│   │   ├── article.service.js      # Supabase CRUD, Booru search, tag normalization, archives, stats
+│   │   ├── storage.service.js      # Supabase Storage operations (bucket upload/download/delete)
+│   │   └── category.service.js     # Unique category queries and article counts
+│   └── shared/
+│       ├── utils.js                # AppUtils: initSupabase, checkAuth, getParam, formatDate, showLoading
+│       ├── layout.js               # Shared Layout Injector: builds retro table frame on every page
+│       ├── theme-loader.js         # ThemeLoader: dynamic theme switcher with localStorage persistence
+│       └── lightbox.js             # Lightbox: fullscreen image viewer with Fit/Original/Crop/Stretch & Drag-Pan
+└── Readme/                         # Setup guides, prompt templates, and feature specifications
 ```
 
 ---
 
-## 3. Database & Storage Architecture (Supabase)
+## 3. Database Schema & Storage Architecture
 
-The project uses a split-storage strategy: **metadata in PostgreSQL**, and **article HTML content in Supabase Storage**.
+The application adopts a **hybrid storage pattern**: structured metadata is indexed in PostgreSQL via Supabase Database, while potentially large HTML body content is stored as individual files in Supabase Storage.
 
-### Database Schema (`wiki_articles` table)
+### PostgreSQL Table: `wiki_articles`
 
 | Column | Type | Default | Description |
 |---|---|---|---|
 | `id` | `uuid` | `gen_random_uuid()` | Primary Key |
-| `title` | `text` | NOT NULL | Article title |
-| `category` | `text` | NOT NULL | Article category (e.g. `Architecture`, `Hardware`, `Software`) |
-| `tags` | `text[]` | `'{}'` | Array of normalized tags (lowercased, underscores instead of spaces) |
-| `ratings` | `text` | `'NR'` | Content rating: `NR` (Not Rated), `M` (Mature), `P` (Parental), `X` (Adult) |
-| `bucket_path` | `text` | NOT NULL | Relative path to the `.html` file in Supabase Storage |
-| `views` | `int` | `0` | Total view count (incremented on article page load) |
-| `user_id` | `uuid` | NULL | Reference to `auth.users(id)` of author/admin |
-| `created_at` | `timestamptz` | `now()` | Record creation timestamp |
-| `updated_at` | `timestamptz` | `now()` | Last update timestamp |
+| `title` | `text` | *required* | Article headline / title |
+| `category` | `text` | *required* | Primary classification category |
+| `tags` | `text[]` | `'{}'` | Normalized tag array (e.g. `['react', 'web_dev']`) |
+| `ratings` | `text` | `'NR'` | Content rating: `NR` (Not Rated), `M` (Mature), `P` (Prohibited), `X` (Restricted) |
+| `bucket_path` | `text` | *required* | Path to HTML file in Supabase Storage |
+| `views` | `int` | `0` | Incremental view count |
+| `user_id` | `uuid` | `null` | Optional reference to `auth.users(id)` |
+| `created_at` | `timestamptz`| `now()` | Creation timestamp |
+| `updated_at` | `timestamptz`| `now()` | Last update timestamp |
+
+### Supabase Storage Bucket: `wiki-content`
+- Content is saved as raw HTML files partitioned by date and title:
+  ```
+  data/posts/YYYY/MM/DD/HH/[timestamp]_[sanitized_title].html
+  ```
+- Public bucket can be enabled for reading; authenticated policies are enforced for uploads, updates, and deletions.
 
 ### Row Level Security (RLS) Policies
-- **Read (SELECT)**: Public access (`true`) for all users.
-- **Write (INSERT, UPDATE, DELETE)**: Gated strictly to authenticated users (`auth.role() = 'authenticated'`).
+```sql
+alter table wiki_articles enable row level security;
 
-### Object Storage (`wiki-content` bucket)
-- **Bucket**: `wiki-content` (Public bucket recommended for direct CDN fetch).
-- **Date-Partitioned Path Scheme**:
-  ```
-  data/posts/YYYY/MM/DD/HH/{timestamp}_{sanitized_title}.html
-  ```
-- **Critical Invariant**:
-  When creating or editing an article, **the HTML content MUST be successfully uploaded to the bucket FIRST**. Only after obtaining the validated `bucket_path` should the metadata record be created or updated in the `wiki_articles` table.
+-- Public can view all articles
+create policy "Public Articles are viewable by everyone"
+  on wiki_articles for select using ( true );
 
----
+-- Only authenticated users (Admins) can modify articles
+create policy "Admins can insert articles"
+  on wiki_articles for insert with check ( auth.role() = 'authenticated' );
 
-## 4. Services & Data Access Layer (`src/services/`)
+create policy "Admins can update articles"
+  on wiki_articles for update using ( auth.role() = 'authenticated' );
 
-### `ArticleService` (`src/services/article.service.js`)
-Centralized CRUD and search operations.
-- `getList({ page, limit, category, search, showRRated })`:
-  - Standard pagination: uses Supabase `.range(from, to)`.
-  - Advanced search: automatically switches to client-side filtering if search operators are detected.
-  - Rating filter: filters out `("M", "P", "X")` unless `showRRated` is enabled.
-- `getById(id)`: Fetches single article metadata.
-- `create(articleData)`: Sanitizes tags and inserts record.
-- `update(id, updates)`: Sanitizes tags and updates record.
-- `delete(id)`: Removes record by UUID.
-- `incrementViews(id, currentViews)`: Increments article view counter by +1.
-- `_normalizeTags(articleData)`:
-  - Trims whitespace.
-  - Converts to lowercase.
-  - Replaces spaces with underscores (`_`).
-  - Strips special characters: `[!@#$%^&*()+=\[\]{};:'",.<>?\\|`~]`.
-- `_parseSearchQuery(searchStr)`:
-  - **Booru-style search syntax**:
-    - `term`: Matches if term is found in title OR in tags.
-    - `tag1 tag2`: AND query (must have both).
-    - `-tag`: Exclusion / NOT query (must not have this tag).
-    - `~tag1 ~tag2`: OR query (must have at least one).
-    - `term*`: Wildcard prefix match.
-
-### `StorageService` (`src/services/storage.service.js`)
-Supabase Object Storage management for `wiki-content`.
-- `generateArticlePath(title)`: Computes the date-based upload path (`data/posts/YYYY/MM/DD/HH/...`).
-- `uploadArticle(title, content)`: Helper to upload an HTML string and return the bucket path.
-- `upload(path, content, contentType)`: Direct blob upload with upsert enabled.
-- `download(path)` & `downloadAsText(path)`: Fetches HTML content as text for display in article viewer or editor.
-- `delete(path)`: Deletes file from bucket.
-- `getPublicUrl(path)`: Generates public CDN URL.
-
-### `CategoryService` (`src/services/category.service.js`)
-- `getAll(showRRated)`: Fetches distinct categories across articles, excluding mature ratings when appropriate, and returns an alphabetically sorted list for the sidebar.
-
-### `AppUtils` (`src/shared/utils.js`)
-- `initSupabase()`: Creates Supabase client using credentials from `window.SUPABASE_URL` and `window.SUPABASE_ANON_KEY`. Enforces `storage: window.localStorage` to bypass Android IndexedDB bugs.
-- `checkAuth(supabase)`: Verifies if current session has an authenticated user.
-- `getParam(name)`: Retrieves query parameter from `window.location.search`.
-- `formatDate(dateStr)`: Standard localized date formatter.
-- `showLoading(boolean)`: Controls visibility of `#loading-indicator`.
+create policy "Admins can delete articles"
+  on wiki_articles for delete using ( auth.role() = 'authenticated' );
+```
 
 ---
 
-## 5. UI Layout, Theming & Lightbox Engine
+## 4. Services & Core Modules
 
-### Dynamic Table Layout Injector (`src/shared/layout.js`)
-To maintain the authentic retro web experience while avoiding code duplication across HTML files:
-1. `layout.js` intercepts `DOMContentLoaded`.
-2. Preserves the current page content from `document.body.innerHTML`.
-3. Re-renders the page wrapped inside a classic table structure:
-   ```html
-   <div id="layout-wrapper">
-     <table class="main-layout" border="1" cellpadding="0" cellspacing="0">
-       <tr><!-- Header Row (Logo, Zoom Controls, Zen Toggle, Theme Toggle) --></tr>
-       <tr>
-         <td class="sidebar-cell"><!-- Navigation, Categories, Tags, Theme Selector --></td>
-         <td class="content-cell"><!-- Injected Page Content --></td>
-       </tr>
-       <tr><!-- Footer Row (Visitor count, version, copyright) --></tr>
-     </table>
-   </div>
-   ```
-4. **Path Resolution via `APP_CONFIG.getDepth()`**:
-   Calculates directory depth based on `window.location.pathname` (`./`, `../`, `../../`), allowing the header, links, themes, and services to load flawlessly regardless of URL nesting.
-5. **Zen Mode**: Toggles `.zen-mode` on `<body>`, hiding the sidebar to maximize reading area (`localStorage.zenMode`).
-6. **Zoom Controller**: Buttons `[-]`, `[D]`, `[+]` adjust root font size/scaling (`Layout.zoom()`).
+### 1. `ArticleService` ([`src/services/article.service.js`](file:///c:/MyDrive_1/project_2/Github-Repo/github_account_2/webapp2_wiki/src/services/article.service.js))
+- **`_normalizeTags(articleData)`**: Trims whitespace, forces lowercase, converts internal spaces to underscores (`foo bar` -> `foo_bar`), and strips special characters (`[!@#$%^&*...+...]`).
+- **`_parseSearchQuery(searchStr)`**: Parses advanced Booru-style search tokens:
+  - `word`: Matched against title and tags.
+  - `tag1 tag2`: Must contain **both** tags (AND condition).
+  - `-tag`: Must **not** contain tag (NOT condition).
+  - `~tag1 ~tag2`: Contains **either** tag (OR condition).
+  - `prefix*`: Wildcard prefix match.
+- **`getList(options)`**:
+  - Accepts `page`, `limit`, `category`, `search`, `showRRated`, `sortBy` (`created_at`, `updated_at`, `views`, `title`), `sortAsc`, `dateFrom`, `dateTo`.
+  - When advanced search tokens are detected, fetches a broader candidate batch (up to 500) and executes accurate multi-clause filtering client-side before paginating.
+- **`getById(id)`**: Fetches a single article row by UUID.
+- **`getRandom(showRRated)`**: Returns a random article ID for a "Random Article" feature.
+- **`getStats(showRRated)`**: Aggregates total articles, total views, and unique category count.
+- **`getArchiveIndex(showRRated)`**: Builds a Year -> Month -> Count archive tree.
+- **`getPopularTags(limit, showRRated)`** & **`getAllTags(showRRated)`**: Frequency-sorted tag aggregation.
+- **`create(data)`**, **`update(id, updates)`**, **`delete(id)`**, **`incrementViews(id, currentViews)`**.
 
-### Theming System (`src/shared/theme-loader.js` & `css/themes/`)
-- Registered in `css/themes/themes.json`.
-- Dynamic stylesheet link `#theme-stylesheet` is injected into `<head>`.
-- Supports 11 themes:
-  - `default`: Retro Classic (Dark default)
-  - `retro-green`: Cyberpunk CRT Terminal
-  - `light-mode`: Clean Light
-  - `windows-98`: Windows 98 desktop with beveled teal chrome
-  - `luxury`: Luxury Vogue (Gold on dark)
-  - `medieval`: Medieval Scroll (Parchment RPG)
-  - `raunchy`, `raunchy-3`, `raunchy-4`: Edgy neon editions
-  - `nes-classic`: 8-bit NES palette & pixel font style
-  - `dark-theme`: Premium glassmorphism dark mode
-- Executes immediately on script load to eliminate Flash of Unstyled Content (FOUC).
+### 2. `StorageService` ([`src/services/storage.service.js`](file:///c:/MyDrive_1/project_2/Github-Repo/github_account_2/webapp2_wiki/src/services/storage.service.js))
+- **`generateArticlePath(title)`**: Computes date-partitioned storage key.
+- **`uploadArticle(title, content)`**: Uploads HTML content to `wiki-content` bucket, returning the bucket key.
+- **`downloadAsText(path)`**: Downloads HTML payload from storage as a UTF-8 string.
+- **`delete(path)`**: Removes an HTML file from the bucket upon article deletion.
+- **`getPublicUrl(path)`**: Generates public storage URL.
 
-### Retro Gallery & Lightbox (`src/shared/lightbox.js` & `css/components/gallery.css`)
-- **Retro Masonry**: Flexbox masonry grid (`.retro-gallery.cols-3`) with borderless touching thumbnails and hover captions.
-- **Singleton Lightbox (`window.Lightbox`)**:
-  - Dynamically injects `#lightbox` overlay.
-  - Supports both images and HTML5 videos.
-  - Multi-mode display:
-    - `[Fit]`: Scale to fit within viewport.
-    - `[100%]`: Render at natural image dimensions.
-    - `[Fill]`: Crop/cover to fill screen.
-    - `[Stretch]`: Stretch to screen boundaries.
-  - Drag-to-pan support when zoomed or panning across oversized media.
-  - Full keyboard control: `Escape` (close), `Left`/`Right` arrows (navigate gallery), `Space` (play/pause video).
+### 3. `CategoryService` ([`src/services/category.service.js`](file:///c:/MyDrive_1/project_2/Github-Repo/github_account_2/webapp2_wiki/src/services/category.service.js))
+- **`getAll(showRRated)`**: Retrieves a deduplicated, alphabetically sorted list of categories.
+- **`getCategoriesWithCounts(showRRated)`**: Returns `{ category, count }` objects for sidebar navigation counters.
+
+### 4. `AppUtils` ([`src/shared/utils.js`](file:///c:/MyDrive_1/project_2/Github-Repo/github_account_2/webapp2_wiki/src/shared/utils.js))
+- **`initSupabase()`**: Initializes the Supabase client with explicit `localStorage` persistence (bypassing IndexedDB issues on certain mobile browsers).
+- **`checkAuth(supabase)`**: Verifies whether an active user session exists.
+- **`isRRatedAllowed()`**: Returns `true` only if the user is authenticated **and** has explicitly checked `show_r_rated` in settings.
+- **`getParam(name)`**: Reads URL query string parameters.
+- **`formatDate(dateStr)`**: Formats dates into localized strings.
+- **`showLoading(show)`**: Toggles the global `#loading-indicator` element.
+
+### 5. `APP_CONFIG` ([`src/config/app.config.js`](file:///c:/MyDrive_1/project_2/Github-Repo/github_account_2/webapp2_wiki/src/config/app.config.js))
+- **`getDepth()`**: Inspects `window.location.pathname` to calculate the relative path prefix back to the root (`./`, `../`, or `../../`). Prevents broken asset paths across nested directories.
+- **`features`**: Feature flags for `themes`, `rRatedFilter`, and `zenMode`.
 
 ---
 
-## 6. Admin Tools & AI Studio (`pages/admin/`)
+## 5. UI Architecture & Shared Systems
 
-### Modular Article Editor (`pages/admin/editor.html`)
-The editor provides a full WYSIWYG experience tailored for retro markup without requiring external WYSIWYG dependencies:
-- **`editor.core.js`**: Form lifecycle, validation, auth guard, tag chip input with auto-normalization, rating selector.
-- **`editor.wysiwyg.js`**: `document.execCommand` wrappers, retro table generator, media inserters.
-- **`editor.toolbar.js`**: Buttons for headings, retro divider (`<hr>`), blockquotes, code, tables.
-- **`editor.preview.js`**: Live iframe/tab preview rendering using the app's stylesheets.
-- **`editor.tabs.js`**: Seamless switching between Visual Editor, Raw HTML Source, and Live Preview tabs.
-- **`editor.fetch.js`**: Detects `?id=UUID` in URL, fetches metadata + bucket HTML, and populates fields for editing.
+### Shared Layout Injector (`src/shared/layout.js`)
+On `DOMContentLoaded`, `initLayout()` dynamically captures the page's original inner markup and wraps it into a classic HTML table framework:
+1. **Header Row**:
+   - Mobile hamburger toggle (`[≡]`) controlling the sidebar drawer.
+   - RetroWiki title & version badge linking back to `index.html`.
+   - Page zoom controls: `[-]` (zoom out), `[D]` (reset to 100%), `[+]` (zoom in) scaling CSS `zoom` from 0.5x to 2.0x.
+   - Zen Mode button `[ Zen Mode ]`: hides header and sidebar for distraction-free reading.
+   - Quick Theme toggle `[ Light Mode ]` / `[ Dark Mode ]`.
+2. **Body Row (`.main-layout`)**:
+   - **Sidebar Cell (`.sidebar-cell`)**:
+     - Navigation links: Home / Search, Create New, AI Creator, Advanced Creator, JSON Importer, Tags Cloud, Admin Login/Logout (dynamic label and action depending on auth state).
+     - Category list: Dynamically loaded from `CategoryService`.
+     - Settings: Live theme selector dropdown (`#theme-select`) and R-Rated checkbox (`#chk-r-rated`).
+   - **Content Cell (`.content-cell`)**:
+     - Injects the page-specific markup within `.content-wrapper`.
 
-### AI Article Generators
-1. **`pages/admin/ai-creator.html`**:
-   - Lightweight article generator powered by Google Gemini (Gemini 2.5 Flash).
-   - Prompt input → generate article → review/edit → refine iteratively → save directly to Supabase.
-2. **`pages/admin/advanced-ai-creator.html`**:
-   - Multi-provider AI Studio with Quill editor.
-   - Supports: Google Gemini, OpenAI (GPT-4o), Anthropic (Claude 3.5 Sonnet), and xAI (Grok).
-   - Generates retro-formatted HTML, tags, category, and summary.
-3. **`pages/admin/json-importer.html`**:
-   - Ingests pre-generated JSON files (e.g. from local scripts or external LLMs).
-   - JSON Schema:
-     ```json
-     {
-       "title": "Article Title",
-       "category": "Technology",
-       "tags": "hardware, storage, vintage",
-       "ratings": "NR",
-       "content_html": "<p>Article HTML markup here...</p>"
-     }
-     ```
-   - Automatically handles uploading the HTML to Storage and inserting the record into the DB.
+### Theme Engine (`src/shared/theme-loader.js` & `css/themes/`)
+- Dynamic theme switching without full page reload.
+- Registered in [`css/themes/themes.json`](file:///c:/MyDrive_1/project_2/Github-Repo/github_account_2/webapp2_wiki/css/themes/themes.json):
+  - `default` (Retro Classic)
+  - `dark-theme` (Glassmorphism Dark)
+  - `light-mode` (Clean Light)
+  - `windows-98` (Windows 98 Desktop)
+  - `retro-green` (Cyberpunk Terminal)
+  - `nes-classic` (8-Bit Nintendo)
+  - `medieval` (Parchment RPG Scroll)
+  - `luxury` (Vogue Dark)
+  - `raunchy`, `raunchy-3`, `raunchy-4` (Neon Editions)
+- Selection is persisted in `localStorage.getItem('user_theme')`.
+
+### Singleton Lightbox & Gallery System (`src/shared/lightbox.js` & `css/components/gallery.css`)
+- **Masonry Gallery (`.retro-gallery`)**:
+  - Dynamic multi-column layout (`.cols-2`, `.cols-3`, `.cols-4`, `.cols-5`).
+  - Column count can be adjusted on the fly in `article.html` using the floating gallery controls (`changeGalleryColumns(+1 / -1)`).
+  - Hover captions slide out over image thumbnails.
+- **Lightbox Overlay (`window.Lightbox`)**:
+  - Automatically attached to `#article-content img`.
+  - **Modes**:
+    - `[D]` **Fit**: Contained inside 90vw / 90vh maintaining aspect ratio.
+    - `[O]` **Original**: 1:1 pixel representation.
+    - `[C]` **Crop / Fill**: Fills viewport dimensions for panning.
+    - `[S]` **Stretch**: Stretches to fill viewport completely.
+    - `[ [ ] ]` **Fullscreen**: Invokes HTML5 Fullscreen API.
+  - **Mouse Drag & Pan**: Interactive dragging with translation coordinate calculation.
+  - **Keyboard Support**: `Escape` key closes the lightbox.
 
 ---
 
-## 7. Environment & Configuration Workflow
+## 6. Page Specifications & Features
 
-### Secret Management
-- Secrets are stored in `.devops/.env` (git-ignored):
-  ```env
-  SUPABASE_URL=https://xyzcompany.supabase.co
-  SUPABASE_ANON_KEY=eyJhbGciOi...
-  GEMINI_API_KEY=AIzaSy...
-  OPENAI_API_KEY=sk-...
-  ANTHROPIC_API_KEY=sk-ant-...
-  XAI_API_KEY=xai-...
-  ```
+### 1. Home / Search (`index.html`)
+- **A-Z Jump Links Bar**: Quick filtering by title starting letter.
+- **Search Bar**: Booru query parsing with live help dropdown.
+- **Category Filter Pill**: Displays currently active category with quick clear link.
+- **Pagination**: Configurable items per page with Prev/Next indicators.
 
-### Config Generation
+### 2. Article Viewer (`pages/article.html`)
+- Reads article UUID via `?id=UUID`.
+- Restricts R-rated articles (`M`, `P`, `X`) from unauthenticated viewers with a retro `[ RESTRICTED CONTENT ]` banner.
+- Authenticated admins see inline `[ Edit ]` and `[ Delete ]` controls.
+- Fetches HTML body from Supabase Storage and formats masonry galleries (`formatGalleries()`).
+- Auto-initializes Lightbox for all images.
+- Automatically increments view counter via `ArticleService.incrementViews()`.
+
+### 3. Modular Admin Editor (`pages/admin/editor.html`)
+Gated by Supabase authentication (redirects unauthenticated users to `login.html`). Composed of modular scripts in `pages/admin/modules/`:
+- **`editor.core.js`**:
+  - Manages editor state and edit mode (`?id=UUID` or `?edit=UUID`).
+  - Category selector dropdown with `+ [ Add New Category... ]` prompt.
+  - Tag chips with input autocomplete from existing database tags.
+  - Form dirty tracking with browser exit confirmation (`beforeunload`).
+  - Draft auto-save to `localStorage` every 15 seconds with auto-recovery prompt.
+  - Live writing metrics: word count, reading time, character count, and embedded image count.
+  - Two-phase save execution (Storage first -> Database second).
+- **`editor.wysiwyg.js`**:
+  - Full Word-style visual editing ribbon (headings, fonts, colors, lists, tables).
+  - Interactive Floating Media Inspector: allows clicking images to align (left, center, right, float), resize with presets, add captions, or delete.
+  - Direct clipboard image pasting and drag-and-drop file upload.
+  - Real-time two-way synchronization between visual editor and raw HTML textarea.
+- **`editor.toolbar.js`**:
+  - Fast retro snippet buttons for raw HTML mode (`bold`, `italic`, `h2`, `h3`, `code`, `quote`, `link`, `table`, `gallery`).
+- **`editor.preview.js`**:
+  - In-page preview modal that formats galleries and mirrors the public article view.
+- **`editor.fetch.js`**:
+  - Scraping helper to extract `<img>` tags from external HTML code snippets.
+- **`editor.tabs.js`**:
+  - Tab coordinator for switching between Editor, WYSIWYG, Fetch URLs, and AI Assist.
+
+### 4. AI Generation Studios
+- **Basic AI Creator (`pages/admin/ai-creator.html`)**:
+  - Generates full wiki-formatted articles using Google Gemini (Gemini 2.5).
+  - Interactive refinement panel allows requesting revisions (e.g. "Add section on history", "Make more technical").
+- **Advanced AI Studio (`pages/admin/advanced-ai-creator.html`)**:
+  - Multi-LLM provider support: Google Gemini 2.5, OpenAI GPT-4o, Anthropic Claude 3.5, and xAI Grok Beta.
+  - Integrated Quill WYSIWYG editor for immediate post-generation editing.
+
+### 5. JSON Importer (`pages/admin/json-importer.html`)
+- Ingests structured JSON containing `{ title, category, tags, content_html }`.
+- Includes pre-built prompt templates designed for ChatGPT/Claude to generate complete Wikipedia-style articles with infoboxes and tables of contents.
+
+### 6. Tag Explorer (`pages/other/tags.html`)
+- Aggregates and displays all tags weighted by frequency (`tag-size-1` to `tag-size-5`).
+- Includes real-time tag search filtering and alphabetized grouping. Clicking any tag navigates to `index.html?q=tag`.
+
+---
+
+## 7. Configuration & DevOps Workflow
+
+### Environment Setup (`.devops/.env`)
+API credentials and keys are maintained in `.devops/.env` (gitignored):
+```bash
+SUPABASE_URL="https://your-project.supabase.co"
+SUPABASE_ANON_KEY="your-anon-key"
+
+# AI Model Keys
+GEMINI_API_KEY="your-gemini-key"
+OPENAI_API_KEY="your-openai-key"
+ANTHROPIC_API_KEY="your-anthropic-key"
+XAI_API_KEY="your-xai-key"
+```
+
+### Config Generation Scripts
+Because RetroWiki uses no bundlers, runtime JavaScript configuration is generated from `.devops/.env` into `src/config/supabase.config.js`:
 - **Windows (PowerShell)**:
   ```powershell
   powershell -ExecutionPolicy Bypass -File .\generate-config.ps1
@@ -302,22 +330,34 @@ The editor provides a full WYSIWYG experience tailored for retro markup without 
   chmod +x generate-config.sh
   ./generate-config.sh
   ```
-- Output: `src/config/supabase.config.js` (git-ignored, exposes keys on `window`).
 
 ---
 
-## 8. Non-Negotiable Development Rules
+## 8. Extension & Contribution Guide
 
-1. **Retro Layout Law**:
-   - **NEVER** replace the outer page layout with CSS Grid or Flexbox. The application shell must remain an HTML `<table>`.
-   - **NEVER** apply modern border-radius (`border-radius: 0` is strictly enforced across core elements).
-   - **NEVER** use modern subtle pastel links—stick to standard high-contrast blue (`#0000ee`) and purple (`#551a8b`).
-2. **Data Pipeline Law**:
-   - **ALWAYS** route database operations through `ArticleService` and `CategoryService`. Never call `supabase.from()` directly inside view pages.
-   - **ALWAYS** upload HTML content to Supabase Storage (`StorageService`) **BEFORE** inserting or updating the database row.
-   - **ALWAYS** pass tags through `ArticleService._normalizeTags()` before persisting.
-3. **Relative Pathing Law**:
-   - **ALWAYS** use `APP_CONFIG.getDepth()` when constructing links, image URLs, or script paths in shared scripts to ensure pages work from root, `/pages/`, `/pages/other/`, and `/pages/admin/`.
-4. **Zero Build Tools Law**:
-   - Keep scripts ES6/vanilla and CSS modular. All additions must be directly runnable in modern browsers without compilation or bundler steps.
+### How to Add a New Theme
+1. Create a theme folder: `css/themes/[theme-name]/`
+2. Add `theme.css` defining custom variables or overrides for `:root` and `body` (e.g., `--bg-color`, `--text-color`, `--border-color`, `--link-color`).
+3. Register the theme in `css/themes/themes.json`:
+   ```json
+   {
+       "id": "my-theme",
+       "name": "My New Theme",
+       "description": "Theme description",
+       "css": "my-theme/theme.css"
+   }
+   ```
+4. Refresh the application; the theme will automatically appear in the sidebar settings dropdown.
+
+### How to Add a New Service or Query
+1. Add modular functions to `src/services/`.
+2. Follow the service convention: return plain objects or throw standard errors.
+3. Import the service in the target HTML page via `<script src="..."></script>`.
+4. Call via `ServiceName.methodName()`.
+
+### How to Maintain Cross-Path Consistency
+Whenever creating new pages or editing links:
+- Always use `APP_CONFIG.getDepth()` in JavaScript to resolve root-relative paths.
+- In static HTML `<head>` tags, ensure relative script and stylesheet paths match the nesting level (`./`, `../`, or `../../`).
+- Retain retro brutalist styling: no rounded corners, table-based primary layouts, and bracketed action buttons.
 
