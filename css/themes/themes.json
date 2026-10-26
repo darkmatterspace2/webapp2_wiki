@@ -38,15 +38,9 @@
         },
         {
             "id": "raunchy",
-            "name": "Raunchy",
-            "description": "Bold and edgy aesthetic",
+            "name": "Raunchy (Unified)",
+            "description": "The definitive unified erotic neon-pink and velvet theme with reworked 60fps animations",
             "css": "raunchy/theme.css"
-        },
-        {
-            "id": "raunchy-3",
-            "name": "Raunchy III",
-            "description": "Ultra-light neon pink edition - works everywhere",
-            "css": "raunchy-3/theme.css"
         },
         {
             "id": "raunchy-4",
@@ -62,9 +56,15 @@
         },
         {
             "id": "dark-theme",
-            "name": "Dark Theme",
-            "description": "Premium glassmorphism dark theme with Inter font and cyan accents",
+            "name": "Obsidian Deep Space",
+            "description": "State-of-the-art cosmic obsidian glassmorphism dark theme with Plus Jakarta Sans and luminous cyan glow",
             "css": "dark-theme/theme.css"
+        },
+        {
+            "id": "windows-vista",
+            "name": "Windows Vista Aero",
+            "description": "Authentic Windows Vista Aero Glass with Aurora wallpaper, smoky translucency, and cyan glowing buttons",
+            "css": "windows-vista/theme.css"
         }
     ],
     "default": "default"

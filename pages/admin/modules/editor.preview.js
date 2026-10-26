@@ -4,13 +4,26 @@
  */
 
 window.showPreview = function () {
-    const title = document.getElementById('edit-title').value;
-    const content = document.getElementById('edit-content').value;
-    const category = document.getElementById('edit-category').value;
-    const rating = document.getElementById('edit-rating').value;
+    const title = document.getElementById('edit-title')?.value || "Untitled";
+    const content = document.getElementById('edit-content')?.value || "";
+    
+    // Resolve Category
+    const catSelect = document.getElementById('edit-category-select');
+    const customInput = document.getElementById('custom-category-input');
+    let category = "Uncategorized";
+    if (catSelect) {
+        category = (catSelect.value === '__NEW__') 
+            ? (customInput?.value || "New Category") 
+            : (catSelect.value || "Uncategorized");
+    }
 
-    document.getElementById('preview-title').textContent = title || "Untitled";
-    document.getElementById('preview-meta').textContent = `Category: ${category} | Rating: ${rating} | (Preview)`;
+    const rating = document.getElementById('edit-rating')?.value || "NR";
+    const tags = (window.articleTags && window.articleTags.length > 0) 
+        ? window.articleTags.map(t => `#${t}`).join(', ') 
+        : 'no tags';
+
+    document.getElementById('preview-title').textContent = title;
+    document.getElementById('preview-meta').textContent = `Category: ${category} | Rating: ${rating} | Tags: ${tags} | (Draft Preview)`;
 
     const body = document.getElementById('preview-body');
     body.innerHTML = content;

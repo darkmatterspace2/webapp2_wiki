@@ -1,0 +1,776 @@
+/* ==========================================================================
+   THEME: RAUNCHY-4 (SOFT-ROSE VELVET)
+   Refined, velvety dark theme with high image/GIF visibility.
+   Features:
+   - High-visibility animated GIFs & background artwork (Header, Sidebar, Headings, Cards, Editor)
+   - Optimized transparency & overlays so backgrounds are crystal clear
+   - Calibrated, sophisticated soft rose & dusty magenta tones (NOT too bright/neon)
+   - Full responsive layout support for mobile, tablet, and widescreen Zen mode
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+/* --------------------------------------------------------------------------
+   1. PALETTE TOKENS (Sophisticated Muted Rose Tones - Not Too Bright)
+   -------------------------------------------------------------------------- */
+:root {
+    /* Deep Velvety Bases */
+    --bg-color: #120010;
+    --bg-mid: #1c0018;
+    --bg-light: #260022;
+    --surface-header: rgba(28, 0, 24, 0.7);
+    --sidebar-bg: rgba(20, 0, 18, 0.65);
+    --card-bg: rgba(30, 0, 26, 0.7);
+    --card-bg-hover: rgba(42, 0, 36, 0.85);
+
+    /* Text (Soft Cream & Rose - Gentle on Eyes) */
+    --text-color: #dfb2c4;
+    --text-main: #dfb2c4;
+    --text-bright: #fce7f0;
+    --text-muted: #a3788c;
+    --text-subtle: #7a5568;
+
+    /* Seductive Muted Rose Accents (Never Harsh Neon) */
+    --accent-pink: #d96f92;
+    --accent-pink-bright: #ea93b0;
+    --accent-magenta: #b84f7e;
+    --accent-rose: #cf7394;
+    --accent-gold: #cca04e;
+    --accent-danger: #c95272;
+    --accent-glow: rgba(217, 111, 146, 0.3);
+
+    /* Specular Borders */
+    --border-pink: rgba(217, 111, 146, 0.45);
+    --border-color: rgba(255, 180, 205, 0.22);
+    --border-dim: rgba(255, 180, 205, 0.1);
+    --border-light: rgba(217, 111, 146, 0.5);
+    --border-wet: rgba(207, 115, 148, 0.5);
+
+    /* Controls */
+    --btn-bg: rgba(42, 0, 36, 0.85);
+    --btn-text: #fce7f0;
+    --input-bg: #180015;
+    --input-text: #fce7f0;
+
+    /* Typography */
+    --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-mono: 'JetBrains Mono', Consolas, monospace;
+    --font-display: 'Plus Jakarta Sans', Impact, 'Arial Black', sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+/* --------------------------------------------------------------------------
+   2. BODY & AMBIENT CANVAS (Naked Ladies Artwork High-Visibility)
+   -------------------------------------------------------------------------- */
+body,
+body[data-theme="raunchy-4"] {
+    margin: 0;
+    padding: 8px;
+    background-color: var(--bg-color) !important;
+    background-image:
+        radial-gradient(circle at 15% 20%, rgba(184, 79, 126, 0.15) 0%, transparent 45%),
+        radial-gradient(circle at 85% 30%, rgba(217, 111, 146, 0.12) 0%, transparent 40%),
+        url('https://michelerosenthal.com/wp-content/uploads/2024/06/nakedladies.png') !important;
+    background-size: 100% 100%, 100% 100%, cover !important;
+    background-position: center center !important;
+    background-attachment: fixed !important;
+    color: var(--text-color) !important;
+    font-family: var(--font-main) !important;
+    font-size: 15px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+    background: var(--accent-magenta) !important;
+    color: #ffffff !important;
+}
+
+/* --------------------------------------------------------------------------
+   3. LINKS & HEADINGS (Belle Delphine Ahegao GIF Prominent & Visible)
+   -------------------------------------------------------------------------- */
+a {
+    color: var(--accent-pink) !important;
+    text-decoration: none !important;
+    font-weight: 600 !important;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+a:hover {
+    color: var(--accent-pink-bright) !important;
+    text-shadow: 0 0 10px var(--accent-glow) !important;
+    text-decoration: underline !important;
+}
+
+a:visited {
+    color: var(--text-muted) !important;
+}
+
+/* Headings with Centered High-Visibility Belle Delphine Animated GIF */
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display) !important;
+    color: var(--text-bright) !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.01em !important;
+    text-align: center !important;
+    margin: 1.2em 0 0.6em !important;
+    padding: 18px 22px !important;
+    min-height: 75px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-bottom: 2px dashed var(--border-pink) !important;
+    border-top: 1px dashed rgba(255, 180, 205, 0.3) !important;
+    border-radius: 8px !important;
+    background: 
+        linear-gradient(90deg, rgba(20, 0, 18, 0.72) 0%, rgba(184, 79, 126, 0.22) 50%, rgba(20, 0, 18, 0.72) 100%),
+        url('https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Ahegao_Belle_Delphine.gif/250px-Ahegao_Belle_Delphine.gif') center center / contain no-repeat !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.95), 0 0 12px rgba(217, 111, 146, 0.6) !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45) !important;
+}
+
+h1 { font-size: 1.6rem !important; font-weight: 800 !important; }
+h2 { font-size: 1.38rem !important; }
+h3 { font-size: 1.22rem !important; }
+h4 { font-size: 1.1rem !important; }
+
+/* --------------------------------------------------------------------------
+   4. GLASS BUTTONS & CONTROLS
+   -------------------------------------------------------------------------- */
+button,
+.btn-header,
+.btn-random-article,
+.index-tab-btn,
+.view-mode-btn,
+.archive-month-btn,
+.tab-btn {
+    background: var(--btn-bg) !important;
+    color: var(--btn-text) !important;
+    border: 1px solid var(--border-pink) !important;
+    font-family: var(--font-main) !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.3px !important;
+    padding: 7px 15px !important;
+    border-radius: 20px !important;
+    cursor: pointer !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 200, 220, 0.12) !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+button:hover,
+.btn-header:hover,
+.btn-random-article:hover,
+.index-tab-btn:hover,
+.view-mode-btn:hover,
+.archive-month-btn:hover,
+.tab-btn:hover {
+    background: rgba(65, 0, 52, 0.92) !important;
+    color: #ffffff !important;
+    border-color: var(--accent-pink-bright) !important;
+    box-shadow: 0 4px 16px var(--accent-glow), inset 0 1px 0 rgba(255, 200, 220, 0.2) !important;
+    transform: translateY(-1px);
+}
+
+button:active,
+.btn-header:active {
+    transform: translateY(1px);
+    box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.6) !important;
+}
+
+/* Active Tabs */
+.btn-header.active,
+.index-tab-btn.active,
+.view-mode-btn.active,
+.archive-month-btn.active,
+.tab-btn.active {
+    background: linear-gradient(135deg, rgba(184, 79, 126, 0.4), rgba(217, 111, 146, 0.3)) !important;
+    border-color: var(--accent-pink-bright) !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 14px var(--accent-glow) !important;
+}
+
+/* Danger / Delete */
+.btn-delete,
+.filter-pill-remove {
+    color: var(--accent-danger) !important;
+    border-color: rgba(201, 82, 114, 0.45) !important;
+}
+
+.btn-delete:hover,
+.filter-pill-remove:hover {
+    background: var(--accent-danger) !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 14px rgba(201, 82, 114, 0.5) !important;
+}
+
+/* --------------------------------------------------------------------------
+   5. RECESSED INPUTS
+   -------------------------------------------------------------------------- */
+input[type="text"],
+input[type="url"],
+input[type="number"],
+input[type="search"],
+input[type="password"],
+textarea,
+select,
+.editor-input,
+.editor-select,
+.sidebar-filter-input {
+    background: var(--input-bg) !important;
+    color: var(--input-text) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 10px !important;
+    padding: 8px 12px !important;
+    font-family: inherit !important;
+    font-size: 13px !important;
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.55) !important;
+    transition: all 0.2s ease !important;
+    width: 100%;
+}
+
+input:focus,
+textarea:focus,
+select:focus,
+.editor-input:focus {
+    outline: none !important;
+    border-color: var(--accent-pink) !important;
+    box-shadow: 0 0 0 3px var(--accent-glow), inset 0 2px 5px rgba(0, 0, 0, 0.55) !important;
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+    accent-color: var(--accent-pink) !important;
+}
+
+/* --------------------------------------------------------------------------
+   6. HEADER (Kagney Linn Karter Animated GIF High-Visibility)
+   -------------------------------------------------------------------------- */
+.header-cell {
+    background: 
+        linear-gradient(180deg, rgba(28, 0, 24, 0.3) 0%, rgba(18, 0, 16, 0.6) 100%),
+        url('https://porngifmag.com/content/2015/10/acidgifer-kagney-linn-karter-gangbanged.gif') center center / cover no-repeat !important;
+    border-bottom: 2px solid var(--border-pink) !important;
+    padding: 14px 18px !important;
+    min-height: 90px !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.55) !important;
+    color: var(--text-bright) !important;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.95), 0 0 10px rgba(217, 111, 146, 0.7) !important;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.header-brand,
+.header-title,
+.header-cell a {
+    color: var(--text-bright) !important;
+    font-weight: 700 !important;
+}
+
+.header-brand span {
+    color: var(--accent-pink-bright) !important;
+    text-shadow: 0 0 10px var(--accent-glow);
+}
+
+.header-search input {
+    background: rgba(20, 0, 18, 0.85) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 20px !important;
+    padding: 6px 14px 6px 30px !important;
+    font-size: 12px !important;
+}
+
+/* --------------------------------------------------------------------------
+   7. SIDEBAR (Kids School Illustration Background - High-Visibility)
+   -------------------------------------------------------------------------- */
+.sidebar-cell,
+td.sidebar-cell,
+#sidebar.sidebar-cell {
+    width: 220px !important;
+    background-color: transparent !important;
+    background-image: 
+        linear-gradient(180deg, rgba(20, 0, 18, 0.15) 0%, rgba(14, 0, 12, 0.4) 100%),
+        url('https://myteenwebcam.com/fapp/gifs/59b5aa87ee325fd23bb7ef08dd8b4ab3.gif') !important;
+    background-position: 60% center !important;
+    background-size: cover !important;
+    background-repeat: no-repeat !important;
+    border-right: 2px solid var(--border-pink) !important;
+    padding: 12px 14px !important;
+    font-size: 13px !important;
+    color: var(--text-color) !important;
+}
+
+body.zen-mode .sidebar-cell {
+    display: none !important;
+}
+
+.sidebar-accordion {
+    margin-bottom: 10px;
+    border: 1px solid rgba(255, 180, 205, 0.25);
+    border-radius: 8px;
+    background: rgba(26, 0, 22, 0.45);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    overflow: hidden;
+    transition: all 0.2s ease;
+}
+
+.sidebar-accordion:hover {
+    border-color: var(--border-wet);
+}
+
+.sidebar-accordion summary {
+    padding: 9px 12px !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    color: var(--text-bright) !important;
+    cursor: pointer !important;
+    background: rgba(38, 0, 32, 0.55) !important;
+    transition: background 0.15s ease;
+}
+
+.sidebar-accordion summary:hover {
+    background: rgba(217, 111, 146, 0.2) !important;
+    color: var(--accent-pink-bright) !important;
+}
+
+.sidebar-accordion-body {
+    padding: 8px 10px !important;
+}
+
+.sidebar-cell ul {
+    list-style: none !important;
+    padding: 0 !important;
+    margin: 4px 0 !important;
+}
+
+.sidebar-cell li a {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 6px 9px !important;
+    border-radius: 6px !important;
+    font-size: 12px !important;
+    color: var(--text-bright) !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+    transition: all 0.15s ease !important;
+}
+
+.sidebar-cell li a:hover {
+    background: rgba(217, 111, 146, 0.28) !important;
+    color: #ffffff !important;
+    transform: translateX(3px);
+}
+
+.category-count-badge,
+.tag-badge {
+    background: rgba(217, 111, 146, 0.25) !important;
+    color: var(--accent-pink-bright) !important;
+    border: 1px solid rgba(217, 111, 146, 0.4) !important;
+    padding: 2px 7px !important;
+    border-radius: 12px !important;
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    font-family: var(--font-mono) !important;
+}
+
+/* --------------------------------------------------------------------------
+   8. MAIN LAYOUT & TRANSLUCENT CONTENT CELL
+   -------------------------------------------------------------------------- */
+table.main-layout {
+    width: 100% !important;
+    min-height: 100vh;
+    border-collapse: separate !important;
+    border-spacing: 4px !important;
+    border: 1px solid var(--border-pink) !important;
+    background: 
+        linear-gradient(rgba(14, 0, 12, 0.4), rgba(14, 0, 12, 0.5)),
+        url('https://img.magnific.com/premium-vector/sex-shop-line-seamless-pattern-vector-illustration-outline-tileable-background_520826-3833.jpg?semt=ais_hybrid&w=740&q=80') repeat !important;
+    box-shadow: 0 0 30px rgba(184, 79, 126, 0.25) !important;
+}
+
+.content-cell {
+    background: rgba(18, 0, 16, 0.55) !important;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    padding: 16px 20px !important;
+}
+
+.tab-nav {
+    border-bottom: 1px solid var(--border-color) !important;
+    gap: 4px;
+}
+
+.tab-btn {
+    border-radius: 8px 8px 0 0 !important;
+}
+
+/* --------------------------------------------------------------------------
+   9. ARTICLE CARDS (Pattern Visible & Crisp)
+   -------------------------------------------------------------------------- */
+.article-card {
+    background: 
+        linear-gradient(135deg, rgba(30, 0, 26, 0.75), rgba(18, 0, 16, 0.85)),
+        url('https://img.magnific.com/premium-vector/sex-shop-line-seamless-pattern-vector-illustration-outline-tileable-background_520826-3833.jpg?semt=ais_hybrid&w=740&q=80') center / cover !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 12px !important;
+    margin-bottom: 14px !important;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 200, 220, 0.08) !important;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    position: relative;
+}
+
+.article-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3px;
+    height: 100%;
+    background: linear-gradient(180deg, var(--accent-pink), var(--accent-magenta));
+    opacity: 0.8;
+}
+
+.article-card:hover {
+    border-color: var(--border-wet) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.6), 0 0 18px var(--accent-glow) !important;
+}
+
+.article-card .card-main {
+    padding: 14px !important;
+    background: transparent !important;
+}
+
+.article-card .card-title {
+    font-size: 1.25em !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.01em;
+    margin-bottom: 6px;
+}
+
+.article-card .card-title a {
+    color: var(--text-bright) !important;
+}
+
+.article-card .card-title a:hover {
+    color: var(--accent-pink-bright) !important;
+}
+
+.article-card .card-right {
+    border-left: 1px dashed var(--border-wet) !important;
+    background: rgba(184, 79, 126, 0.18) !important;
+}
+
+.article-card .card-meta,
+.article-card-stats {
+    color: var(--text-muted) !important;
+    font-size: 12px !important;
+    font-family: var(--font-mono) !important;
+}
+
+/* --------------------------------------------------------------------------
+   10. ARTICLE CONTENT & CODE
+   -------------------------------------------------------------------------- */
+.article-content {
+    color: var(--text-color) !important;
+    font-size: 15px !important;
+    line-height: 1.75 !important;
+}
+
+.article-content p {
+    margin-bottom: 1.2em;
+}
+
+pre,
+code {
+    font-family: var(--font-mono) !important;
+}
+
+pre {
+    background: #0d000b !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 8px !important;
+    padding: 14px 16px !important;
+    color: #f0d0dc !important;
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.6) !important;
+    overflow-x: auto;
+}
+
+code {
+    background: rgba(217, 111, 146, 0.14) !important;
+    color: var(--accent-pink-bright) !important;
+    padding: 2px 6px !important;
+    border-radius: 4px !important;
+    font-size: 0.9em !important;
+    border: 1px solid rgba(217, 111, 146, 0.25) !important;
+}
+
+pre code {
+    background: transparent !important;
+    padding: 0 !important;
+    border: none !important;
+    color: inherit !important;
+}
+
+blockquote {
+    border-left: 3px solid var(--accent-pink) !important;
+    background: rgba(217, 111, 146, 0.08) !important;
+    padding: 12px 16px !important;
+    margin: 16px 0 !important;
+    border-radius: 0 8px 8px 0 !important;
+    color: var(--text-bright) !important;
+    font-style: italic;
+}
+
+/* --------------------------------------------------------------------------
+   11. DATA TABLES
+   -------------------------------------------------------------------------- */
+table.article-table,
+table:not(.main-layout) {
+    width: 100%;
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 8px !important;
+    overflow: hidden;
+    margin: 16px 0 !important;
+    background: var(--card-bg) !important;
+}
+
+th {
+    background: rgba(38, 0, 32, 0.9) !important;
+    color: var(--text-bright) !important;
+    font-weight: 700 !important;
+    padding: 10px 14px !important;
+    border-bottom: 1px solid var(--border-color) !important;
+    font-size: 13px !important;
+}
+
+td {
+    padding: 10px 14px !important;
+    border-bottom: 1px solid var(--border-dim) !important;
+    color: var(--text-color) !important;
+    font-size: 13px !important;
+}
+
+tr:last-child td {
+    border-bottom: none !important;
+}
+
+tr:nth-child(even) td {
+    background: rgba(255, 200, 220, 0.03) !important;
+}
+
+tr:hover td {
+    background: rgba(217, 111, 146, 0.08) !important;
+}
+
+/* --------------------------------------------------------------------------
+   12. TAGS & PILLS
+   -------------------------------------------------------------------------- */
+.tag-chip,
+.filter-pill,
+.category-pill,
+.article-tags a {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    background: rgba(217, 111, 146, 0.16) !important;
+    color: var(--accent-pink-bright) !important;
+    border: 1px solid rgba(217, 111, 146, 0.32) !important;
+    border-radius: 16px !important;
+    padding: 3px 10px !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    margin: 2px !important;
+    transition: all 0.15s ease !important;
+}
+
+.tag-chip:hover,
+.filter-pill:hover,
+.category-pill:hover,
+.article-tags a:hover {
+    background: rgba(217, 111, 146, 0.3) !important;
+    color: #ffffff !important;
+    border-color: var(--accent-pink) !important;
+    box-shadow: 0 0 10px var(--accent-glow) !important;
+    transform: scale(1.05);
+}
+
+/* --------------------------------------------------------------------------
+   13. FOOTER & VISITOR COUNTER
+   -------------------------------------------------------------------------- */
+.footer-cell {
+    background: var(--surface-header) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border-top: 1px solid var(--border-color) !important;
+    color: var(--text-muted) !important;
+    padding: 14px 18px !important;
+    text-align: center;
+    font-size: 12px;
+}
+
+.visitor-counter {
+    background: #0a0008 !important;
+    color: var(--accent-pink-bright) !important;
+    border: 1px solid var(--border-wet) !important;
+    border-radius: 6px !important;
+    padding: 5px 12px !important;
+    font-family: var(--font-mono) !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    letter-spacing: 1.5px !important;
+    box-shadow: 0 0 12px var(--accent-glow), inset 0 2px 4px rgba(0, 0, 0, 0.6) !important;
+}
+
+.footer-telemetry {
+    font-family: var(--font-mono) !important;
+    font-size: 11px !important;
+    color: var(--text-muted) !important;
+    margin-top: 6px;
+}
+
+.footer-telemetry span {
+    color: var(--accent-pink) !important;
+    font-weight: 700;
+}
+
+/* --------------------------------------------------------------------------
+   14. FLOATING CONTROLS & QUICK SEARCH
+   -------------------------------------------------------------------------- */
+.gallery-float-controls {
+    background: rgba(28, 0, 24, 0.88) !important;
+    backdrop-filter: blur(14px) !important;
+    -webkit-backdrop-filter: blur(14px) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 28px !important;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.55) !important;
+}
+
+.btn-float-handle,
+.btn-float-action {
+    background: transparent !important;
+    color: var(--text-color) !important;
+    border: none !important;
+}
+
+.btn-float-action:hover,
+.btn-float-handle:hover {
+    color: var(--accent-pink-bright) !important;
+    background: rgba(217, 111, 146, 0.16) !important;
+}
+
+#back-to-top {
+    background: var(--surface-header) !important;
+    color: var(--text-bright) !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: 0 0 12px var(--accent-glow) !important;
+}
+
+.retro-quick-search-overlay {
+    background: rgba(10, 0, 8, 0.75) !important;
+    backdrop-filter: blur(12px) !important;
+}
+
+.retro-quick-search-box {
+    background: #160012 !important;
+    border: 1px solid var(--border-light) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 25px var(--accent-glow) !important;
+}
+
+/* --------------------------------------------------------------------------
+   15. SCROLLBARS & HR
+   -------------------------------------------------------------------------- */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #0c000a;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(217, 111, 146, 0.35);
+    border-radius: 4px;
+    border: 2px solid #0c000a;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-pink);
+    box-shadow: 0 0 8px var(--accent-glow);
+}
+
+hr {
+    border: none;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent-pink), transparent);
+    margin: 18px 0;
+    opacity: 0.6;
+}
+
+/* --------------------------------------------------------------------------
+   16. EDITOR TEXTAREA (Artwork Clearly Visible)
+   -------------------------------------------------------------------------- */
+textarea.editor {
+    height: 400px;
+    background: 
+        linear-gradient(rgba(24, 0, 20, 0.68), rgba(20, 0, 18, 0.75)),
+        url('https://michelerosenthal.com/wp-content/uploads/2024/06/nakedladies.png') center / cover !important;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   17. RESPONSIVE BREAKPOINTS
+   -------------------------------------------------------------------------- */
+@media screen and (min-width: 481px) {
+    body {
+        padding: 12px;
+    }
+    .sidebar-cell {
+        width: 200px !important;
+    }
+    h1 {
+        font-size: 1.7rem !important;
+    }
+    .article-card .card-title {
+        font-size: 1.4em !important;
+    }
+}
+
+@media screen and (min-width: 769px) {
+    body {
+        padding: 16px;
+    }
+    .sidebar-cell {
+        width: 230px !important;
+    }
+    h1 {
+        font-size: 1.9rem !important;
+    }
+    .content-cell {
+        padding: 20px 24px !important;
+    }
+}

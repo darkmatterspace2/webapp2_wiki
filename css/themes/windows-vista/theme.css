@@ -1,0 +1,642 @@
+/* ==========================================================================
+   WINDOWS VISTA AERO GLASS THEME (theme.css)
+   Authentic Windows Vista Aero Experience.
+   Features:
+   - Iconic Windows Vista "Aurora" Desktop Wallpaper
+   - Smoky translucent Aero Glass window frame with specular reflections & blur
+   - Signature Segoe UI typography with Aero drop-shadows
+   - Glossy Vista title bar & glowing red Close button
+   - Vista Start Orb, Explorer breadcrumbs, and Desktop Gadget Sidebar
+   - Classic Vista cyan-glowing Aero push buttons & glass cards
+   - Authentic Aero scrollbars & taskbar footer
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@300;400;500;600;700&family=Consolas:wght@400;700&display=swap');
+
+/* --------------------------------------------------------------------------
+   1. VISTA SYSTEM VARIABLES & COLOR TOKENS
+   -------------------------------------------------------------------------- */
+:root {
+    /* Vista Aurora Desktop & Aero Glass Surfaces */
+    --bg-color: #061e36;
+    --surface-header: rgba(18, 32, 45, 0.78);
+    --header-bg: rgba(18, 32, 45, 0.78);
+    --sidebar-bg: rgba(12, 22, 33, 0.82);
+    --content-bg: rgba(255, 255, 255, 0.95);
+    --card-bg: #ffffff;
+    --card-bg-hover: #eaf4fd;
+
+    /* Vista Explorer Colors */
+    --text-color: #1e1e1e;
+    --text-bright: #000000;
+    --text-muted: #555555;
+    --text-titlebar: #ffffff;
+    --font-main: 'Segoe UI', -apple-system, BlinkMacSystemFont, Tahoma, Arial, sans-serif;
+    --font-mono: 'Consolas', 'Courier New', monospace;
+
+    /* Vista Aero Cyan / Blue Accents */
+    --link-color: #1e5fad;
+    --link-hover: #0066cc;
+    --visited-color: #5c3566;
+    --accent-blue: #0078d7;
+    --accent-cyan: #00a2e8;
+    --accent-cyan-glow: rgba(0, 162, 232, 0.65);
+    --accent-green: #339933;
+    --accent-red: #e81123;
+
+    /* Aero Glass Specular Borders */
+    --border-color: rgba(255, 255, 255, 0.45);
+    --border-glass-dark: rgba(0, 0, 0, 0.4);
+    --border-dim: #d9d9d9;
+    --border-explorer: #a0b3c6;
+
+    /* Vista Glossy Push Button */
+    --btn-bg: linear-gradient(180deg, #ffffff 0%, #ececec 48%, #dedede 50%, #d0d0d0 100%);
+    --btn-text: #1a1a1a;
+    --btn-border: #707070;
+    --btn-hover-border: #3c7fb1;
+}
+
+/* --------------------------------------------------------------------------
+   2. VISTA "AURORA" DESKTOP WALLPAPER CANVAS
+   -------------------------------------------------------------------------- */
+body,
+body[data-theme="windows-vista"] {
+    margin: 0;
+    background-color: #061c33 !important;
+    background-image: 
+        radial-gradient(ellipse 90% 70% at 75% 15%, rgba(0, 204, 255, 0.35) 0%, transparent 60%),
+        radial-gradient(ellipse 80% 60% at 20% 85%, rgba(68, 175, 50, 0.32) 0%, transparent 60%),
+        radial-gradient(ellipse 70% 50% at 85% 75%, rgba(255, 170, 0, 0.22) 0%, transparent 55%),
+        linear-gradient(135deg, #041426 0%, #08294a 35%, #0d3b66 65%, #051a30 100%) !important;
+    background-attachment: fixed !important;
+    background-size: cover !important;
+    color: var(--text-color) !important;
+    font-family: var(--font-main) !important;
+    font-size: 13px !important;
+    line-height: 1.5;
+    -webkit-font-smoothing: subpixel-antialiased;
+}
+
+/* Vista Aero Selection */
+::selection {
+    background: #3399ff !important;
+    color: #ffffff !important;
+}
+
+/* --------------------------------------------------------------------------
+   3. AERO GLASS MAIN WINDOW FRAME
+   -------------------------------------------------------------------------- */
+table.main-layout {
+    width: calc(100% - 24px) !important;
+    max-width: 1440px !important;
+    margin: 12px auto !important;
+    background: var(--surface-header) !important;
+    backdrop-filter: blur(24px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+    border: 1px solid rgba(255, 255, 255, 0.5) !important;
+    border-radius: 8px 8px 6px 6px !important;
+    box-shadow: 
+        0 18px 50px rgba(0, 0, 0, 0.65), 
+        0 0 0 1px rgba(0, 0, 0, 0.55), 
+        inset 0 1px 0 rgba(255, 255, 255, 0.8),
+        inset 0 0 25px rgba(255, 255, 255, 0.08) !important;
+    overflow: hidden;
+}
+
+/* --------------------------------------------------------------------------
+   4. VISTA TITLE BAR & WINDOW CHROME
+   -------------------------------------------------------------------------- */
+.header-cell {
+    background: linear-gradient(180deg, 
+        rgba(255, 255, 255, 0.45) 0%, 
+        rgba(255, 255, 255, 0.15) 45%, 
+        rgba(0, 0, 0, 0.08) 50%, 
+        rgba(0, 0, 0, 0.25) 100%) !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.4) !important;
+    padding: 8px 14px !important;
+    position: relative;
+    user-select: none;
+}
+
+/* Top Specular Edge */
+.header-cell::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, 
+        rgba(255, 255, 255, 0.2), 
+        rgba(255, 255, 255, 0.9) 30%, 
+        rgba(255, 255, 255, 0.9) 70%, 
+        rgba(255, 255, 255, 0.2));
+}
+
+/* Brand Title with Vista Aero Ambient Dark Shadow */
+.header-brand,
+.header-title,
+.header-cell a {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    font-size: 14px !important;
+    text-shadow: 
+        0 0 6px rgba(0, 0, 0, 0.9), 
+        0 1px 3px rgba(0, 0, 0, 0.95), 
+        0 0 15px rgba(0, 0, 0, 0.8) !important;
+    letter-spacing: 0.2px;
+}
+
+.header-brand::before {
+    content: '❖ ';
+    color: #00d2ff;
+    font-size: 1.1em;
+    text-shadow: 0 0 8px rgba(0, 210, 255, 0.9);
+}
+
+/* --------------------------------------------------------------------------
+   5. VISTA GADGETS SIDEBAR
+   -------------------------------------------------------------------------- */
+.sidebar-cell {
+    background: linear-gradient(90deg, 
+        rgba(10, 20, 32, 0.82) 0%, 
+        rgba(15, 28, 44, 0.72) 100%) !important;
+    backdrop-filter: blur(18px) !important;
+    -webkit-backdrop-filter: blur(18px) !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-left: 1px solid rgba(0, 0, 0, 0.2) !important;
+    padding: 12px 14px !important;
+    color: #f0f4f8 !important;
+}
+
+/* Vista Sidebar Gadget Header */
+.sidebar-accordion {
+    margin-bottom: 10px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 5px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+    overflow: hidden;
+}
+
+.sidebar-accordion summary {
+    background: linear-gradient(180deg, 
+        rgba(255, 255, 255, 0.35) 0%, 
+        rgba(255, 255, 255, 0.1) 48%, 
+        rgba(0, 0, 0, 0.1) 50%, 
+        rgba(0, 0, 0, 0.25) 100%) !important;
+    color: #ffffff !important;
+    padding: 7px 10px !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    cursor: pointer !important;
+    text-shadow: 0 1px 2px #000;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+}
+
+.sidebar-accordion summary:hover {
+    background: linear-gradient(180deg, 
+        rgba(0, 162, 232, 0.45) 0%, 
+        rgba(0, 162, 232, 0.2) 48%, 
+        rgba(0, 80, 130, 0.25) 50%, 
+        rgba(0, 80, 130, 0.4) 100%) !important;
+}
+
+.sidebar-accordion-body {
+    padding: 8px 10px !important;
+}
+
+.sidebar-cell a {
+    color: #e6f2ff !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+    padding: 4px 8px;
+    border-radius: 3px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.15s ease;
+}
+
+.sidebar-cell a:hover {
+    background: rgba(0, 162, 232, 0.3) !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 8px rgba(0, 162, 232, 0.5);
+    text-decoration: none !important;
+}
+
+/* Category count capsules */
+.category-count-badge,
+.tag-badge {
+    background: rgba(255, 255, 255, 0.2) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.4) !important;
+    border-radius: 10px !important;
+    padding: 1px 6px !important;
+    font-size: 10px !important;
+    font-weight: bold;
+}
+
+/* --------------------------------------------------------------------------
+   6. VISTA EXPLORER MAIN CONTENT CLIENT AREA
+   -------------------------------------------------------------------------- */
+.content-cell {
+    background: #ffffff !important;
+    color: #1a1a1a !important;
+    padding: 18px 24px !important;
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Vista Explorer Breadcrumb & Toolbars */
+.tab-nav {
+    background: linear-gradient(180deg, #f7fafd 0%, #e6eff7 100%) !important;
+    border: 1px solid #b9cfe4 !important;
+    border-radius: 4px 4px 0 0 !important;
+    padding: 4px 6px 0 6px !important;
+    gap: 4px;
+}
+
+.tab-btn {
+    background: linear-gradient(180deg, #ffffff 0%, #e8f0f8 100%) !important;
+    border: 1px solid #b9cfe4 !important;
+    border-bottom: none !important;
+    color: #1e395b !important;
+    border-radius: 4px 4px 0 0 !important;
+    font-weight: 600 !important;
+    padding: 6px 14px !important;
+}
+
+.tab-btn:hover {
+    background: linear-gradient(180deg, #ffffff 0%, #d4e7f8 100%) !important;
+    border-color: #7da2ce !important;
+}
+
+.tab-btn.active {
+    background: #ffffff !important;
+    border-color: #7da2ce !important;
+    color: #0066cc !important;
+    border-top: 2px solid #00a2e8 !important;
+}
+
+/* --------------------------------------------------------------------------
+   7. VISTA AERO PUSH BUTTONS (Iconic Cyan Hover Glow)
+   -------------------------------------------------------------------------- */
+button,
+.btn-header,
+.btn-random-article,
+.index-tab-btn,
+.view-mode-btn,
+.archive-month-btn {
+    background: var(--btn-bg) !important;
+    color: var(--btn-text) !important;
+    border: 1px solid var(--btn-border) !important;
+    border-radius: 3px !important;
+    padding: 5px 14px !important;
+    font-family: var(--font-main) !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    box-shadow: 
+        inset 0 1px 0 #ffffff, 
+        inset 0 -1px 0 #d8d8d8, 
+        0 1px 2px rgba(0, 0, 0, 0.18) !important;
+    cursor: pointer !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+    user-select: none !important;
+    transition: all 0.15s ease !important;
+}
+
+/* Iconic Vista Cyan Glow Hover */
+button:hover,
+.btn-header:hover,
+.btn-random-article:hover,
+.index-tab-btn:hover,
+.view-mode-btn:hover,
+.archive-month-btn:hover {
+    background: linear-gradient(180deg, 
+        #f2f9fe 0%, 
+        #dbeefc 48%, 
+        #bfe1f8 50%, 
+        #d1e9fb 100%) !important;
+    border-color: #3c7fb1 !important;
+    color: #000000 !important;
+    box-shadow: 
+        0 0 8px rgba(0, 162, 232, 0.65), 
+        inset 0 1px 0 #ffffff !important;
+}
+
+/* Pressed State */
+button:active,
+.btn-header:active,
+.btn-random-article:active,
+.view-mode-btn:active {
+    background: linear-gradient(180deg, 
+        #c2e4f6 0%, 
+        #a6d5f0 48%, 
+        #8ec8eb 50%, 
+        #a2d2ee 100%) !important;
+    border-color: #2c628b !important;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25) !important;
+}
+
+/* Active Highlight Buttons */
+.btn-header.active,
+.index-tab-btn.active,
+.view-mode-btn.active,
+.archive-month-btn.active {
+    background: linear-gradient(180deg, 
+        #e5f3fb 0%, 
+        #c3e4f7 48%, 
+        #a0d4f4 50%, 
+        #bde0f6 100%) !important;
+    border-color: #0078d7 !important;
+    box-shadow: 0 0 10px rgba(0, 162, 232, 0.5), inset 0 1px 0 #fff !important;
+    font-weight: 700 !important;
+}
+
+/* Close / Delete Button with Vista Red Glow */
+.btn-delete,
+.btn-header.btn-delete,
+.filter-pill-remove {
+    background: linear-gradient(180deg, #fcedeb 0%, #f6cecb 50%, #eb9d97 100%) !important;
+    color: #8c100a !important;
+    border-color: #c42b1c !important;
+}
+
+.btn-delete:hover,
+.filter-pill-remove:hover {
+    background: linear-gradient(180deg, #e81123 0%, #c42b1c 50%, #9a1a0e 100%) !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 10px rgba(232, 17, 35, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.5) !important;
+}
+
+/* --------------------------------------------------------------------------
+   8. VISTA EXPLORER ARTICLE CARDS & VIEWS
+   -------------------------------------------------------------------------- */
+.article-card {
+    background: #ffffff !important;
+    border: 1px solid #d9d9d9 !important;
+    border-radius: 4px !important;
+    padding: 14px 16px !important;
+    margin-bottom: 12px !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+    transition: all 0.2s ease !important;
+    position: relative;
+}
+
+/* Vista Selected Item Blue Border Glow */
+.article-card:hover {
+    background: linear-gradient(180deg, #f7fafd 0%, #eaf4fd 100%) !important;
+    border-color: #7da2ce !important;
+    box-shadow: 0 0 10px rgba(0, 120, 215, 0.25), 0 2px 6px rgba(0, 0, 0, 0.12) !important;
+    transform: translateY(-1px);
+}
+
+.article-card-title {
+    color: #1e5fad !important;
+    font-size: 16px !important;
+    font-weight: 700 !important;
+}
+
+.article-card-title:hover {
+    color: #0066cc !important;
+    text-decoration: underline !important;
+}
+
+.article-card-stats {
+    color: #555555 !important;
+    font-size: 11px !important;
+    margin-top: 4px;
+}
+
+/* --------------------------------------------------------------------------
+   9. VISTA EXPLORER INPUT FIELDS & SEARCH
+   -------------------------------------------------------------------------- */
+input[type="text"],
+input[type="url"],
+input[type="number"],
+input[type="search"],
+input[type="password"],
+textarea,
+select,
+.editor-input,
+.editor-select,
+.sidebar-filter-input {
+    background: #ffffff !important;
+    color: #000000 !important;
+    border: 1px solid #7da2ce !important;
+    border-radius: 2px !important;
+    padding: 6px 8px !important;
+    font-family: inherit !important;
+    font-size: 12px !important;
+    box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.15) !important;
+    box-sizing: border-box;
+}
+
+input:focus,
+textarea:focus,
+select:focus,
+.editor-input:focus,
+.editor-select:focus,
+.sidebar-filter-input:focus {
+    outline: none !important;
+    border-color: #00a2e8 !important;
+    box-shadow: 0 0 6px rgba(0, 162, 232, 0.6), inset 1px 1px 2px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* --------------------------------------------------------------------------
+   10. VISTA TYPOGRAPHY, TABLES & HEADINGS
+   -------------------------------------------------------------------------- */
+h1, h2, h3, h4, h5, h6 {
+    color: #1e395b !important;
+    font-weight: 600 !important;
+    letter-spacing: -0.01em;
+}
+
+h1 {
+    font-size: 1.8rem !important;
+    border-bottom: 1px solid #d9e5f2 !important;
+    padding-bottom: 6px;
+    color: #1e5fad !important;
+}
+
+h2 {
+    font-size: 1.4rem !important;
+    border-bottom: 1px solid #e2edf8 !important;
+    padding-bottom: 4px;
+}
+
+/* Tables */
+table.article-table,
+table:not(.main-layout) {
+    width: 100%;
+    border: 1px solid #d9d9d9 !important;
+    border-collapse: collapse !important;
+    margin: 14px 0 !important;
+}
+
+th {
+    background: linear-gradient(180deg, #f7f9fb 0%, #e4ecf4 100%) !important;
+    color: #1e395b !important;
+    font-weight: 700 !important;
+    padding: 8px 12px !important;
+    border: 1px solid #d4e0ee !important;
+    text-align: left;
+}
+
+td {
+    padding: 7px 12px !important;
+    border: 1px solid #e6eef6 !important;
+    color: #222222 !important;
+}
+
+tr:nth-child(even) td {
+    background: #f9fbfd !important;
+}
+
+tr:hover td {
+    background: #eaf4fd !important;
+}
+
+/* Code Blocks */
+pre {
+    background: #f4f7fa !important;
+    border: 1px solid #c9d8e8 !important;
+    border-left: 3px solid #00a2e8 !important;
+    padding: 12px 15px !important;
+    border-radius: 3px !important;
+    color: #111111 !important;
+    font-family: var(--font-mono) !important;
+    font-size: 12px !important;
+}
+
+code {
+    background: #eef4fb !important;
+    border: 1px solid #d3e2f2 !important;
+    color: #1e5fad !important;
+    padding: 1px 5px !important;
+    border-radius: 2px !important;
+    font-family: var(--font-mono) !important;
+}
+
+pre code {
+    background: transparent !important;
+    border: none !important;
+    color: inherit !important;
+}
+
+/* --------------------------------------------------------------------------
+   11. RETRO GALLERY WITH VISTA GLASS CAPTIONS
+   -------------------------------------------------------------------------- */
+.retro-gallery {
+    border: 1px solid #b8cfe5 !important;
+    border-radius: 4px;
+    background: #000;
+}
+
+.retro-gallery figure figcaption {
+    background: rgba(18, 32, 45, 0.85) !important;
+    backdrop-filter: blur(14px) !important;
+    -webkit-backdrop-filter: blur(14px) !important;
+    color: #ffffff !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3) !important;
+    text-shadow: 0 1px 2px #000;
+}
+
+/* --------------------------------------------------------------------------
+   12. VISTA TASKBAR FOOTER & SYSTEM TRAY
+   -------------------------------------------------------------------------- */
+.footer-cell {
+    background: linear-gradient(180deg, 
+        rgba(30, 48, 65, 0.88) 0%, 
+        rgba(15, 25, 36, 0.95) 100%) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.25) !important;
+    color: #cbd5e1 !important;
+    padding: 10px 16px !important;
+    font-size: 11px !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* Vista System Tray Odometer */
+.visitor-counter {
+    background: #09131f !important;
+    color: #00d2ff !important;
+    border: 1px solid rgba(0, 210, 255, 0.4) !important;
+    border-radius: 3px !important;
+    padding: 2px 8px !important;
+    font-family: var(--font-mono) !important;
+    font-weight: bold;
+    box-shadow: 0 0 8px rgba(0, 210, 255, 0.3), inset 0 1px 2px #000 !important;
+}
+
+/* --------------------------------------------------------------------------
+   13. FLOATING DOCK & QUICK SEARCH (Aero Glass Style)
+   -------------------------------------------------------------------------- */
+.gallery-float-controls {
+    background: rgba(18, 32, 45, 0.82) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.4) !important;
+    border-radius: 25px !important;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6) !important;
+}
+
+.btn-float-handle,
+.btn-float-action {
+    color: #ffffff !important;
+    text-shadow: 0 1px 2px #000;
+}
+
+.btn-float-action:hover,
+.btn-float-handle:hover {
+    background: rgba(0, 162, 232, 0.35) !important;
+    color: #00d2ff !important;
+    box-shadow: 0 0 10px rgba(0, 162, 232, 0.5) !important;
+}
+
+/* Quick Search Box in Aero Glass */
+.retro-quick-search-box {
+    background: rgba(255, 255, 255, 0.96) !important;
+    border: 1px solid #7da2ce !important;
+    border-radius: 6px !important;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7), 0 0 15px rgba(0, 162, 232, 0.4) !important;
+    color: #111111 !important;
+}
+
+.retro-quick-search-header {
+    background: linear-gradient(180deg, #f2f7fc 0%, #dce8f5 100%) !important;
+    border-bottom: 1px solid #b9cfe4 !important;
+    color: #1e395b !important;
+    font-weight: 700;
+}
+
+/* --------------------------------------------------------------------------
+   14. VISTA AERO SCROLLBARS
+   -------------------------------------------------------------------------- */
+::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-left: 1px solid #d9d9d9;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #d8e5f2 0%, #bed3e8 100%);
+    border: 1px solid #9cb8d6;
+    border-radius: 4px;
+    box-shadow: inset 0 1px 0 #ffffff;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #bfe1f8 0%, #89c5f0 100%);
+    border-color: #3c7fb1;
+    box-shadow: 0 0 6px rgba(0, 162, 232, 0.6), inset 0 1px 0 #ffffff;
+}
